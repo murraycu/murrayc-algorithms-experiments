@@ -225,11 +225,11 @@ int main(int argc, char** argv)
   //const auto pixels_end = pixels + pixels_size;
 
 
-
+  const auto pos_count = width * height;
   std::vector<int> rank;
-  rank.resize(pixels_size);
+  rank.resize(pos_count);
   std::vector<int> parent;
-  parent.resize(pixels_size);
+  parent.resize(pos_count);
   boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
 
   first_pass(pixels, pixels_size, width, rowstride, n_channels, ds);
