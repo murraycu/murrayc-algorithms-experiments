@@ -20,7 +20,7 @@ AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 PKG_CHECK_MODULES([PROJECT], [gdkmm-3.0])
 
 # See http://www.gnu.org/software/autoconf-archive/ax_boost_base.html
-AX_BOOST_BASE
+#AX_BOOST_BASE
 
 # Allow use of mm-common macros for the warnings option.
 MM_PREREQ([0.9.5])
