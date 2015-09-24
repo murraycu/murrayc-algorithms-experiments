@@ -12,12 +12,12 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal --disable-update-mime-databa
 
 AM_CXXFLAGS = $(PROJECT_WXXFLAGS)
 
-bin_PROGRAMS = murrayc_find_objects_in_image_with_disjoin_set
+bin_PROGRAMS = murrayc_find_objects_in_image_with_disjoint_set
 
 #List of source files needed to build the executable:
-murrayc_find_objects_in_image_with_disjoin_set_SOURCES = \
-	src/murrayc_find_objects_in_image_with_disjoin_set.cc
-murrayc_find_objects_in_image_with_disjoin_set_CXXFLAGS = \
+murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
+	src/find_objects_in_image_with_disjoint_set/murrayc_find_objects_in_image_with_disjoint_set.cc
+murrayc_find_objects_in_image_with_disjoint_set_CXXFLAGS = \
 	$(PROJECT_CFLAGS)
-murrayc_find_objects_in_image_with_disjoin_set_LDADD = \
+murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
 	$(PROJECT_LIBS)
