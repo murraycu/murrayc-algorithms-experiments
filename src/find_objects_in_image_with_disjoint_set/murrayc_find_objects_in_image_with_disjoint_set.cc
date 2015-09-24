@@ -117,9 +117,9 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
           auto neighbour_y = y + offset.second;
 
           if((neighbour_x < width)
-            && (neighbour_x > 0)
+            && (neighbour_x >= 0)
             && (neighbour_y < rows_count)
-            && (neighbour_y > 0) )
+            && (neighbour_y >= 0) )
           {
             auto neighbour_pos = get_pixel_pos(width,
               x + offset.first,
