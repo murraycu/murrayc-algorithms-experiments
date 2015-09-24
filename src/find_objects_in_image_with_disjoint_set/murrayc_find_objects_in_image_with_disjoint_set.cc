@@ -6,9 +6,9 @@
 #include <gdkmm/wrap_init.h>
 
 //Boost:
-//#include "disjoint_sets.hpp"
+#include "disjoint_sets.hpp"
 
-#include "union_find.h"
+//#include "union_find.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -163,6 +163,7 @@ int first_pass(const guchar* pixels, int pixels_size, int width, int rowstride, 
         if(!neighbour_found)
         {
           pixels_labelled[pos] = next_label;
+          ds.make_set(next_label);
 
           //std::cout << "new label:" << next_label << std::endl;
 
@@ -241,12 +242,12 @@ int main(int argc, char** argv)
   //const auto pixels_end = pixels + pixels_size;
 
   const auto pos_count = width * height;
-  /* std::vector<int> rank;
+  std::vector<int> rank;
   rank.resize(pos_count);
   std::vector<int> parent;
   parent.resize(pos_count);
-  boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]); */
-  UnionFind<int> ds(pos_count);
+  boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
+  //UnionFind<int> ds(pos_count);
 
   std::vector<int> pixels_labelled;
   pixels_labelled.resize(pos_count);
