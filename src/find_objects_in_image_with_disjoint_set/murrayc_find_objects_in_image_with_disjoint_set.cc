@@ -136,7 +136,7 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
             //by doing a union in the ds/unionfind.
             const auto root = ds.find_set(neighbour_pos);
             std::cout << "pos(" << pos << "): root(" << neighbour_pos << "): " << root << std::endl;
-            if(root != -1)
+            if(root != neighbour_pos)
             {
               ds.union_set(pos, neighbour_pos);
               neighbour_found = true;
@@ -182,7 +182,7 @@ void second_pass(int width, int height, DistinctSets& ds)
       const auto root = ds.find_set(pos);
 
       std::cout << std::setw(3) << root;
-      if(root != -1)
+      if(root != pos)
       {
         roots.insert(root);
       }

@@ -29,10 +29,11 @@ public:
   {
     for(int i = 0; i < size; ++i)
     {
-      id_[i] = -1;
+      id_[i] = i;
     }
   }
 
+  //Useless if we default to id_[i] = i;
   void make_set(T_Element i)
   {
     id_[i] = i;
@@ -41,13 +42,7 @@ public:
   void union_set(T_Element p, T_Element q)
   {
     auto i = find_set(p);
-    if(i == -1)
-      i = p;
-
     auto j = find_set(q);
-    if(j == -1)
-      j = q;
-
     id_[i] = j;  
   }
 
@@ -58,16 +53,10 @@ public:
   {
     while(i != id_[i])
     {
-      //TODO: Check for null:
-      //id_[i] = id_[id_[i]];
+      //Path compression:
+      id_[i] = id_[id_[i]];
 
-      const auto id = id_[i];
-      if(id == -1)
-      {
-        return id;
-      }
-
-      i = id;
+      i = id_[i];
     }
 
     return i;
