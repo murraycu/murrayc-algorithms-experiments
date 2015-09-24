@@ -6,7 +6,9 @@
 #include <gdkmm/wrap_init.h>
 
 //Boost:
-#include "disjoint_sets.hpp"
+//#include "disjoint_sets.hpp"
+
+#include "union_find.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -226,11 +228,12 @@ int main(int argc, char** argv)
 
 
   const auto pos_count = width * height;
-  std::vector<int> rank;
+  /* std::vector<int> rank;
   rank.resize(pos_count);
   std::vector<int> parent;
   parent.resize(pos_count);
-  boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
+  boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]); */
+  UnionFind<int> ds(pos_count);
 
   first_pass(pixels, pixels_size, width, rowstride, n_channels, ds);
   second_pass(width, height, ds);
