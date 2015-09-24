@@ -75,11 +75,16 @@ static int get_pixel_pos(int width, int x, int y)
   return (y * width) + x;
 }
 
+/**
+ * Returns the number of labels set.
+ */
 template <typename DistinctSets>
 static
-void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride, int n_channels, DistinctSets& ds)
+int first_pass(const guchar* pixels, int pixels_size, int width, int rowstride, int n_channels, std::vector<int>& pixels_labelled, DistinctSets& ds)
 {
   std::cout << "first_pass():" << std::endl;
+
+  int next_label = 1;
 
   const std::vector<std::pair<int, int>> neighbour_offsets =
   { {-1, 0}, //The pixel to the left.
@@ -100,7 +105,7 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
 
       const auto p = pixels + (y * rowstride) + (x * n_channels);
       const auto pixel = *(p);
-      std::cout << "pos: " << pos << ":  ";
+      //std::cout << "pos: " << pos << ":  ";
       std::cout << std::setw(3) << (int)pixel;
 
       if(pixel > THRESHHOLD)
@@ -131,17 +136,24 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
               continue;
             }
 
-            //If a "labelled" (in the ds/unionfind) neighbour was found,
-            //use the same label for the current position,
-            //by doing a union in the ds/unionfind.
-            const auto root = ds.find_set(neighbour_pos);
-            std::cout << "pos(" << pos << "): root(" << neighbour_pos << "): " << root << std::endl;
-            if(root != neighbour_pos)
+            //If a "labelled" neighbour was found,
+            //use the lowest neighbour label for the current position:
+            const auto pos_label = pixels_labelled[pos];
+            const auto neighbour_label = pixels_labelled[neighbour_pos];
+            //std::cout << "pos(" << pos << "): root(" << neighbour_pos << "): " << root << std::endl;
+            if(neighbour_label)
             {
-              ds.union_set(pos, neighbour_pos);
+              if(pos_label && (neighbour_label > pos_label))
+              {
+                //std::cout << " union_set(" << pos_label << ", " << neighbour_label;
+                ds.union_set(pos_label, neighbour_label);
+                continue;
+              }
+
+              //Use the neighbour label if it is the lowest neighbour label found so far:
+              //std::cout << " neighbour label:" << neighbour_label;
+              pixels_labelled[pos] = neighbour_label;
               neighbour_found = true;
-              std::cout << "union(" << pos << ", " << neighbour_pos <<  ")" << std::endl;
-              break;
             }
           }
         }
@@ -150,47 +162,44 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
         //"label" it with a new label, in the ds/unionfind:
         if(!neighbour_found)
         {
-          ds.make_set(pos);
-          std::cout << "new label: pos" << pos << std::endl;
+          pixels_labelled[pos] = next_label;
+
+          //std::cout << "new label:" << next_label << std::endl;
+
+          next_label++;
         }
 
         std::cout << (neighbour_found ? "n" : " ");
       }
 
-      std::cout << "find_set(" << pos << "): " << std::setw(3) << ds.find_set(pos);
+      std::cout << std::setw(3) << pixels_labelled[pos];
 
       std::cout << ", ";
-      std::cout << std::endl;
+      //std::cout << std::endl;
     }
 
     std::cout << std::endl;
   }
+
+  return next_label - 1;
 }
 
 template <typename DistinctSets>
-void second_pass(int width, int height, DistinctSets& ds)
+void second_pass(int width, int height, int labels_count, DistinctSets& ds)
 {
   std::cout << "second_pass():" << std::endl;
   std::set<int> roots;
 
-  //TODO: Find a way to use boost::distinct_set::count_sets(begin, end) to make this easier:
-  for(int y = 0; y < height; ++y)
+  //TODO: Find a way to use: boost::distinct_set::count_sets(begin, end) to make this easier:
+
+  for(int label = 1; label <= labels_count; ++label)
   {
-    for(int x = 0; x < width; ++x)
-    {
-      const auto pos = get_pixel_pos(width, x, y);
-      const auto root = ds.find_set(pos);
+    const auto root = ds.find_set(label);
 
-      std::cout << std::setw(3) << root;
-      if(root != pos)
-      {
-        roots.insert(root);
-      }
+    std::cout << std::setw(3) << root;
+    roots.insert(root);
 
-      std::cout << ", ";
-    }
-
-    std::cout << std::endl;
+    std::cout << ", ";
   }
 
   std::cout << "count: " << roots.size() << std::endl;
@@ -231,7 +240,6 @@ int main(int argc, char** argv)
   const auto pixels_size = width * height;
   //const auto pixels_end = pixels + pixels_size;
 
-
   const auto pos_count = width * height;
   /* std::vector<int> rank;
   rank.resize(pos_count);
@@ -240,8 +248,11 @@ int main(int argc, char** argv)
   boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]); */
   UnionFind<int> ds(pos_count);
 
-  first_pass(pixels, pixels_size, width, rowstride, n_channels, ds);
-  second_pass(width, height, ds);
+  std::vector<int> pixels_labelled;
+  pixels_labelled.resize(pos_count);
+  const auto labels_count = first_pass(pixels, pixels_size, width, rowstride, n_channels, pixels_labelled, ds);
+
+  second_pass(width, height, labels_count, ds);
 
   return EXIT_SUCCESS;
 }
