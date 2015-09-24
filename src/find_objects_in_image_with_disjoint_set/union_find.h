@@ -27,12 +27,10 @@ public:
   UnionFind(T_Element size)
   : id_(size)
   {
-    /*
     for(int i = 0; i < size; ++i)
     {
-      id_[i] = i;
+      id_[i] = -1;
     }
-    */
   }
 
   void make_set(T_Element i)
@@ -43,7 +41,13 @@ public:
   void union_set(T_Element p, T_Element q)
   {
     auto i = find_set(p);
+    if(i == -1)
+      i = p;
+
     auto j = find_set(q);
+    if(j == -1)
+      j = q;
+
     id_[i] = j;  
   }
 
@@ -55,9 +59,15 @@ public:
     while(i != id_[i])
     {
       //TODO: Check for null:
-      id_[i] = id_[id_[i]];
+      //id_[i] = id_[id_[i]];
 
-      i = id_[i];
+      const auto id = id_[i];
+      if(id == -1)
+      {
+        return id;
+      }
+
+      i = id;
     }
 
     return i;

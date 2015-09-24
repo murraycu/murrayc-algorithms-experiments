@@ -100,11 +100,12 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
 
       const auto p = pixels + (y * rowstride) + (x * n_channels);
       const auto pixel = *(p);
+      std::cout << "pos: " << pos << ":  ";
       std::cout << std::setw(3) << (int)pixel;
 
       if(pixel > THRESHHOLD)
       {
-        std::cout << "(0)";
+        std::cout << "(0) ";
       }
       else
       {
@@ -133,14 +134,15 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
             //If a "labelled" (in the ds/unionfind) neighbour was found,
             //use the same label for the current position,
             //by doing a union in the ds/unionfind.
-            if(ds.find_set(neighbour_pos))
+            const auto root = ds.find_set(neighbour_pos);
+            std::cout << "pos(" << pos << "): root(" << neighbour_pos << "): " << root << std::endl;
+            if(root != -1)
             {
               ds.union_set(pos, neighbour_pos);
               neighbour_found = true;
-
-              //std::cout << "neighbour_found." << std::endl;
+              std::cout << "union(" << pos << ", " << neighbour_pos <<  ")" << std::endl;
               break;
-            }  
+            }
           }
         }
 
@@ -149,13 +151,16 @@ void first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
         if(!neighbour_found)
         {
           ds.make_set(pos);
-          //std::cout << "new label." << std::endl;
+          std::cout << "new label: pos" << pos << std::endl;
         }
+
+        std::cout << (neighbour_found ? "n" : " ");
       }
 
-      std::cout << std::setw(3) << ds.find_set(pos);
+      std::cout << "find_set(" << pos << "): " << std::setw(3) << ds.find_set(pos);
 
       std::cout << ", ";
+      std::cout << std::endl;
     }
 
     std::cout << std::endl;
@@ -177,7 +182,7 @@ void second_pass(int width, int height, DistinctSets& ds)
       const auto root = ds.find_set(pos);
 
       std::cout << std::setw(3) << root;
-      if(root) //TODO: What happens if it's not found?
+      if(root != -1)
       {
         roots.insert(root);
       }
