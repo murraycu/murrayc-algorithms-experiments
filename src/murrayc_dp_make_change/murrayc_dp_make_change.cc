@@ -112,13 +112,12 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
     calc_optimal_sub_problem(items,
       item_number - 1, needed_value,
       sub_problems,
-      level);
-
-  indent(level);
+      level));
 
 /*
   if(item_value == needed_value)
   {
+    indent(level);
     std::cout << "Taking item_value." << std::endl;
     result = SubSolution(COIN_COUNT_ONE);
     result.solution.emplace_back(item_value);
@@ -155,7 +154,7 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
     if(case_use_this_item.coin_count_used < case_dont_use_this_item.coin_count_used)
     {
       indent(level);
-      std::cout << "Taking case_use_this_item because it is smaller." << std::endl;
+      std::cout << "Taking case_use_this_item because it is smaller: " << case_use_this_item.coin_count_used << std::endl;
 
       result = case_use_this_item;
       result.solution.emplace_back(item_value);
@@ -163,7 +162,7 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
     else
     {
       indent(level);
-      std::cout << "Taking case_dont_use_this_item because it is smaller." << std::endl;
+      std::cout << "Taking case_dont_use_this_item because it is smaller:" << case_dont_use_this_item.coin_count_used << std::endl;
 
       result = case_dont_use_this_item;
     }
