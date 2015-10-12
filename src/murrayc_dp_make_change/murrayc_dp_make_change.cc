@@ -93,26 +93,22 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
     return result;
   }
 
-  if(item_number == 0)
+  if(item_number < 1)
   {
-    //The Knapsack problem would use 0 here, to match its check for a maximum
-    //when comparing case 1 and case 2.
-    //But we check for a minimum instead, so we use infinity here instead.
-    SubSolution result(COIN_COUNT_INFINITY);
-
-    //Cache it:
-    map[needed_value] = result;
-
-    indent(level);
-    std::cout << "(item 0) result.coin_count_used=" << result.coin_count_used << std::endl;
-
-    return result;
+    std::cerr << "Unexpected item_number=0" << std::endl;
+    return SubSolution();
   }
 
   SubSolution result;
 
   //Otherwise calculate it:
-  const auto case_dont_use_this_item =
+  //
+  //The Knapsack problem would use 0 here, to match its check for a maximum
+  //when comparing case 1 and case 2.
+  //But we check for a minimum instead, so we use infinity here instead.
+  auto case_dont_use_this_item =
+    (item_number == 1 ?
+    SubSolution(COIN_COUNT_INFINITY) :
     calc_optimal_sub_problem(items,
       item_number - 1, needed_value,
       sub_problems,
@@ -120,12 +116,14 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
 
   indent(level);
 
+/*
   if(item_value == needed_value)
   {
     std::cout << "Taking item_value." << std::endl;
     result = SubSolution(COIN_COUNT_ONE);
     result.solution.emplace_back(item_value);
   }
+*/
   if(item_value > needed_value)
   {
     indent(level);
@@ -134,12 +132,18 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
   }
   else
   {
-    auto case_use_this_item =
-      calc_optimal_sub_problem(items,
+    //The Knapsack problem would use 0 here, to match its check for a maximum
+    //when comparing case 1 and case 2.
+    //But we check for a minimum instead, so we use infinity here instead.
+    SubSolution case_use_this_item(COIN_COUNT_INFINITY);
+    if(item_number != 1)
+    {
+      case_use_this_item = calc_optimal_sub_problem(items,
         item_number - 1, needed_value - item_value,
         sub_problems,
         level);
-    case_use_this_item.coin_count_used += COIN_COUNT_ONE;
+      case_use_this_item.coin_count_used += COIN_COUNT_ONE;
+    }
 
     indent(level);
     std::cout << "case_use_this_item=" << case_use_this_item.coin_count_used << 
