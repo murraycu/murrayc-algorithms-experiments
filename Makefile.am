@@ -14,7 +14,8 @@ AM_CXXFLAGS = $(PROJECT_WXXFLAGS)
 
 bin_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
-  murrayc_greedy_make_change
+  murrayc_greedy_make_change \
+  murrayc_dp_make_change
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
@@ -30,3 +31,11 @@ murrayc_greedy_make_change_CXXFLAGS = \
 	$(PROJECT_CFLAGS)
 murrayc_greedy_make_change_LDADD = \
 	$(PROJECT_LIBS)
+
+murrayc_dp_make_change_SOURCES = \
+	src/murrayc_dp_make_change/murrayc_dp_make_change.cc
+murrayc_dp_make_change_CXXFLAGS = \
+	$(PROJECT_CFLAGS)
+murrayc_dp_make_change_LDADD = \
+	$(PROJECT_LIBS)
+
