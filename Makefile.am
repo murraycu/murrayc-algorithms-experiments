@@ -26,7 +26,7 @@ murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
 
 murrayc_greedy_make_change_SOURCES = \
 	src/murrayc_greedy_make_change/murrayc_greedy_make_change.cc
-murrayc_greedy_make_change__CXXFLAGS = \
+murrayc_greedy_make_change_CXXFLAGS = \
 	$(PROJECT_CFLAGS)
-murrayc_greedy_make_change__LDADD = \
+murrayc_greedy_make_change_LDADD = \
 	$(PROJECT_LIBS)
