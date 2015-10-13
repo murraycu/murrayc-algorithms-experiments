@@ -186,7 +186,7 @@ int first_pass(const guchar* pixels, int pixels_size, int width, int rowstride, 
 }
 
 template <typename DistinctSets>
-void second_pass(int width, int height, int labels_count, DistinctSets& ds)
+void second_pass(int labels_count, DistinctSets& ds)
 {
   std::cout << "second_pass():" << std::endl;
   std::set<int> roots;
@@ -253,7 +253,7 @@ int main(int argc, char** argv)
   pixels_labelled.resize(pos_count);
   const auto labels_count = first_pass(pixels, pixels_size, width, rowstride, n_channels, pixels_labelled, ds);
 
-  second_pass(width, height, labels_count, ds);
+  second_pass(labels_count, ds);
 
   return EXIT_SUCCESS;
 }
