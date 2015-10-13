@@ -26,14 +26,14 @@ murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_greedy_make_change_SOURCES = \
-	src/murrayc_greedy_make_change/murrayc_greedy_make_change.cc
+	src/greedy_make_change/murrayc_greedy_make_change.cc
 murrayc_greedy_make_change_CXXFLAGS = \
 	$(PROJECT_CFLAGS)
 murrayc_greedy_make_change_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dp_make_change_SOURCES = \
-	src/murrayc_dp_make_change/murrayc_dp_make_change.cc
+	src/dp_make_change/murrayc_dp_make_change.cc
 murrayc_dp_make_change_CXXFLAGS = \
 	$(PROJECT_CFLAGS)
 murrayc_dp_make_change_LDADD = \
