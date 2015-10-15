@@ -222,45 +222,32 @@ int main()
   type_sub_problems sub_problems(needed_value + 1);
   const auto solution = calc_optimal_sub_problem(coins, items_count, needed_value,
     sub_problems, 0);
-  std::cout << "solution: coins count: " << solution.coin_count_used << std::endl <<
-    "with solution: ";
-  print_vec(solution.solution);
-  std::cout << std::endl;
- 
-  if(false) //solution.value > needed_value)
+  if(solution.coin_count_used != COIN_COUNT_INFINITY)
   {
-    std::cout << "Cannot make the needed value: " << needed_value << std::endl << std::endl;;
-
-    /*
-    for(type_value lesser_value = needed_value - 1; lesser_value > 0; --lesser_value)
-    {
-      std::cout << "Trying: " << lesser_value << std::endl;
-      const auto lesser_value_reached =
-        calc_optimal_sub_problem(coins, lesser_value ,
-         sub_problems, sub_problems_solutions);
-      if(lesser_value_reached == lesser_value)
-      {
-        std::cout << "lesser value_reached: " << value_reached << std::endl <<
-          "with solution: ";
-        print_vec(sub_problems_solutions[item_number][lesser_value_reached]);
-        std::cout << std::endl;
-      }
-    }
-    */
-
-/*
-    std::cout << "Coins attempted: ";
-    print_vec(coins_used);
+    std::cout << "solution: coins count: " << solution.coin_count_used << std::endl <<
+      "with solution: ";
+    print_vec(solution.solution);
     std::cout << std::endl;
-*/
+
+    return EXIT_SUCCESS;
   }
-  else
+
+  std::cout << "Cannot make the needed value: " << needed_value << std::endl << std::endl;;
+
+  for(type_value lesser_value = needed_value - 1; lesser_value > 0; --lesser_value)
   {
-    /*
-    std::cout << "Coins used for needed value: " << needed_value << ": ";
-    print_vec(coins_used);
-    std::cout << std::endl;
-    */
+    std::cout << "Trying: " << lesser_value << std::endl;
+    const auto solution_lesser =
+      calc_optimal_sub_problem(coins, items_count, lesser_value ,
+       sub_problems, 0);
+    if(solution_lesser.coin_count_used != COIN_COUNT_INFINITY)
+    {
+      std::cout << "lesser value_reached: " << lesser_value << std::endl <<
+        "with solution: ";
+      print_vec(solution_lesser.solution);
+      std::cout << std::endl;
+      break;
+    }
   }
 
   return EXIT_SUCCESS;
