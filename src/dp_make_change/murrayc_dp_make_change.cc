@@ -196,6 +196,11 @@ int main()
 
   const type_value needed_value = 117;
 
+  std::cout << "Problem: needed value: " << needed_value << std::endl <<
+    "with coins: ";
+  print_vec(coins);
+  std::cout << std::endl;
+
   //Use a dynamic programming (optimal sub structure) algorithm,
   //because a greedy algorithm would only work with a "canonical" coin system:
   //http://cs.stackexchange.com/a/6625/40929
