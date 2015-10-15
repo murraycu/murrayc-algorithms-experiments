@@ -12,6 +12,7 @@ typedef unsigned int type_value;
 
 typedef std::vector<type_value> type_vec_coins;
 
+/*
 static
 void indent(int level)
 {
@@ -20,6 +21,7 @@ void indent(int level)
     std::cout << "  ";
   }
 }
+*/
 
 template<typename T>
 void print_vec(const std::vector<T>& vec)
@@ -70,9 +72,9 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
 
   const auto& item_value = items[item_number - 1];
 
-  indent(level);
-  std::cout << "calc_optimal_sub_problem(): item_number=" << item_number <<
-    ", item value=" << item_value << ", needed_value=" << needed_value << std::endl;
+  //indent(level);
+  //std::cout << "calc_optimal_sub_problem(): item_number=" << item_number <<
+  //  ", item value=" << item_value << ", needed_value=" << needed_value << std::endl;
 
   if(needed_value == 0)
   {
@@ -87,8 +89,8 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
   {
     auto& result = iter->second;
 
-    indent(level);
-    std::cout << "(cached) result.coin_count_used=" << result.coin_count_used << std::endl;
+    //indent(level);
+    //std::cout << "(cached) result.coin_count_used=" << result.coin_count_used << std::endl;
 
     return result;
   }
@@ -125,8 +127,8 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
 */
   if(item_value > needed_value)
   {
-    indent(level);
-    std::cout << "Taking case_dont_use_this_item because item_value too big." << std::endl;
+    //indent(level);
+    //std::cout << "Taking case_dont_use_this_item because item_value too big." << std::endl;
     result = case_dont_use_this_item;
   }
   else
@@ -144,25 +146,25 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
       case_use_this_item.coin_count_used += COIN_COUNT_ONE;
     }
 
-    indent(level);
-    std::cout << "case_use_this_item=" << case_use_this_item.coin_count_used << 
-        ", case_dont_use_this_item=" << case_dont_use_this_item.coin_count_used << std::endl;
+    //indent(level);
+    //std::cout << "case_use_this_item=" << case_use_this_item.coin_count_used << 
+    //    ", case_dont_use_this_item=" << case_dont_use_this_item.coin_count_used << std::endl;
 
     //We check for a minimum here, to minimize coins count.
     //The normal knapsack problem would need us to check for a maximum instead,
     //to maximize value.
     if(case_use_this_item.coin_count_used < case_dont_use_this_item.coin_count_used)
     {
-      indent(level);
-      std::cout << "Taking case_use_this_item because it is smaller: " << case_use_this_item.coin_count_used << std::endl;
+      //indent(level);
+      //std::cout << "Taking case_use_this_item because it is smaller: " << case_use_this_item.coin_count_used << std::endl;
 
       result = case_use_this_item;
       result.solution.emplace_back(item_value);
     }
     else
     {
-      indent(level);
-      std::cout << "Taking case_dont_use_this_item because it is smaller:" << case_dont_use_this_item.coin_count_used << std::endl;
+      //indent(level);
+      //std::cout << "Taking case_dont_use_this_item because it is smaller:" << case_dont_use_this_item.coin_count_used << std::endl;
 
       result = case_dont_use_this_item;
     }
@@ -172,8 +174,8 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
   //Cache it:
   map[needed_value] = result;
 
-  indent(level);
-  std::cout << "result.coin_count_used=" << result.coin_count_used << std::endl;
+  //indent(level);
+  //std::cout << "result.coin_count_used=" << result.coin_count_used << std::endl;
 
   return result;
 }
