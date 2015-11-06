@@ -122,7 +122,8 @@ DependencyResolution::type_children DependencyResolution::get_children(const Id&
 }
 
 void DependencyResolution::process_edge(const Id& /* parent_id */, const Id& id) {
-
+  //We have already discovered the node but not yet processed it.
+  //This can only happen if we have looped back around behind ourself.
   if(is_discovered(id) && !is_processed(id)) {
     std::cout << "Circular dependency: " << id << std::endl;
     finish_ = true;
