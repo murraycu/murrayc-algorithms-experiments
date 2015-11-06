@@ -166,6 +166,7 @@ void DependencyResolution::dfs(const Id& id) {
   //std::cout << "dfs: " << id << std::endl;
 
   set_discovered(id);
+  process_node_pre(id);
 
   for(const auto& dependency : get_children(id)) {
     //std::cout << "dependency: " << dependency << std::endl;
@@ -184,6 +185,7 @@ void DependencyResolution::dfs(const Id& id) {
   }
 
   set_processed(id);
+  process_node_post(id);
 }
 
 int main()
