@@ -64,22 +64,17 @@ private:
 
   type_packages packages_;
 
-  type_package_names discovered_;
-  type_package_names processed_;
-
   int sequence_;
-  std::unordered_map<std::string, int> discovered_sequence_;
-  std::unordered_map<std::string, int> processed_sequence_;
+  std::unordered_map<std::string, int> discovered_;
+  std::unordered_map<std::string, int> processed_;
   bool finish_;
 };
 
 void DependencyResolution::clear()
 {
   sequence_ = 0;
-  discovered_sequence_.clear();
-  processed_sequence_.clear();
-
   discovered_.clear();
+  processed_.clear();
 
   finish_ = false;
 }
@@ -99,13 +94,13 @@ std::vector<std::string> DependencyResolution::get_build_sequence(
 */
 
   std::vector<std::string> result;
-  for(const auto& the_pair : processed_sequence_) {
+  for(const auto& the_pair : processed_) {
     result.emplace_back(the_pair.first);
   }
   std::sort(result.begin(), result.end(),
    [this] (const std::string& a, const std::string& b)
    {
-     return processed_sequence_[a] < processed_sequence_[b];
+     return processed_[a] < processed_[b];
    });
 
   return result;
@@ -129,28 +124,26 @@ bool DependencyResolution::is_processed(const std::string& package_name) const {
 
 void DependencyResolution::set_discovered(const std::string& package_name) {
   //std::cout << "set_discovered(): " << package_name << std::endl;
-  discovered_.emplace(package_name);
 
   //Store the entry time:
-  discovered_sequence_[package_name] = sequence_;
-  sequence_++;
+  discovered_.emplace(package_name, sequence_);
+  ++sequence_;
 }
 
 void DependencyResolution::set_processed(const std::string& package_name) {
   //std::cout << "set_processed(): " << package_name << std::endl;
-  processed_.emplace(package_name);
 
   //Store the exit time:
-  processed_sequence_[package_name] = sequence_;
-  sequence_++;
+  processed_.emplace(package_name, sequence_);
+  ++sequence_;
 }
 
 void DependencyResolution::process_node_pre(const std::string& /* package_name */) {
 }
 
-void DependencyResolution::process_node_post(const std::string& package_name) {
+void DependencyResolution::process_node_post(const std::string& /* package_name */) {
   //std::cout << "package: " << package_name << std::endl;
-  processed_.emplace(package_name);
+  //processed_.emplace(package_name);
 }
 
 void DependencyResolution::dfs(const std::string& package_name) {
