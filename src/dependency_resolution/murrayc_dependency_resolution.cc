@@ -52,6 +52,9 @@ private:
 
   void clear();
 
+  typedef std::unordered_set<Id> type_children;
+  type_children get_children(const Id& package_name);
+
   //These could be pure virtual methods in a generic DFS base class:
   void process_node_pre(const Id& package_name);
   void process_edge(const Id& parent_package_name, const Id& package_name);
@@ -107,6 +110,17 @@ std::vector<DependencyResolution::Id> DependencyResolution::get_build_sequence(
   return result;
 }
 
+DependencyResolution::type_children DependencyResolution::get_children(const Id& package_name) {
+  const auto iter = packages_.find(package_name);
+  if(iter == packages_.end()) {
+    std::cout << "Unlisted dependency: " << package_name << std::endl;
+    finish_ = true;
+    return type_children();
+  }
+
+  return iter->second;
+}
+
 void DependencyResolution::process_edge(const Id& /* parent_package_name */, const Id& package_name) {
 
   if(is_discovered(package_name) && !is_processed(package_name)) {
@@ -152,17 +166,7 @@ void DependencyResolution::dfs(const Id& package_name) {
 
   set_discovered(package_name);
 
-  //Get the dependencies for the package:
-  const auto iter_package = packages_.find(package_name);
-  if(iter_package == packages_.end()) {
-    std::cout << "Unlisted dependency: " << package_name << std::endl;
-    finish_ = true;
-    return;
-  }
-
-  const auto& dependency_names = iter_package->second;
-
-  for(const auto& dependency : dependency_names) {
+  for(const auto& dependency : get_children(package_name)) {
     //std::cout << "dependency: " << dependency << std::endl;
     if(!is_discovered(dependency)) {
       process_edge(package_name, dependency);
