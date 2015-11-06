@@ -66,7 +66,7 @@ private:
   void set_discovered(const Id& package_name);
   void set_processed(const Id& package_name);
 
-  type_packages packages_;
+  const type_packages packages_;
 
   int sequence_;
   std::unordered_map<Id, int> discovered_;
