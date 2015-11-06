@@ -18,7 +18,8 @@ COMMON_CXXFLAGS = $(PROJECT_CFLAGS) $(PROJECT_WXXFLAGS)
 bin_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
   murrayc_greedy_make_change \
-  murrayc_dp_make_change
+  murrayc_dp_make_change \
+  murrayc_dependency_resolution
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
@@ -41,4 +42,12 @@ murrayc_dp_make_change_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_make_change_LDADD = \
 	$(PROJECT_LIBS)
+
+murrayc_dependency_resolution_SOURCES = \
+	src/dependency_resolution/murrayc_dependency_resolution.cc
+murrayc_dependency_resolution_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_dependency_resolution_LDADD = \
+	$(PROJECT_LIBS)
+
 
