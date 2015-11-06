@@ -33,10 +33,11 @@ class DependencyResolution
 {
 public:
 
-  typedef std::unordered_set<std::string> type_package_names; //package names
+  typedef std::string Id;
+  typedef std::unordered_set<Id> type_package_names; //package names
 
   // Map of package names to their dependencies:
-  typedef std::unordered_map<std::string, type_package_names> type_packages;
+  typedef std::unordered_map<Id, type_package_names> type_packages;
 
   explicit DependencyResolution(const type_packages& packages)
   : packages_(packages),
@@ -44,29 +45,29 @@ public:
     finish_(false)
   {}
 
-  std::vector<std::string> get_build_sequence(const std::string& package_to_build);
+  std::vector<Id> get_build_sequence(const Id& package_to_build);
 
 private:
-  void dfs(const std::string& package_name);
+  void dfs(const Id& package_name);
 
   void clear();
 
   //These could be pure virtual methods in a generic DFS base class:
-  void process_node_pre(const std::string& package_name);
-  void process_edge(const std::string& parent_package_name, const std::string& package_name);
-  void process_node_post(const std::string& package_name);
+  void process_node_pre(const Id& package_name);
+  void process_edge(const Id& parent_package_name, const Id& package_name);
+  void process_node_post(const Id& package_name);
 
-  bool is_discovered(const std::string& package_name) const;
-  bool is_processed(const std::string& package_name) const;
+  bool is_discovered(const Id& package_name) const;
+  bool is_processed(const Id& package_name) const;
 
-  void set_discovered(const std::string& package_name);
-  void set_processed(const std::string& package_name);
+  void set_discovered(const Id& package_name);
+  void set_processed(const Id& package_name);
 
   type_packages packages_;
 
   int sequence_;
-  std::unordered_map<std::string, int> discovered_;
-  std::unordered_map<std::string, int> processed_;
+  std::unordered_map<Id, int> discovered_;
+  std::unordered_map<Id, int> processed_;
   bool finish_;
 };
 
@@ -79,8 +80,8 @@ void DependencyResolution::clear()
   finish_ = false;
 }
 
-std::vector<std::string> DependencyResolution::get_build_sequence(
-  const std::string& package_to_build) {
+std::vector<DependencyResolution::Id> DependencyResolution::get_build_sequence(
+  const Id& package_to_build) {
 
   clear();
 
@@ -93,12 +94,12 @@ std::vector<std::string> DependencyResolution::get_build_sequence(
   }
 */
 
-  std::vector<std::string> result;
+  std::vector<Id> result;
   for(const auto& the_pair : processed_) {
     result.emplace_back(the_pair.first);
   }
   std::sort(result.begin(), result.end(),
-   [this] (const std::string& a, const std::string& b)
+   [this] (const Id& a, const Id& b)
    {
      return processed_[a] < processed_[b];
    });
@@ -106,7 +107,7 @@ std::vector<std::string> DependencyResolution::get_build_sequence(
   return result;
 }
 
-void DependencyResolution::process_edge(const std::string& /* parent_package_name */, const std::string& package_name) {
+void DependencyResolution::process_edge(const Id& /* parent_package_name */, const Id& package_name) {
 
   if(is_discovered(package_name) && !is_processed(package_name)) {
     std::cout << "Circular dependency: " << package_name << std::endl;
@@ -114,15 +115,15 @@ void DependencyResolution::process_edge(const std::string& /* parent_package_nam
   }
 }
 
-bool DependencyResolution::is_discovered(const std::string& package_name) const {
+bool DependencyResolution::is_discovered(const Id& package_name) const {
   return discovered_.count(package_name);
 }
 
-bool DependencyResolution::is_processed(const std::string& package_name) const {
+bool DependencyResolution::is_processed(const Id& package_name) const {
   return processed_.count(package_name);
 }
 
-void DependencyResolution::set_discovered(const std::string& package_name) {
+void DependencyResolution::set_discovered(const Id& package_name) {
   //std::cout << "set_discovered(): " << package_name << std::endl;
 
   //Store the entry time:
@@ -130,7 +131,7 @@ void DependencyResolution::set_discovered(const std::string& package_name) {
   ++sequence_;
 }
 
-void DependencyResolution::set_processed(const std::string& package_name) {
+void DependencyResolution::set_processed(const Id& package_name) {
   //std::cout << "set_processed(): " << package_name << std::endl;
 
   //Store the exit time:
@@ -138,15 +139,15 @@ void DependencyResolution::set_processed(const std::string& package_name) {
   ++sequence_;
 }
 
-void DependencyResolution::process_node_pre(const std::string& /* package_name */) {
+void DependencyResolution::process_node_pre(const Id& /* package_name */) {
 }
 
-void DependencyResolution::process_node_post(const std::string& /* package_name */) {
+void DependencyResolution::process_node_post(const Id& /* package_name */) {
   //std::cout << "package: " << package_name << std::endl;
   //processed_.emplace(package_name);
 }
 
-void DependencyResolution::dfs(const std::string& package_name) {
+void DependencyResolution::dfs(const Id& package_name) {
   //std::cout << "dfs: " << package_name << std::endl;
 
   set_discovered(package_name);
