@@ -12,6 +12,7 @@
 .dirstamp
 .libs
 stamp-h1
+stamp-h2
 /INSTALL
 /compile
 /configure.lineno
