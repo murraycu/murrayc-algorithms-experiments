@@ -20,7 +20,8 @@ bin_PROGRAMS = \
   murrayc_greedy_make_change \
   murrayc_dp_make_change \
   murrayc_dependency_resolution \
-  murrayc_quickselect
+  murrayc_quickselect \
+  murrayc_subset_iteration
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
@@ -57,6 +58,14 @@ murrayc_quickselect_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_quickselect_LDADD = \
 	$(PROJECT_LIBS)
+
+murrayc_subset_iteration_SOURCES = \
+	src/subset_iteration/murrayc_subset_iteration.cc
+murrayc_subset_iteration_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_subset_iteration_LDADD = \
+	$(PROJECT_LIBS)
+
 
 
 
