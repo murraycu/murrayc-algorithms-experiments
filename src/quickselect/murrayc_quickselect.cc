@@ -7,7 +7,8 @@ typedef Container::value_type Element;
 
 int choose_pivot(Container& elements, int low, int high)
 {
-  std::swap(elements[low], elements[high]);
+  const int pos = low + (std::rand() % (high - low));
+  std::swap(elements[low], elements[pos]);
   return low;
 }
 
@@ -45,8 +46,8 @@ int partition(Container& elements, int low, int high) {
   return j;
 }
 
-void quicksort(Container& elements, int low, int high) {
-  std::cout << std::endl << "quicksort(): low=" << low << ", high=" << high << std::endl << std::endl;
+Element get_kth_element(Container& elements, int k, int low, int high) {
+  //std::cout << std::endl << "get_kth_element(): low=" << low << ", high=" << high << std::endl << std::endl;
   //std::cout << "debug before: " << elements.substr(low, high - low + 1) << std::endl;
 
   const int p = partition(elements, low, high);
@@ -54,22 +55,31 @@ void quicksort(Container& elements, int low, int high) {
   //std::cout << "debug after: " << elements.substr(low, high - low + 1) << std::endl;
 
   if (p < 0)
-    return; //Not found.
+    return Element(); //Not found.
 
   if (p > high)
-    return; //Not found.
+    return Element(); //Not found.
   
-  quicksort(elements, low, p - 1);
-  quicksort(elements, p + 1, high);
+  if (k == p)
+    return elements[p];
+
+  if (k < p)
+    return get_kth_element(elements, k, low, p - 1);
+  else 
+    return get_kth_element(elements, k, p + 1, high);
 }
 
-void quicksort(Container& elements) {
-  const auto size = elements.size();
+Element get_kth_element(Container& elements, int k) {
+  const int size = elements.size();
   if (size == 0) {
-    return;
+    return Element();
   }
 
-  quicksort(elements, 0, elements.size() - 1);
+  if (k >= size) {
+    return Element();
+  }
+
+  return get_kth_element(elements, k, 0, elements.size() - 1);
 }
 
 int main() {
@@ -77,8 +87,9 @@ int main() {
 
   std::cout << "start: " << str << std::endl;
 
-  //const int k = 2; //0-indexed
-  quicksort(str);
-  std::cout << "sortd: " << str << std::endl;
+  const int k = 2; //0-indexed
+  const Element kth = get_kth_element(str, k);
+  std::cout << "k=" << k << ", kth element: " << kth << std::endl;
+  std::cout << "semi-sorted: " << str << std::endl;
   return EXIT_SUCCESS;
 }
