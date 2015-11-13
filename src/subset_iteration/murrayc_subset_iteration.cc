@@ -50,6 +50,7 @@ public:
    */
   bool next() {
     //A mask with all n bits unset: (1 bit unset for each possible item)
+    //A single high bit would do, but this seems even more robust.
     const Byte bits_past_max = ~ ((0x01 << n_) -1); //For instance, ...111111100 for 2.
 
     //Gosper's Hack:
