@@ -4,7 +4,7 @@
 #include <vector>
 
 using uint = unsigned int;
-using type_costs = std::vector<std::vector<uint>> ;
+using type_costs = std::vector<uint>;
 
 enum class operations {
   MATCH,
@@ -28,25 +28,33 @@ uint dp_calc_edit_distance(const std::string& str, const std::string& pattern) {
   const auto str_size = str.size();
   const auto pattern_size = pattern.size();
   
-  type_costs costs(str_size);
-  for(auto& sub : costs) {
-    sub.resize(pattern_size, 0);
-  }
+  //We switch between a and b:
+  type_costs a(pattern_size, 0);
+  type_costs b(pattern_size, 0);
+  bool a_is_first = false; //arbitrary.
 
   for (uint i = 1; i < str_size; ++i) {
+    a_is_first = !a_is_first;
+    type_costs& costs_i = (a_is_first ? a : b);
+    const type_costs& costs_i_minus_1 = (a_is_first ? b : a);
+
     for (uint j = 1; j < pattern_size; ++j) {
       //Get the cost of the possible operations, and choose the least costly:
-      const uint cost_match = costs[i-1][j-1] + match(str[i], pattern[j]);
-      const uint cost_insert = costs[i][j-1] + indel(pattern[j]);
-      const uint cost_delete = costs[i-1][j] + indel(str[j]);
+      const uint cost_match = costs_i_minus_1[j - 1] + match(str[i], pattern[j]);
+      const uint cost_insert = costs_i[j - 1] + indel(pattern[j]);
+      const uint cost_delete = costs_i_minus_1[j] + indel(str[j]);
       
       auto min = std::min(cost_match, cost_insert);
       min = std::min(min, cost_delete);
-      costs[i][j] = min;
+      costs_i[j] = min;
     }
+
+    //costs_i will then be read as costs_i_minus_1;
+    //and costs_i_minus_1 will be filled as costs_i;
   }
   
-  return costs[str_size-1][pattern_size-1];
+  type_costs& costs_i = (a_is_first ? a : b);
+  return costs_i[pattern_size-1];
 }
 
 int main() {
