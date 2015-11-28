@@ -21,7 +21,8 @@ bin_PROGRAMS = \
   murrayc_dp_make_change \
   murrayc_dependency_resolution \
   murrayc_quickselect \
-  murrayc_subset_iteration
+  murrayc_subset_iteration \
+  murrayc_dp_string_edit_distance
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
@@ -66,6 +67,9 @@ murrayc_subset_iteration_CXXFLAGS = \
 murrayc_subset_iteration_LDADD = \
 	$(PROJECT_LIBS)
 
-
-
-
+murrayc_dp_string_edit_distance_SOURCES = \
+	src/dp_string_edit_distance/murrayc_dp_string_edit_distance.cc
+murrayc_dp_string_edit_distance_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_dp_string_edit_distance_LDADD = \
+	$(PROJECT_LIBS)
