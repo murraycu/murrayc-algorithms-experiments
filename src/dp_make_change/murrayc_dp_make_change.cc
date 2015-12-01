@@ -116,16 +116,14 @@ calc_optimal_sub_problem(const type_vec_coins& items, type_size item_number,
       sub_problems,
       level));
 
-/*
   if(item_value == needed_value)
   {
-    indent(level);
-    std::cout << "Taking item_value." << std::endl;
+    //indent(level);
+    //std::cout << "Taking item_value." << std::endl;
     result = SubSolution(COIN_COUNT_ONE);
     result.solution.emplace_back(item_value);
   }
-*/
-  if(item_value > needed_value)
+  else if(item_value > needed_value)
   {
     //indent(level);
     //std::cout << "Taking case_dont_use_this_item because item_value too big." << std::endl;
