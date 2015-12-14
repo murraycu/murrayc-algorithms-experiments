@@ -123,7 +123,7 @@ public:
    *
    * @param set The whole set. This should of size n, as passed to create().
    */
-  type_container get_subset(const type_container& set) {
+  type_container get_subset(const type_container& set) const {
     type_container result;
 
     //Use item i from the set if bit i is set in bits_:
