@@ -61,7 +61,8 @@ murrayc_quickselect_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_subset_iteration_SOURCES = \
-	src/subset_iteration/murrayc_subset_iteration.cc
+	src/subset_iteration/murrayc_subset_iteration.cc \
+	src/subset_iteration/subset_iterator.h
 murrayc_subset_iteration_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_subset_iteration_LDADD = \
