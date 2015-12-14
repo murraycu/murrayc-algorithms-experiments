@@ -20,14 +20,13 @@ int main() {
   print_vec(set);
   std::cout << std::endl;
 
-  auto iter = SubsetIterator<type_vec>::create(set.size(), 3);
-  do {
+  for(auto iter = SubsetIterator<type_vec>::create(set.size(), 3);
+    iter != SubsetIterator<type_vec>::end(); ++iter) {
     const auto subset = iter.get_subset(set);
     std::cout << "Subset: ";
     print_vec(subset);
     std::cout << std::endl;
-
-  } while(iter.next());
+  }
 
   return EXIT_SUCCESS;
 }

@@ -32,8 +32,15 @@ public:
 
   SubsetIterator()
   : bits_(0),
-    n_(0)
+    n_(0),
+    end_(false)
   {}
+
+  SubsetIterator(const SubsetIterator& src) = default;
+  SubsetIterator& operator=(const SubsetIterator& src) = default;
+
+  SubsetIterator(SubsetIterator&& src) = default;
+  SubsetIterator& operator=(SubsetIterator&& src) = default;
 
   /** create an "n choose k" iterator.
    *
@@ -55,6 +62,27 @@ public:
     std::cout << std::bitset<16>(iter.bits_) << std::endl;
 
     return iter;
+  }
+
+  static SubsetIterator end() {
+    SubsetIterator iter;
+    iter.end_ = true;
+    return iter;
+  }
+
+  SubsetIterator& operator++() {
+    next();
+    return *this;
+  }
+
+  bool operator==(const SubsetIterator& src) {
+    return (end_ == src.end_) &&
+      (bits_ == src.bits_) &&
+      (n_ == src.n_);
+  }
+
+  bool operator!=(const SubsetIterator& src) {
+    return !operator==(src);
   }
 
   /** Change the iterator to indicate the next subset.
@@ -80,7 +108,10 @@ public:
     //We then return an empty result.
     if((bits_ & bits_past_max))
     {
+      //std::cout << "setting end_" << std::endl;
+      end_ = true;
       bits_ = 0;
+      n_ = 0;
       return bits_;
     }
 
@@ -112,6 +143,7 @@ private:
   typedef unsigned char Byte;
   Byte bits_;
   type_size n_;
+  bool end_;
 };
 
 #endif //__MURRAYC_SUBSET_ITERATOR_H
