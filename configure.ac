@@ -16,7 +16,7 @@ AC_PROG_CXX
 
 AX_CXX_COMPILE_STDCXX_11([noext],[mandatory])
 
-
+# We use gdkmm to use Gdk::Pixbuf to examine images.
 PKG_CHECK_MODULES([PROJECT], [gdkmm-3.0])
 
 # See http://www.gnu.org/software/autoconf-archive/ax_boost_base.html
