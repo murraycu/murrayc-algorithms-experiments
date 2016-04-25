@@ -40,14 +40,14 @@ murrayc_greedy_make_change_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dp_make_change_SOURCES = \
-	src/dp_make_change/murrayc_dp_make_change.cc
+	src/dynamic_programming/dp_make_change/murrayc_dp_make_change.cc
 murrayc_dp_make_change_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_make_change_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dependency_resolution_SOURCES = \
-	src/dependency_resolution/murrayc_dependency_resolution.cc
+	src/graphs/dependency_resolution/murrayc_dependency_resolution.cc
 murrayc_dependency_resolution_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dependency_resolution_LDADD = \
@@ -69,7 +69,7 @@ murrayc_subset_iteration_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dp_string_edit_distance_SOURCES = \
-	src/dp_string_edit_distance/murrayc_dp_string_edit_distance.cc
+	src/dynamic_programming/dp_string_edit_distance/murrayc_dp_string_edit_distance.cc
 murrayc_dp_string_edit_distance_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_string_edit_distance_LDADD = \
