@@ -1,5 +1,6 @@
-#include <utils/edge.h>
+#include "utils/edge.h"
 #include "utils/vertex.h"
+#include "utils/shortest_path.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
@@ -117,7 +118,8 @@ void bellman_ford_single_iteration(const type_vec_nodes& vertices,
 /** Get all the shortests paths from s to all other paths:
  */
 static
-type_shortest_paths bellman_ford_single_source_shortest_path(const type_vec_nodes& vertices, type_num s, bool& has_negative_cycles)
+std::vector<ShortestPath>
+bellman_ford_single_source_shortest_path(const type_vec_nodes& vertices, type_num s, bool& has_negative_cycles)
 {
   //Initialize output variable:
   has_negative_cycles = false;
@@ -182,7 +184,11 @@ type_shortest_paths bellman_ford_single_source_shortest_path(const type_vec_node
     has_negative_cycles = true;
   }
 
-  return shortest_paths_i;
+  std::vector<ShortestPath> result;
+  for (const auto& length : shortest_paths_i) {
+    result.emplace_back(ShortestPath(length, ""));
+  }
+  return result;
 }
 
 
@@ -206,8 +212,8 @@ int main()
   {
     const auto shortest_path = shortest_paths[dest_vertex_num];
     std::cout << "shortest path from " << start_vertex << " to " << dest_vertex_num
-      << ": " << shortest_path << std::endl; //.length_
-      //<< ", path: " << shortest_path.path_ << std::endl;
+      << ": " << shortest_path.length_
+      << ", path: " << shortest_path.path_ << std::endl;
   }
 
   return EXIT_SUCCESS;

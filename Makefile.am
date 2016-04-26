@@ -51,7 +51,8 @@ murrayc_dp_make_change_LDADD = \
 
 graphs_utils_sources =  \
 	src/graphs/utils/edge.h \
-	src/graphs/utils/vertex.h
+	src/graphs/utils/vertex.h \
+	src/graphs/utils/shortest_path.h
 
 graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
 

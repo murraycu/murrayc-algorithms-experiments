@@ -1,5 +1,6 @@
-#include <utils/edge.h>
+#include "utils/edge.h"
 #include "utils/vertex.h"
+#include "utils/shortest_path.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
@@ -33,28 +34,6 @@ public:
   type_num vertex_;
   type_length total_length_;
   type_num predecessor_;
-};
-
-/**
- * Just a way to return both the length and the path.
- * We could instead use a std::pair or std::tuple.
- */
-class ShortestPath
-{
-public:
-  ShortestPath(type_length length, const std::string& path)
-  : length_(length),
-    path_(path)
-  {}
-
-  ShortestPath(const ShortestPath& src) = delete;
-  ShortestPath& operator=(const ShortestPath& src) = delete;
-
-  ShortestPath(ShortestPath&& src) = default;
-  ShortestPath& operator=(ShortestPath&& src) = default;
-
-  type_length length_;
-  std::string path_;
 };
 
 static
