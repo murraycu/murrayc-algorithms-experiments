@@ -143,6 +143,12 @@ bellman_ford_single_source_shortest_path(const type_vec_nodes& vertices, type_nu
   //just swapping which one we use for i and which one for i-1,
   //to avoid copying and allocating new memory each time we want 
   //to store vector i as vector i-1 and have a new fresh vector i:
+  //
+  //Note that we could just use one single vertex,
+  //instead of always remembering the previous iteration's vertex,
+  //but this lets us compare the results to see if there was any
+  //change, allowing us to finish early if an iteration doesn't
+  //find any shorter paths.
   type_shortest_paths shortest_paths_a(vertices_count);
   type_shortest_paths shortest_paths_b(vertices_count);
 
