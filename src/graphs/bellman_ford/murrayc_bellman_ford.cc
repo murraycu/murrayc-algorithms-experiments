@@ -18,12 +18,6 @@ using type_shortest_paths = std::vector<type_length>;
 
 const type_length LENGTH_INFINITY = std::numeric_limits<type_length>::max();
 
-static
-void wipe_shortest_paths(type_shortest_paths& shortest_paths)
-{
-  std::fill(shortest_paths.begin(), shortest_paths.end(), LENGTH_INFINITY);
-}
-
 using type_map_predecessors = std::vector<type_num>;
 
 /**
@@ -112,8 +106,6 @@ void bellman_ford_single_iteration(const type_vec_nodes& vertices,
   type_num i, type_num s, type_length& shortest_path_so_far,
   type_map_predecessors& predecessors)
 {
-  wipe_shortest_paths(shortest_paths_i);
-
   const auto vertices_count = vertices.size();
   for(type_num v = 0; v < vertices_count; ++v) {
     if (v == s) {
