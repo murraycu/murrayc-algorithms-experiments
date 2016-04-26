@@ -51,12 +51,15 @@ Makefile.in
 /test-suite.log
 
 /murrayc_dp_make_change
+/murrayc_dp_string_edit_distance
 /murrayc_find_objects_in_image_with_disjoint_set
 /murrayc_greedy_make_change
 /murrayc_bellman_ford
 /murrayc_dijkstra
 /murrayc_prims
 /murrayc_dependency_resolution
+/murrayc_quickselect
+/murrayc_subset_iteration
 
 
 
