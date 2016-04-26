@@ -19,6 +19,7 @@ bin_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
   murrayc_greedy_make_change \
   murrayc_dp_make_change \
+  murrayc_dijkstra \
   murrayc_dependency_resolution \
   murrayc_quickselect \
   murrayc_subset_iteration \
@@ -44,6 +45,22 @@ murrayc_dp_make_change_SOURCES = \
 murrayc_dp_make_change_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_make_change_LDADD = \
+	$(PROJECT_LIBS)
+
+
+graphs_utils_sources =  \
+	src/graphs/utils/edge.h \
+	src/graphs/utils/vertex.h
+
+graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
+
+murrayc_dijkstra_SOURCES = \
+	src/graphs/dijkstra/murrayc_dijkstra.cc \
+	$(graphs_utils_sources)
+murrayc_dijkstra_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_dijkstra__LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dependency_resolution_SOURCES = \
