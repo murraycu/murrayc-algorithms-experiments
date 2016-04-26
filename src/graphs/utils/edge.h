@@ -7,6 +7,11 @@ public:
   using type_num = unsigned long;
   using type_length = unsigned long;
 
+  Edge()
+  : destination_vertex_(0),
+    length_(0)
+  {}
+
   Edge(type_num destination_vertex, type_length length)
   : destination_vertex_(destination_vertex),
     length_(length)

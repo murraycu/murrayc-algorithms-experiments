@@ -21,6 +21,7 @@ bin_PROGRAMS = \
   murrayc_dp_make_change \
   murrayc_bellman_ford \
   murrayc_dijkstra \
+  murrayc_prims \
   murrayc_dependency_resolution \
   murrayc_quickselect \
   murrayc_subset_iteration \
@@ -72,6 +73,15 @@ murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_dijkstra_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_prims_SOURCES = \
+	src/graphs/prims/murrayc_prims.cc \
+	$(graphs_utils_sources)
+murrayc_prims_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_prims_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dependency_resolution_SOURCES = \

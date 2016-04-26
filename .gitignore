@@ -55,6 +55,7 @@ Makefile.in
 /murrayc_greedy_make_change
 /murrayc_bellman_ford
 /murrayc_dijkstra
+/murrayc_prims
 /murrayc_dependency_resolution
 
 
