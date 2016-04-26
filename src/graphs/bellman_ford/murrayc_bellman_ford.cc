@@ -124,7 +124,9 @@ void bellman_ford_single_iteration(const type_vec_nodes& vertices,
   }
 }
 
-/** Get all the shortests paths from s to all other paths:
+/** Get all the shortests paths from s to all other paths.
+ * This will be more efficient if the caller firsts removes excess parallel edges,
+ * leaving only the lowest-cost edge between each vertex.
  */
 static
 std::vector<ShortestPath>
