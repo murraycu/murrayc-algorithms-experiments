@@ -19,6 +19,7 @@ bin_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
   murrayc_greedy_make_change \
   murrayc_dp_make_change \
+  murrayc_bellman_ford \
   murrayc_dijkstra \
   murrayc_dependency_resolution \
   murrayc_quickselect \
@@ -54,13 +55,22 @@ graphs_utils_sources =  \
 
 graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
 
+murrayc_bellman_ford_SOURCES = \
+	src/graphs/bellman_ford/murrayc_bellman_ford.cc \
+	$(graphs_utils_sources)
+murrayc_bellman_ford_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_bellman_ford_LDADD = \
+	$(PROJECT_LIBS)
+
 murrayc_dijkstra_SOURCES = \
 	src/graphs/dijkstra/murrayc_dijkstra.cc \
 	$(graphs_utils_sources)
 murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
-murrayc_dijkstra__LDADD = \
+murrayc_dijkstra_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dependency_resolution_SOURCES = \
