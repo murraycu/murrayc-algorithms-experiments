@@ -141,7 +141,7 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
   //not including the UnionFind's roots:
   std::transform(map_msts.begin(), map_msts.end(),
     std::inserter(result, result.end()),
-    [](const std::pair<type_num, type_vec_edges_with_sources>& a) {
+    [](const auto& a) {
       return a.second;
     });
   return result;
@@ -157,14 +157,14 @@ type_set_msts compute_mst_cost(const type_vec_nodes& vertices)
 
     std::transform(vertex_edges.begin(), vertex_edges.end(),
       std::back_inserter(edges),
-      [v](const Edge& edge) {
+      [v](const auto& edge) {
         return EdgeWithSource(edge, v);
       });
   }
 
   //Sort the edges by their distance (ascending):
   std::sort(edges.begin(), edges.end(),
-    [](const EdgeWithSource& a, const EdgeWithSource& b) -> bool {
+    [](const auto& a, const auto& b) -> bool {
       return a.length_ < b.length_;
     });
 

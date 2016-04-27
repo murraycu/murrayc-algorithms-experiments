@@ -64,7 +64,7 @@ ShortestPath dijkstra_compute_shortest_path(const type_vec_nodes& vertices, type
   std::unordered_set<type_num> explored;
 
   const auto comparator =
-    [] (const VertexAndLength& a, const VertexAndLength& b)
+    [] (const auto& a, const auto& b)
     {
       return a.total_length_ > b.total_length_;
     };

@@ -24,7 +24,7 @@ main() {
 
   // Sort largest first:
   std::sort(coins.begin(), coins.end(),
-    [](const type_value& a, const type_value& b) { return a > b; });
+    [](const auto& a, const auto& b) { return a > b; });
 
   const type_value needed_value = 173;
 

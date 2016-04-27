@@ -107,7 +107,7 @@ DependencyResolution::get_build_sequence(const Id& package_to_build) {
     result.emplace_back(the_pair.first);
   }
   std::sort(result.begin(), result.end(),
-    [this](const Id& a, const Id& b) { return processed_[a] < processed_[b]; });
+    [this](const auto& a, const auto& b) { return processed_[a] < processed_[b]; });
 
   return result;
 }
