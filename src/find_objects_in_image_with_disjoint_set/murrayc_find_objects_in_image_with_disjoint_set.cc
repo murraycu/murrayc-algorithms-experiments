@@ -53,15 +53,6 @@ as_const(T& t) noexcept {
   return t;
 }
 
-template <typename T>
-class comparator_greater {
-public:
-  bool
-  operator()(const T& a, const T& b) const {
-    return a > b;
-  }
-};
-
 /**
  * rowstride may be greater than the width,
  * if there is padding at the end of each row.
