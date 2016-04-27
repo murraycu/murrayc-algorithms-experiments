@@ -42,6 +42,23 @@ using type_vec_edges_with_sources = std::vector<EdgeWithSource>;
 
 using type_set_msts = std::vector<type_vec_edges_with_sources>;
 
+/** Erase an item from a map, returning its value.
+ */
+template <typename T_Map>
+typename T_Map::mapped_type
+get_and_erase_from_map(T_Map& map, const typename T_Map::key_type& key)
+{
+  auto iter = map.find(key);
+  if (iter == map.end()) {
+    using ValueType = typename T_Map::mapped_type;
+    return ValueType();
+  }
+
+  const auto result = iter->second;
+  map.erase(iter);
+  return result;
+}
+
 /**
  * @param max_clusters Call this with 1 to get a single Minimum Spanning Tree.
  */
@@ -85,20 +102,9 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
         //Get and remove existing cost for these clusters/trees:
         //TODO: This would be easier if our UnionFind data structure could
         //store associated data, like a map.
-        type_vec_edges_with_sources existing_cost_from;
-        auto iter = map_msts.find(ds.find_set(from));
-        if (iter != map_msts.end()) {
-          existing_cost_from = iter->second;
-          map_msts.erase(iter);
-        }
-        
-        type_vec_edges_with_sources existing_cost_to;
-        iter = map_msts.find(ds.find_set(to));
-        if (iter != map_msts.end()) {
-          existing_cost_to = iter->second;
-          map_msts.erase(iter);
-        }
- 
+        auto existing_cost_from = get_and_erase_from_map(map_msts, ds.find_set(from));
+        auto existing_cost_to = get_and_erase_from_map(map_msts, ds.find_set(to));
+
         ds.union_set(from, to);
 
         //Update the cost for this cluster/tree:
