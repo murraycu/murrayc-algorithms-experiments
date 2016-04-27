@@ -174,7 +174,7 @@ type_set_msts compute_mst_cost(const type_vec_nodes& vertices)
       return a.length_ < b.length_;
     });
 
-  return find_clusters(edges, vertices.size(), 2);
+  return find_clusters(edges, vertices.size(), 1);
 }
 
 int main()
