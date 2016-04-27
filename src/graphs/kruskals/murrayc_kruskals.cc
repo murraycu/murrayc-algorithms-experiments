@@ -24,6 +24,11 @@ public:
     source_vertex_(source_vertex)
   {}
   
+  EdgeWithSource(type_num source_vertex, type_num destination_vertex, type_length length)
+  : Edge(destination_vertex, length),
+    source_vertex_(source_vertex)
+  {}
+
   EdgeWithSource(const EdgeWithSource& src) = default;
   EdgeWithSource& operator=(const EdgeWithSource& src) = default;
 
@@ -56,6 +61,7 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
   for(const auto& edge : sorted_edges) {
     const auto& from = edge.source_vertex_;
     const auto& to = edge.destination_vertex_;
+    //std::cout << "from=" << from << ", to=" << to << std::endl;
 
     const auto from_leader = ds.find_set(from);
     const auto to_leader = ds.find_set(to);
@@ -72,6 +78,7 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
 
     //If they were not already in a cluster,
     if(from_leader != to_leader) {
+      //std::cout << "clusters_count=" << clusters_count << ", max_clusters=" << max_clusters << std::endl;
       if(clusters_count > max_clusters) {
         //std::cout << "  joining" << std::endl;
         
@@ -104,6 +111,18 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
         //There is now one less cluster:
         clusters_count--;
       } else {
+        //This is a single-item cluster:
+        //Add the vertex that is not in a cluster already:
+        //This is not a real edge, but it's how we tell the caller
+        //that there is only one node in the cluster.
+        if (from == from_leader && !map_msts.count(from)) {
+          map_msts[from] = {EdgeWithSource(from, from, 0)};
+        }
+
+        if(to == to_leader && !map_msts.count(to)) {
+          map_msts[to] = {EdgeWithSource(to, to, 0)};
+        }
+
         //std::cout << "  remembering max distance" << std::endl;
         //Remember the biggest spacing between remaining clusters:
         if(edge.length_ < min_spacing) {
@@ -149,7 +168,7 @@ type_set_msts compute_mst_cost(const type_vec_nodes& vertices)
       return a.length_ < b.length_;
     });
 
-  return find_clusters(edges, vertices.size(), 1);
+  return find_clusters(edges, vertices.size(), 2);
 }
 
 int main()
