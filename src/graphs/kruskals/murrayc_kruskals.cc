@@ -35,16 +35,16 @@ public:
 
 using type_vec_edges_with_sources = std::vector<EdgeWithSource>;
 
-using type_set_costs = std::unordered_set<type_length>;
+using type_set_msts = std::vector<type_vec_edges_with_sources>;
 
 static
-type_set_costs
+type_set_msts
 find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_nodes, type_num max_clusters)
 {
-  type_set_costs result; //Declare this here to try to get some RVO.
+  type_set_msts result; //Declare this here to try to get some RVO.
   
   //Map of roots to spanning tree costs:
-  std::unordered_map<type_num, type_length> map_msts;
+  std::unordered_map<type_num, type_vec_edges_with_sources> map_msts;
 
   UnionFind<type_num> ds(count_nodes);
   type_num clusters_count = count_nodes;
@@ -75,14 +75,14 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
         //Get and remove existing cost for these clusters/trees:
         //TODO: This would be easier if our UnionFind data structure could
         //store associated data, like a map.
-        type_length existing_cost_from = 0;
+        type_vec_edges_with_sources existing_cost_from;
         auto iter = map_msts.find(ds.find_set(from));
         if (iter != map_msts.end()) {
           existing_cost_from = iter->second;
           map_msts.erase(iter);
         }
         
-        type_length existing_cost_to = 0;
+        type_vec_edges_with_sources existing_cost_to;
         iter = map_msts.find(ds.find_set(to));
         if (iter != map_msts.end()) {
           existing_cost_to = iter->second;
@@ -92,7 +92,11 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
         ds.union_set(from, to);
 
         //Update the cost for this cluster/tree:
-        map_msts[ds.find_set(from)] = existing_cost_from + existing_cost_to + edge.length_;
+        //Concatenate the list of edges, and the new edge.
+        std::copy(existing_cost_to.begin(), existing_cost_to.end(),
+          std::back_inserter(existing_cost_from));
+        existing_cost_from.emplace_back(edge);
+        map_msts[ds.find_set(from)] = existing_cost_from;
 
         //There is now one less cluster:
         clusters_count--;
@@ -115,14 +119,14 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
   //not including the UnionFind's roots:
   std::transform(map_msts.begin(), map_msts.end(),
     std::inserter(result, result.end()),
-    [](const std::pair<type_num, type_length>& a) {
+    [](const std::pair<type_num, type_vec_edges_with_sources>& a) {
       return a.second;
     });
   return result;
 }
 
 static
-type_set_costs compute_mst_cost(const type_vec_nodes& vertices)
+type_set_msts compute_mst_cost(const type_vec_nodes& vertices)
 {
   type_vec_edges_with_sources edges;
   const auto vertices_count = vertices.size();
@@ -155,9 +159,16 @@ int main()
     Vertex()
   };
 
-  const auto costs = compute_mst_cost(vertices);
-  for (const auto& cost : costs) {
-    std::cout << "MST cost: " << cost << std::endl;
+  const auto msts = compute_mst_cost(vertices);
+  for (const auto& mst : msts) {
+    type_length cost = 0;
+    for (const auto& edge : mst) {
+      std::cout << "edge: " << edge.source_vertex_ << " to " << edge.destination_vertex_
+        << ", cost=" << edge.length_ << std::endl;
+      cost += edge.length_;
+    }
+
+    std::cout << "  MST cost: " << cost << std::endl;
   }
 
   return EXIT_SUCCESS;
