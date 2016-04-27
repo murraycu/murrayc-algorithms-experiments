@@ -37,6 +37,9 @@ using type_vec_edges_with_sources = std::vector<EdgeWithSource>;
 
 using type_set_msts = std::vector<type_vec_edges_with_sources>;
 
+/**
+ * @param max_clusters Call this with 1 to get a single Minimum Spanning Tree.
+ */
 static
 type_set_msts
 find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_nodes, type_num max_clusters)
@@ -160,6 +163,12 @@ int main()
   };
 
   const auto msts = compute_mst_cost(vertices);
+  if (msts.size() == 1) {
+    std::cout << "There is a minimum spanning tree:" << std::endl;
+  } else {
+    std::cout << "There is not a single minimum spanning tree:" << std::endl;
+  }
+
   for (const auto& mst : msts) {
     type_length cost = 0;
     for (const auto& edge : mst) {
