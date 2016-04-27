@@ -1,0 +1,166 @@
+#include "utils/edge.h"
+#include "utils/vertex.h"
+#include "union_find.h"
+#include <unordered_set>
+#include <unordered_map>
+#include <queue>
+#include <limits>
+#include <algorithm>
+#include <iostream>
+#include <cstdlib>
+
+// A set of vertices and their edges.
+using type_vec_nodes = std::vector<Vertex>;
+using type_vec_edges = std::vector<Edge>;
+
+using type_num = Edge::type_num;
+using type_length = Edge::type_length;
+
+class EdgeWithSource : public Edge
+{
+public:
+  EdgeWithSource(const Edge& edge, type_num source_vertex)
+  : Edge(edge),
+    source_vertex_(source_vertex)
+  {}
+  
+  EdgeWithSource(const EdgeWithSource& src) = default;
+  EdgeWithSource& operator=(const EdgeWithSource& src) = default;
+
+  EdgeWithSource(EdgeWithSource&& src) = default;
+  EdgeWithSource& operator=(EdgeWithSource&& src) = default;
+
+  type_num source_vertex_;
+};
+
+using type_vec_edges_with_sources = std::vector<EdgeWithSource>;
+
+using type_set_costs = std::unordered_set<type_length>;
+
+static
+type_set_costs
+find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_nodes, type_num max_clusters)
+{
+  type_set_costs result; //Declare this here to try to get some RVO.
+  
+  //Map of roots to spanning tree costs:
+  std::unordered_map<type_num, type_length> map_msts;
+
+  UnionFind<type_num> ds(count_nodes);
+  type_num clusters_count = count_nodes;
+  type_length min_spacing = std::numeric_limits<type_length>::max();
+
+  for(const auto& edge : sorted_edges) {
+    const auto& from = edge.source_vertex_;
+    const auto& to = edge.destination_vertex_;
+
+    const auto from_leader = ds.find_set(from);
+    const auto to_leader = ds.find_set(to);
+
+    /*
+    if(from_leader == 0) {
+      ds.make_set(from);
+    }
+
+    if(to_leader == 0) {
+      ds.make_set(to);
+    }
+    */
+
+    //If they were not already in a cluster,
+    if(from_leader != to_leader) {
+      if(clusters_count > max_clusters) {
+        //std::cout << "  joining" << std::endl;
+        
+        //Get and remove existing cost for these clusters/trees:
+        //TODO: This would be easier if our UnionFind data structure could
+        //store associated data, like a map.
+        type_length existing_cost_from = 0;
+        auto iter = map_msts.find(ds.find_set(from));
+        if (iter != map_msts.end()) {
+          existing_cost_from = iter->second;
+          map_msts.erase(iter);
+        }
+        
+        type_length existing_cost_to = 0;
+        iter = map_msts.find(ds.find_set(to));
+        if (iter != map_msts.end()) {
+          existing_cost_to = iter->second;
+          map_msts.erase(iter);
+        }
+ 
+        ds.union_set(from, to);
+
+        //Update the cost for this cluster/tree:
+        map_msts[ds.find_set(from)] = existing_cost_from + existing_cost_to + edge.length_;
+
+        //There is now one less cluster:
+        clusters_count--;
+      } else {
+        //std::cout << "  remembering max distance" << std::endl;
+        //Remember the biggest spacing between remaining clusters:
+        if(edge.length_ < min_spacing) {
+          min_spacing = edge.length_;
+        }
+      }
+    } else {
+      //These edges are already joined.
+      //std::cout << "  already joined:" << std::endl;
+    }
+  }
+
+  //std::cout << "min_spacing: " << min_spacing << std::endl;
+  
+  //Return only the costs of the clusters/trees,
+  //not including the UnionFind's roots:
+  std::transform(map_msts.begin(), map_msts.end(),
+    std::inserter(result, result.end()),
+    [](const std::pair<type_num, type_length>& a) {
+      return a.second;
+    });
+  return result;
+}
+
+static
+type_set_costs compute_mst_cost(const type_vec_nodes& vertices)
+{
+  type_vec_edges_with_sources edges;
+  const auto vertices_count = vertices.size();
+  for (type_num v = 0; v < vertices_count; ++v) {
+    const auto& vertex_edges = vertices[v].edges_;
+
+    std::transform(vertex_edges.begin(), vertex_edges.end(),
+      std::back_inserter(edges),
+      [v](const Edge& edge) {
+        return EdgeWithSource(edge, v);
+      });
+  }
+
+  //Sort the edges by their distance (ascending):
+  std::sort(edges.begin(), edges.end(),
+    [](const EdgeWithSource& a, const EdgeWithSource& b) -> bool {
+      return a.length_ < b.length_;
+    });
+
+  return find_clusters(edges, vertices.size(), 1);
+}
+
+int main()
+{
+  //0-indexed vertices:
+  const type_vec_nodes vertices = {
+    Vertex({Edge(1, 3), Edge(2, 3)}),
+    Vertex({Edge(2, 1), Edge(3, 2)}),
+    Vertex({Edge(3, 50)}),
+    Vertex()
+  };
+
+  const auto costs = compute_mst_cost(vertices);
+  for (const auto& cost : costs) {
+    std::cout << "MST cost: " << cost << std::endl;
+  }
+
+  return EXIT_SUCCESS;
+}
+
+
