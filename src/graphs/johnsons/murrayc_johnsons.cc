@@ -13,7 +13,7 @@ using type_num = Edge::type_num;
 using type_length = Edge::type_length;
 
 static
-type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, bool& has_negative_cycles, bool /* check_negative_cycle_only */)
+type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, bool& has_negative_cycles)
 {
   auto  vertices = vertices_in;
 
@@ -102,14 +102,6 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   
   return min;
 }
-
-static
-type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, bool& has_negative_cycles)
-{
-  return johnsons_all_pairs_shortest_path(vertices, has_negative_cycles,
-    false /* check negative cycles only */);
-}
-
 
 int main()
 {
