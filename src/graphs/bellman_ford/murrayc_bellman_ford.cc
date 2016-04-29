@@ -15,7 +15,7 @@ int main()
 
   for(auto dest_vertex_num : dest_vertices)
   {
-    const auto shortest_path = shortest_paths[dest_vertex_num];
+    const auto& shortest_path = shortest_paths[dest_vertex_num];
     std::cout << "shortest path from " << start_vertex << " to " << dest_vertex_num
       << ": " << shortest_path.length_
       << ", path: " << shortest_path.path_ << std::endl;
