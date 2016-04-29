@@ -82,8 +82,9 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
         
       const auto shortest_path_v = shortest_paths[v].length_;
 
-      std::cout << "u=" << u << ", v=" << v << std::endl;
-      const auto shortest_path = dijkstra_compute_shortest_path(vertices_with_s, u, v);
+      const auto shortest_path = dijkstra_compute_shortest_path(vertices, u, v);
+      //std::cout << "u=" << u << ", v=" << v << std::endl;
+      //std::cout << "  shortest_path=" << shortest_path.length_ << std::endl;
 
       //Convert to the length of the path in the original set of vertices
       //(with negative edge weights):
