@@ -21,6 +21,7 @@ bin_PROGRAMS = \
   murrayc_dp_make_change \
   murrayc_bellman_ford \
   murrayc_dijkstra \
+  murrayc_floyd_warshall \
   murrayc_kruskals \
   murrayc_prims \
   murrayc_dependency_resolution \
@@ -74,6 +75,15 @@ murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_dijkstra_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_floyd_warshall_SOURCES = \
+	src/graphs/floyd_warshall/murrayc_floyd_warshall.cc \
+	$(graphs_utils_sources)
+murrayc_floyd_warshall_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_floyd_warshall_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_kruskals_SOURCES = \

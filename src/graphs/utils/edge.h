@@ -5,7 +5,9 @@ class Edge
 {
 public:
   using type_num = unsigned long;
-  using type_length = unsigned long;
+
+  //Can be negative.
+  using type_length = long;
 
   Edge()
   : destination_vertex_(0),
