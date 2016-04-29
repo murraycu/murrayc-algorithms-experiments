@@ -213,7 +213,8 @@ int main()
 
   bool has_negative_cycles = false;
   const auto shortest_path_length =
-    floyd_warshall_calc_all_pairs_shortest_path(EXAMPLE_GRAPH_SMALL, has_negative_cycles);
+    floyd_warshall_calc_all_pairs_shortest_path(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES,
+      has_negative_cycles);
   if(has_negative_cycles)
   {
     std::cout << "Negative cycle found." << std::endl;

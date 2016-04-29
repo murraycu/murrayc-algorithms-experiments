@@ -235,7 +235,9 @@ int main()
   const auto dest_vertices = {0, 1, 2, 3};
 
   bool has_negative_cycles = false;
-  const auto shortest_paths = bellman_ford_single_source_shortest_path(EXAMPLE_GRAPH_SMALL, start_vertex, has_negative_cycles);
+  const auto shortest_paths =
+    bellman_ford_single_source_shortest_path(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES,
+      start_vertex, has_negative_cycles);
 
   for(auto dest_vertex_num : dest_vertices)
   {
