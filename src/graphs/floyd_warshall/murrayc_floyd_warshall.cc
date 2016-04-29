@@ -177,14 +177,6 @@ type_length floyd_warshall_calc_all_pairs_shortest_path(const type_vec_nodes& ve
 
 int main()
 {
-  //0-indexed vertices:
-  const type_vec_nodes vertices = {
-    Vertex({Edge(1, 3), Edge(2, 3)}),
-    Vertex({Edge(2, 1), Edge(3, 2)}),
-    Vertex({Edge(3,50)}),
-    Vertex()
-  };
-
   bool has_negative_cycles = false;
   const auto shortest_path_length =
     floyd_warshall_calc_all_pairs_shortest_path(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES,
