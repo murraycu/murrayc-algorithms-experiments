@@ -75,7 +75,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
       //  ", vertex_dest.shortest_path_for_dest=" <<  shortest_path_for_dest << std::endl;
       edge.length_ +=
         (shortest_path_for_i - shortest_path_for_dest);
-      std::cout << "new edge length: " << edge.length_ << std::endl;
+      //std::cout << "new edge length: " << edge.length_ << std::endl;
       if (edge.length_ < 0) {
         std::cerr << "Error: The new edge length should not be negative: " << edge.length_ << std::endl;
         return Edge::LENGTH_INFINITY;
