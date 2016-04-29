@@ -195,12 +195,19 @@ main(int argc, char** argv) {
   // Gio::init();
   Gdk::wrap_init();
 
+  const char* filepath = nullptr;
+
   if (argc < 2) {
     std::cerr << "Usage: theprogram theimagefile" << std::endl;
-    return EXIT_FAILURE;
+    //return EXIT_FAILURE;
+
+    //This is just so we have something to do during "make check":
+    std::cerr << "  Using test.png by default." << std::endl;
+    filepath = "src/find_objects_in_image_with_disjoint_set/test.png";
+  } else {
+    filepath = argv[1];
   }
 
-  const char* filepath = argv[1];
   std::cout << "Loading file: " << filepath << std::endl;
 
   Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_file(filepath);

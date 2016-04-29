@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -223,6 +224,8 @@ int main()
   {
     std::cout << "Shortest path length: " << shortest_path_length << std::endl;
   }
+
+  assert(shortest_path_length == -10003);
 
   return EXIT_SUCCESS;
 }

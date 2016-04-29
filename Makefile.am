@@ -15,7 +15,7 @@ AM_CXXFLAGS = $(PROJECT_WXXFLAGS)
 # TODO: Why do we still need to specify this for each executable that we build?
 COMMON_CXXFLAGS = $(PROJECT_CFLAGS) $(PROJECT_WXXFLAGS)
 
-bin_PROGRAMS = \
+check_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
   murrayc_greedy_make_change \
   murrayc_dp_make_change \
@@ -28,6 +28,8 @@ bin_PROGRAMS = \
   murrayc_quickselect \
   murrayc_subset_iteration \
   murrayc_dp_string_edit_distance
+
+TESTS = $(check_PROGRAMS)
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
