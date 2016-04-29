@@ -29,6 +29,15 @@ void bellman_ford_update_adjacent_vertex(
   type_map_predecessors& predecessors)
 {
   const auto v = edge.destination_vertex_;
+
+  //Check the bounds:
+  //Otherwise a bad edge in the input can cause an out-of-bounds access:
+  if (v >= shortest_paths_i.size())
+  {
+    std::cerr << "bellman_ford_update_adjacent_vertex(): v is too large: " << v << std::endl;
+    return;
+  }
+
   //std::cout << "bellman_ford_update_adjacent_vertex(): i=" << i << ", s=" << s << ", w=" << w << ", v=" << v << std::endl;
 
   type_length result = LENGTH_INFINITY;
