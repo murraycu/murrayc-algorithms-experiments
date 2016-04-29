@@ -14,10 +14,8 @@ using type_num = Edge::type_num;
 using type_length = Edge::type_length;
 
 static
-type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, bool& has_negative_cycles)
+type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, bool& has_negative_cycles)
 {
-  auto  vertices = vertices_in;
-
   //Initialize ouput variables:
   has_negative_cycles = false;
 
@@ -40,27 +38,41 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   //Run Bellman-Ford single source shortest path algorithm from our new vertex s to 
   //(We can't use Dijkstra's SSSP algorithm because we can have negative edge lengths).
   //This gives us a value (from s to the vertex) for each vertex:
-  const auto shortest_paths =
+  const auto shortest_paths_from_s =
     bellman_ford_single_source_shortest_paths(vertices_with_s, s, has_negative_cycles);
   if (has_negative_cycles) {
     std::cerr << "Negative cycle found." << std::endl;
     return Edge::LENGTH_INFINITY;
   }
 
+  //Debug:
+  /*
+  const auto shortest_paths_from_s_count = shortest_paths_from_s.size();
+  for (type_num i = 0; i < shortest_paths_from_s_count; ++i)
+  {
+    const auto& shortest_path = shortest_paths_from_s[i];
+    std::cout << "shortest path from " << s << " to " << i
+      << ": " << shortest_path.length_
+      << ", path: " << shortest_path.path_ << std::endl;
+  }
+  */
+
+  //Reweighting:
   //Change the edge lengths based on the discovered values for each vertex
   //(single source shortest paths from our new vertex s):
   //Now they will all be positive.
+  auto vertices_reweighted = vertices;
   for (type_num i = 0; i < original_size; ++i) { //Not including the new vertex_s.
-    const auto shortest_path_for_i = shortest_paths[i].length_;
+    const auto shortest_path_for_i = shortest_paths_from_s[i].length_;
     
-    auto& vertex = vertices[i];
+    auto& vertex = vertices_reweighted[i];
     for (auto& edge : vertex.edges_) {
-      const auto shortest_path_for_dest = shortest_paths[edge.destination_vertex_].length_;
+      const auto shortest_path_for_dest = shortest_paths_from_s[edge.destination_vertex_].length_;
 
-      std::cout << "original edge length: " << edge.length_ << std::endl;
-      std:: cout << "  source=" << i << ", dest=" << edge.destination_vertex_ << std::endl;
-      std:: cout << "  shortest_path_for_i =" << shortest_path_for_i <<
-        ", vertex_dest.shortest_path_for_dest=" <<  shortest_path_for_dest << std::endl;
+      //std::cout << "original edge length: " << edge.length_ << std::endl;
+      //std:: cout << "  source=" << i << ", dest=" << edge.destination_vertex_ << std::endl;
+      //std:: cout << "  shortest_path_for_i =" << shortest_path_for_i <<
+      //  ", vertex_dest.shortest_path_for_dest=" <<  shortest_path_for_dest << std::endl;
       edge.length_ +=
         (shortest_path_for_i - shortest_path_for_dest);
       std::cout << "new edge length: " << edge.length_ << std::endl;
@@ -75,14 +87,14 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   //the reweighted graph:
   type_length min = Edge::LENGTH_INFINITY;
   for (type_num u = 0; u < original_size; ++u) {
-     const auto shortest_path_u = shortest_paths[u].length_;
+    const auto shortest_path_u = shortest_paths_from_s[u].length_;
     for (type_num v = 0; v < original_size; ++v) {
       if (u == v)
         continue;
         
-      const auto shortest_path_v = shortest_paths[v].length_;
+      const auto shortest_path_v = shortest_paths_from_s[v].length_;
 
-      const auto shortest_path = dijkstra_compute_shortest_path(vertices, u, v);
+      const auto shortest_path = dijkstra_compute_shortest_path(vertices_reweighted, u, v);
       //std::cout << "u=" << u << ", v=" << v << std::endl;
       //std::cout << "  shortest_path=" << shortest_path.length_ << std::endl;
 
