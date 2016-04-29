@@ -16,14 +16,9 @@ using type_length = Edge::type_length;
 
 const type_length LENGTH_INFINITY = std::numeric_limits<type_length>::max();
 
-
-
-
 static
 type_length get_direct_edge_length(const type_vec_nodes& vertices, type_num i, type_num j)
 {
-  //std::cout << "get_direct_edge_length() i=" << i << ", j=" << j << std::endl;
-
   const auto& vertex = vertices[i];
   const auto& edges = vertex.edges_;
   const auto iter = std::find_if(edges.begin(), edges.end(),
@@ -35,17 +30,6 @@ type_length get_direct_edge_length(const type_vec_nodes& vertices, type_num i, t
   else
     return iter->length_;
 }
-
-/*
-template<typename T>
-void print_vec(const std::vector<T>& vec)
-{
-  for(auto num : vec)
-  {
-    std::cout << num << ", ";
-  }
-}
-*/
 
 using type_shortest_paths = std::vector<std::vector<type_length>> ;
 
@@ -71,7 +55,6 @@ void calc_with_cache(const type_vec_nodes& vertices, type_shortest_paths& shorte
 
     //Cache it:
     shortest_paths_k[i][j] = result;
-    //std::cout << "  base: " << result << std::endl;
     return;
   }
 
@@ -83,11 +66,8 @@ void calc_with_cache(const type_vec_nodes& vertices, type_shortest_paths& shorte
 
   //Avoid adding infinity to infinity, which would overflow.
   type_length case2 = LENGTH_INFINITY;
-  //std::cout << "  i_to_k: [" << i << "][" << k << "][" << k - 1 << "]" << std::endl;
   const auto i_to_k = shortest_paths_k_minus_1[i][k];
   //std::cout << "    i_to_k: shortest_paths[" << i << "][" << k << "][" << k - 1 << "]:" << i_to_k << std::endl;
-
-  //std::cout << "  k_to_j: [" << k << "][" << j << "][" << k - 1 << "]" << std::endl;
   const auto k_to_j = shortest_paths_k_minus_1[k][j];
   //std::cout << "    k_to_j: shortest_paths[" << k << "][" << j << "][" << k - 1 << "]:" << k_to_j << std::endl;
 
@@ -169,10 +149,6 @@ type_length floyd_warshall_calc_all_pairs_shortest_path(const type_vec_nodes& ve
 
     for(type_num i = 0; i < vertices_count; ++i)
     {
-      // TODO: Make this work, without doing a recursive version.
-      //const type_num max_j = (check_negative_cycle_only ?
-      //  std::max(i, k) :
-      //  vertices_count);
       for(type_num j = 0; j < vertices_count; ++j)
       {
         calc_with_cache(vertices, shortest_paths_k, shortest_paths_k_minus_1,
