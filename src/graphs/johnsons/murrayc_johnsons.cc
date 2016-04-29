@@ -49,6 +49,8 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
     return Edge::LENGTH_INFINITY;
   }
   
+  //The shortest path from the extra vertex s in the reweighting stage
+  //of Johnson's APSP algorithm:
   std::unordered_map<type_num, type_length> map_vertex_length_johnsons_sp;
 
   for (type_num i = 0; i < size; ++i) { //Not including the new vertex_s.
