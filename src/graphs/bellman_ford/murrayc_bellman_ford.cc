@@ -1,5 +1,4 @@
-#include "utils/edge.h"
-#include "utils/vertex.h"
+#include "utils/example_graphs.h"
 #include "utils/shortest_path.h"
 #include <unordered_map>
 #include <unordered_set>
@@ -232,19 +231,11 @@ bellman_ford_single_source_shortest_path(const type_vec_nodes& vertices, type_nu
 
 int main()
 {
-  //0-indexed vertices:
-  const type_vec_nodes vertices = {
-    Vertex({Edge(1, 3), Edge(2, 3)}),
-    Vertex({Edge(2, 1), Edge(3, 2)}),
-    Vertex({Edge(3,50)}),
-    Vertex()
-  };
-
   const auto start_vertex = 0;
   const auto dest_vertices = {0, 1, 2, 3};
 
   bool has_negative_cycles = false;
-  const auto shortest_paths = bellman_ford_single_source_shortest_path(vertices, start_vertex, has_negative_cycles);
+  const auto shortest_paths = bellman_ford_single_source_shortest_path(EXAMPLE_GRAPH_SMALL, start_vertex, has_negative_cycles);
 
   for(auto dest_vertex_num : dest_vertices)
   {

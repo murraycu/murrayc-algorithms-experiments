@@ -1,5 +1,4 @@
-#include "utils/edge.h"
-#include "utils/vertex.h"
+#include "utils/example_graphs.h"
 #include <unordered_set>
 #include <queue>
 #include <limits>
@@ -92,15 +91,7 @@ compute_mst_cost(const type_vec_nodes& nodes)
 
 int main()
 {
-  //0-indexed vertices:
-  const type_vec_nodes vertices = {
-    Vertex({Edge(1, 3), Edge(2, 3)}),
-    Vertex({Edge(2, 1), Edge(3, 2)}),
-    Vertex({Edge(3,50)}),
-    Vertex()
-  };
-
-  const auto cost = compute_mst_cost(vertices);
+  const auto cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL);
   std::cout << "MST cost: " << cost << std::endl;
 
   return EXIT_SUCCESS;

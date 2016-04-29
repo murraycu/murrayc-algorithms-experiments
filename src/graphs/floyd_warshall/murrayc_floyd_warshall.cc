@@ -1,6 +1,4 @@
-#include "utils/edge.h"
-#include "utils/vertex.h"
-#include "utils/shortest_path.h"
+#include "utils/example_graphs.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
@@ -215,7 +213,7 @@ int main()
 
   bool has_negative_cycles = false;
   const auto shortest_path_length =
-    floyd_warshall_calc_all_pairs_shortest_path(vertices, has_negative_cycles);
+    floyd_warshall_calc_all_pairs_shortest_path(EXAMPLE_GRAPH_SMALL, has_negative_cycles);
   if(has_negative_cycles)
   {
     std::cout << "Negative cycle found." << std::endl;
