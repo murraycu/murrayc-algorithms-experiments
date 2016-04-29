@@ -23,6 +23,7 @@ check_PROGRAMS = \
   murrayc_dijkstra \
   murrayc_floyd_warshall \
   murrayc_kruskals \
+  murrayc_johnsons \
   murrayc_prims \
   murrayc_dependency_resolution \
   murrayc_quickselect \
@@ -64,6 +65,7 @@ graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
 
 murrayc_bellman_ford_SOURCES = \
 	src/graphs/bellman_ford/murrayc_bellman_ford.cc \
+	src/graphs/bellman_ford/bellman_ford.h \
 	$(graphs_utils_sources)
 murrayc_bellman_ford_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -73,6 +75,7 @@ murrayc_bellman_ford_LDADD = \
 
 murrayc_dijkstra_SOURCES = \
 	src/graphs/dijkstra/murrayc_dijkstra.cc \
+	src/graphs/dijkstra/dijkstra.h \
 	$(graphs_utils_sources)
 murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -87,6 +90,17 @@ murrayc_floyd_warshall_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_floyd_warshall_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_johnsons_SOURCES = \
+	src/graphs/johnsons/murrayc_johnsons.cc \
+	src/graphs/bellman_ford/bellman_ford.h \
+	src/graphs/dijkstra/dijkstra.h \
+	$(graphs_utils_sources)
+murrayc_johnsons_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_johnsons_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_kruskals_SOURCES = \

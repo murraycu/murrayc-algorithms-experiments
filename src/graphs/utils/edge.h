@@ -1,6 +1,8 @@
 #ifndef MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EDGE
 #define MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EDGE
 
+#include <limits>
+
 class Edge
 {
 public:
@@ -8,6 +10,8 @@ public:
 
   //Can be negative.
   using type_length = long;
+
+  constexpr static type_length LENGTH_INFINITY = std::numeric_limits<type_length>::max();
 
   Edge()
   : destination_vertex_(0),
