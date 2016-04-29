@@ -88,13 +88,14 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
   type_length min = Edge::LENGTH_INFINITY;
   for (type_num u = 0; u < original_size; ++u) {
     const auto shortest_path_u = shortest_paths_from_s[u].length_;
+
+    const auto shortest_paths = dijkstra_compute_shortest_paths(vertices_reweighted, u);
     for (type_num v = 0; v < original_size; ++v) {
       if (u == v)
         continue;
-        
+      const auto& shortest_path = shortest_paths[v];
       const auto shortest_path_v = shortest_paths_from_s[v].length_;
 
-      const auto shortest_path = dijkstra_compute_shortest_path(vertices_reweighted, u, v);
       //std::cout << "u=" << u << ", v=" << v << std::endl;
       //std::cout << "  shortest_path=" << shortest_path.length_ << std::endl;
 
