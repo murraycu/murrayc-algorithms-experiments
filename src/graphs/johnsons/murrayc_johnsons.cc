@@ -27,12 +27,12 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   //Add an extra vertex s, with zero-weight paths to every existing vertex:
   //There will be no paths into vertex s, so it will not disturb any
   //shortest paths calculations from any other vertex.
-  const auto size = vertices.size();
+  const auto original_size = vertices.size();
   type_vec_nodes vertices_with_s = vertices;
   vertices_with_s.emplace_back();
-  const type_num s = size - 1;
+  const type_num s = original_size;
   auto& vertex_s = vertices_with_s[s];
-  for (type_num i = 0; i < size; ++i) {
+  for (type_num i = 0; i < original_size; ++i) {
     //Add a zero-weight edge from our extra s vertex to the other vertex:
     vertex_s.edges_.emplace_back(i, 0);
   }
@@ -50,7 +50,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   //Change the edge lengths based on the discovered values for each vertex
   //(single source shortest paths from our new vertex s):
   //Now they will all be positive.
-  for (type_num i = 0; i < size; ++i) { //Not including the new vertex_s.
+  for (type_num i = 0; i < original_size; ++i) { //Not including the new vertex_s.
     const auto shortest_path_for_i = shortest_paths[i].length_;
     
     auto& vertex = vertices[i];
@@ -74,9 +74,9 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices_in, 
   //Use Dijkstra's single source shortest path algorithm on each u, v in 
   //the reweighted graph:
   type_length min = Edge::LENGTH_INFINITY;
-  for (type_num u = 0; u < size; ++u) {
+  for (type_num u = 0; u < original_size; ++u) {
      const auto shortest_path_u = shortest_paths[u].length_;
-    for (type_num v = 0; v < size; ++v) {
+    for (type_num v = 0; v < original_size; ++v) {
       if (u == v)
         continue;
         
