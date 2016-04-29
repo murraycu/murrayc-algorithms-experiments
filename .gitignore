@@ -64,5 +64,8 @@ Makefile.in
 /murrayc_quickselect
 /murrayc_subset_iteration
 
+*.log
+*.trs
+
 
 
