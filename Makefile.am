@@ -37,9 +37,9 @@ murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
 	src/find_objects_in_image_with_disjoint_set/murrayc_find_objects_in_image_with_disjoint_set.cc \
 	src/find_objects_in_image_with_disjoint_set/disjoint_set.hpp
 murrayc_find_objects_in_image_with_disjoint_set_CXXFLAGS = \
-	$(COMMON_CXXFLAGS)
+	$(COMMON_CXXFLAGS) $(PROJECT_GDKMM_CFLAGS)
 murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
-	$(PROJECT_LIBS)
+	$(PROJECT_LIBS)	$(PROJECT_GDKMM_LIBS)
 
 murrayc_greedy_make_change_SOURCES = \
 	src/greedy_make_change/murrayc_greedy_make_change.cc
