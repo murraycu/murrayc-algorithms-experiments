@@ -34,7 +34,8 @@ TESTS = $(check_PROGRAMS)
 
 #List of source files needed to build the executable:
 murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
-	src/find_objects_in_image_with_disjoint_set/murrayc_find_objects_in_image_with_disjoint_set.cc
+	src/find_objects_in_image_with_disjoint_set/murrayc_find_objects_in_image_with_disjoint_set.cc \
+	src/find_objects_in_image_with_disjoint_set/disjoint_set.hpp
 murrayc_find_objects_in_image_with_disjoint_set_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
