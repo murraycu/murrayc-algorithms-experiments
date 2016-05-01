@@ -2,6 +2,14 @@
 #include "utils/example_graphs.h"
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
+
+static
+void test_small_dest(type_num dest_vertex_num, Edge::type_length expected_shortest_path)
+{
+  const auto shortest_path = dijkstra_compute_shortest_path(EXAMPLE_GRAPH_SMALL, 0, dest_vertex_num);
+  assert(shortest_path.length_ == expected_shortest_path);
+}
 
 int main()
 {
@@ -14,6 +22,11 @@ int main()
       << ": " << shortest_path.length_
       << ", path: " << shortest_path.path_ << std::endl;
   }
+
+  test_small_dest(0, 0);
+  test_small_dest(1, 3);
+  test_small_dest(2, 3);
+  test_small_dest(3, 5);
 
   return EXIT_SUCCESS;
 }

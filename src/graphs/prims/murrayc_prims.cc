@@ -4,6 +4,7 @@
 #include <limits>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -93,6 +94,8 @@ int main()
 {
   const auto cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL);
   std::cout << "MST cost: " << cost << std::endl;
+
+  assert(cost == 6);
 
   return EXIT_SUCCESS;
 }

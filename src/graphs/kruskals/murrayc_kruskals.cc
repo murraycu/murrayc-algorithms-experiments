@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -195,6 +196,15 @@ int main()
 
     std::cout << "  MST cost: " << cost << std::endl;
   }
+
+
+  assert(msts.size() == 1);
+  const auto& mst = msts[0];
+  const auto cost = std::accumulate(mst.begin(), mst.end(), 0,
+    [](auto sum, const auto& edge) {
+      return sum + edge.length_;
+    });
+  assert(cost == 6);
 
   return EXIT_SUCCESS;
 }

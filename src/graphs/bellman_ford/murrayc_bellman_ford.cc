@@ -2,6 +2,7 @@
 #include "bellman_ford.h"
 #include <iostream>
 #include <cstdlib>
+#include <cassert>
 
 int main()
 {
@@ -20,6 +21,11 @@ int main()
       << ": " << shortest_path.length_
       << ", path: " << shortest_path.path_ << std::endl;
   }
+
+  assert(shortest_paths[0].length_ == 0);
+  assert(shortest_paths[1].length_ == -5);
+  assert(shortest_paths[2].length_ == -4);
+  assert(shortest_paths[3].length_ == -3);
 
   return EXIT_SUCCESS;
 }
