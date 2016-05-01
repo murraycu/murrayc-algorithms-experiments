@@ -177,15 +177,17 @@ type_set_msts compute_mst_cost(const type_vec_nodes& vertices)
   return find_clusters(edges, vertices.size(), 1);
 }
 
-int main()
+static
+void test_mst(const std::vector<Vertex>& graph, type_length expected_cost)
 {
-  const auto msts = compute_mst_cost(EXAMPLE_GRAPH_SMALL);
+  const auto msts = compute_mst_cost(graph);
   if (msts.size() == 1) {
     std::cout << "There is a minimum spanning tree:" << std::endl;
   } else {
     std::cout << "There is not a single minimum spanning tree:" << std::endl;
   }
 
+/*
   for (const auto& mst : msts) {
     type_length cost = 0;
     for (const auto& edge : mst) {
@@ -196,7 +198,7 @@ int main()
 
     std::cout << "  MST cost: " << cost << std::endl;
   }
-
+*/
 
   assert(msts.size() == 1);
   const auto& mst = msts[0];
@@ -204,7 +206,15 @@ int main()
     [](auto sum, const auto& edge) {
       return sum + edge.length_;
     });
-  assert(cost == 6);
+  std::cout << "MST cost: " << cost << std::endl;
+  assert(cost == expected_cost);
+}
+
+int main()
+{
+  test_mst(EXAMPLE_GRAPH_SMALL, 6);
+  test_mst(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES, -10013);
+  test_mst(EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES, 7); //TODO: Not the same as with prims.
 
   return EXIT_SUCCESS;
 }

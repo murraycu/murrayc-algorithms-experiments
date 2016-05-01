@@ -175,12 +175,12 @@ type_length floyd_warshall_calc_all_pairs_shortest_path(const type_vec_nodes& ve
   return shortest_path_so_far;
 }
 
-int main()
+static
+void test_apsp(const std::vector<Vertex>& graph, type_length expected_shortest_path)
 {
   bool has_negative_cycles = false;
   const auto shortest_path_length =
-    floyd_warshall_calc_all_pairs_shortest_path(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES,
-      has_negative_cycles);
+    floyd_warshall_calc_all_pairs_shortest_path(graph, has_negative_cycles);
   if(has_negative_cycles)
   {
     std::cout << "Negative cycle found." << std::endl;
@@ -190,7 +190,14 @@ int main()
     std::cout << "Shortest path length: " << shortest_path_length << std::endl;
   }
 
-  assert(shortest_path_length == -10003);
+  assert(shortest_path_length == expected_shortest_path);
+}
+
+int main()
+{
+  test_apsp(EXAMPLE_GRAPH_SMALL, 0);
+  test_apsp(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES, -10003);
+  test_apsp(EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES, -4);
 
   return EXIT_SUCCESS;
 }

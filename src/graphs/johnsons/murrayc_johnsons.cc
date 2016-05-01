@@ -73,8 +73,8 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
       //std:: cout << "  source=" << i << ", dest=" << edge.destination_vertex_ << std::endl;
       //std:: cout << "  shortest_path_for_i =" << shortest_path_for_i <<
       //  ", vertex_dest.shortest_path_for_dest=" <<  shortest_path_for_dest << std::endl;
-      edge.length_ +=
-        (shortest_path_for_i - shortest_path_for_dest);
+      const auto diff = shortest_path_for_i - shortest_path_for_dest;
+      edge.length_ += diff;
       //std::cout << "new edge length: " << edge.length_ << std::endl;
       if (edge.length_ < 0) {
         std::cerr << "Error: The new edge length should not be negative: " << edge.length_ << std::endl;
@@ -101,8 +101,8 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
 
       //Convert to the length of the path in the original set of vertices
       //(with negative edge weights):
-      const type_length real_shortest_path = shortest_path.length_
-        - shortest_path_u + shortest_path_v;
+      const auto diff = shortest_path_u - shortest_path_v;
+      const auto real_shortest_path = shortest_path.length_ - diff;
       if (real_shortest_path < min) {
         min = real_shortest_path;
       }
