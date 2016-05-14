@@ -55,6 +55,7 @@ Makefile.in
 /murrayc_find_objects_in_image_with_disjoint_set
 /murrayc_greedy_make_change
 /murrayc_bellman_ford
+/murrayc_breadth_first_search
 /murrayc_dijkstra
 /murrayc_floyd_warshall
 /murrayc_johnsons

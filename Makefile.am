@@ -20,6 +20,7 @@ check_PROGRAMS = \
   murrayc_greedy_make_change \
   murrayc_dp_make_change \
   murrayc_bellman_ford \
+  murrayc_breadth_first_search \
   murrayc_dijkstra \
   murrayc_floyd_warshall \
   murrayc_kruskals \
@@ -72,6 +73,16 @@ murrayc_bellman_ford_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_bellman_ford_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_breadth_first_search_SOURCES = \
+	src/graphs/breadth_first_search/murrayc_breadth_first_search.cc \
+	src/graphs/breadth_first_search/breadth_first_search.h \
+	$(graphs_utils_sources)
+murrayc_breadth_first_search_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_breadth_first_search_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dijkstra_SOURCES = \
