@@ -30,7 +30,8 @@ public:
   Edge& operator=(Edge&& src) = default;
 
   type_num destination_vertex_;
-  type_length length_;
+  type_length length_; //Or cost, capacity, etc.
 };
+
 
 #endif // MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EDGE

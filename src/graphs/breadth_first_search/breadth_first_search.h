@@ -13,18 +13,44 @@ using type_vec_nodes = std::vector<Vertex>;
 
 using type_num = Edge::type_num;
 
-static
-std::vector<type_num>
-get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
-  const std::unordered_map<type_num, type_num>& map_path_predecessor)
+class SourceAndEdge
 {
-  std::vector<type_num> path;
+public:
+  SourceAndEdge()
+  : source_(0),
+    edge_(0)
+  {}
+
+  SourceAndEdge(type_num source, type_num edge)
+  : source_(source),
+    edge_(edge)
+  {}
+  
+  SourceAndEdge(const SourceAndEdge& src) = default;
+  SourceAndEdge& operator=(const SourceAndEdge& src) = default;
+
+  SourceAndEdge(SourceAndEdge&& src) = default;
+  SourceAndEdge& operator=(SourceAndEdge&& src) = default;
+  
+  bool operator==(const SourceAndEdge& src) const {
+    return source_ == src.source_ &&
+      edge_ == src.edge_;
+  }
+
+  type_num source_;
+  type_num edge_;
+};
+
+static
+std::vector<SourceAndEdge>
+get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
+  const std::unordered_map<type_num, SourceAndEdge>& map_path_predecessor)
+{
+  std::vector<SourceAndEdge> path;
 
   type_num predecessor = dest_vertex;
   while(predecessor != start_vertex)
   {
-    path.emplace_back(predecessor);
-
     const auto iter = map_path_predecessor.find(predecessor);
     if (iter == map_path_predecessor.end())
     {
@@ -37,26 +63,28 @@ get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
       break;
     }
 
-    if (predecessor == iter->second)
+    path.emplace_back(iter->second);
+
+    if (predecessor == iter->second.edge_)
     {
       std::cerr << "get_path_from_predecessors(): avoiding infinite loop." << std::endl;
       break;
     }
 
-    predecessor = iter->second;
+    predecessor = iter->second.source_;
   }
   
-  path.emplace_back(start_vertex);
+  //path.emplace_back(SourceAndEdge(start_vertex, 0));
 
   std::reverse(path.begin(), path.end());
   return path;
 }
 
-std::vector<type_num>
+std::vector<SourceAndEdge>
 bfs_compute_path(const type_vec_nodes& vertices,
   type_num start_vertex, type_num dest_vertex)
 {
-  std::vector<type_num> result;
+  std::vector<SourceAndEdge> result;
 
   const auto vertices_size = vertices.size();
 
@@ -71,7 +99,7 @@ bfs_compute_path(const type_vec_nodes& vertices,
   }
   
   std::vector<bool> discovered(vertices_size);
-  std::unordered_map<type_num, type_num> predecessors;
+  std::unordered_map<type_num, SourceAndEdge> predecessors;
 
   std::queue<type_num> queue;
   queue.emplace(start_vertex);
@@ -89,7 +117,16 @@ bfs_compute_path(const type_vec_nodes& vertices,
       break;
     }
     
-    for (const auto& edge : vertex.edges_) {
+    const auto& edges = vertex.edges_;
+    const auto edges_count = edges.size();
+    for (type_num e = 0; e < edges_count; ++e) {
+      const auto& edge = edges[e];
+
+      //Ignore zero-length edges.
+      if (edge.length_ == 0) {
+        continue;
+      }
+
       const auto edge_dest = edge.destination_vertex_;
       if (discovered[edge_dest])
         continue;
@@ -98,7 +135,7 @@ bfs_compute_path(const type_vec_nodes& vertices,
       queue.emplace(edge_dest);
 
       //std::cout << "predecessor of " << edge_dest << " is " << i << std::endl;
-      predecessors[edge_dest] = i;
+      predecessors[edge_dest] = SourceAndEdge(i, e);
     }
   }
 
