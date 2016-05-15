@@ -41,12 +41,47 @@ public:
   type_num edge_;
 };
 
+using type_vec_path = std::vector<SourceAndEdge>;
+
+
+/**
+ * Get just the vertices for the path,
+ * including the start and destination vertices.
+ * If @a path is empty, this is interpreted as a path that begins and ends at
+ * the @a start_vertex.
+ *
+ * @path The path, in terms of edges.
+ */
+std::vector<type_num>
+get_vertices_for_path(type_num start_vertex, const type_vec_path& path, const type_vec_nodes& vertices)
+{
+  std::vector<type_num> result;
+  result.reserve(path.size() + 1);
+
+  if (path.empty()) {
+    result.emplace_back(start_vertex);
+  }
+
+  for (const auto& source_and_edge : path) {
+    if (result.empty()) {
+      result.emplace_back(source_and_edge.source_);
+    }
+
+    const auto& vertex = vertices[source_and_edge.source_];
+    const auto& edge =  vertex.edges_[source_and_edge.edge_];
+    const auto dest_vertex_num = edge.destination_vertex_;
+    result.emplace_back(dest_vertex_num);
+  }
+
+  return result;
+}
+
 static
-std::vector<SourceAndEdge>
+type_vec_path
 get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
   const std::unordered_map<type_num, SourceAndEdge>& map_path_predecessor)
 {
-  std::vector<SourceAndEdge> path;
+  type_vec_path path;
 
   type_num predecessor = dest_vertex;
   while(predecessor != start_vertex)
@@ -80,22 +115,24 @@ get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
   return path;
 }
 
-std::vector<SourceAndEdge>
+bool
 bfs_compute_path(const type_vec_nodes& vertices,
-  type_num start_vertex, type_num dest_vertex)
+  type_num start_vertex, type_num dest_vertex, type_vec_path& path)
 {
-  std::vector<SourceAndEdge> result;
+  type_vec_path result;
 
   const auto vertices_size = vertices.size();
 
   if (start_vertex >= vertices_size) {
     std::cerr << "start vertex not found in vertices: " << start_vertex << std::endl;
-    return result;
+    path = result;
+    return false;
   }
 
   if (dest_vertex >= vertices_size) {
     std::cerr << "end vertex not found in vertices: " << dest_vertex << std::endl;
-    return result;
+    path = result;
+    return false;
   }
   
   std::vector<bool> discovered(vertices_size);
@@ -142,7 +179,8 @@ bfs_compute_path(const type_vec_nodes& vertices,
   if (found)
     result = get_path_from_predecessors(start_vertex, dest_vertex, predecessors);
 
-  return result;
+  path = result;
+  return found;
 }
 
 
