@@ -22,6 +22,7 @@ check_PROGRAMS = \
   murrayc_bellman_ford \
   murrayc_breadth_first_search \
   murrayc_dijkstra \
+  murrayc_dinic \
   murrayc_floyd_warshall \
   murrayc_ford_fulkerson \
   murrayc_kruskals \
@@ -95,6 +96,15 @@ murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_dijkstra_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_dinic_SOURCES = \
+	src/graphs/dinic/murrayc_dinic.cc \
+	$(graphs_utils_sources)
+murrayc_dinic_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_dinic_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_floyd_warshall_SOURCES = \
