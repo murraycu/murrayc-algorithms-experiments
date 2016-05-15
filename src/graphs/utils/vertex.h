@@ -24,4 +24,8 @@ public:
   std::vector<Edge> edges_;
 };
 
+// A set of vertices and their edges.
+using type_vec_nodes = std::vector<Vertex>;
+
+
 #endif // MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_VERTEX

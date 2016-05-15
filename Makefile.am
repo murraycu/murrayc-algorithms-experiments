@@ -62,6 +62,7 @@ graphs_utils_sources =  \
 	src/graphs/utils/edge.h \
 	src/graphs/utils/vertex.h \
 	src/graphs/utils/shortest_path.h \
+	src/graphs/utils/source_and_edge.h \
 	src/graphs/utils/example_graphs.h
 
 graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
