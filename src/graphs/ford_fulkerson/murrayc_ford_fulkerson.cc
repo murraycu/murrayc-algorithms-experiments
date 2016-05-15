@@ -49,6 +49,12 @@ Edge& get_reverse_edge(const Edge& edge, type_vec_nodes& vertices)
   return dest.edges_[edge.reverse_edge_in_dest_];
 }
 
+/** This is actually the Edmonds-Karp algorithm,
+ * because it uses BFS to find the path in each iteration, giving us the path
+ * with the least number of hops in each iteration.
+ * Using DFS would still be Ford-Fulkerson, but not Edmunds-Karp, and would
+ * be less efficient.
+ */
 static
 Edge::type_length
 ford_fulkerson_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num, type_num sink_vertex_num)
