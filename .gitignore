@@ -58,6 +58,7 @@ Makefile.in
 /murrayc_breadth_first_search
 /murrayc_dijkstra
 /murrayc_floyd_warshall
+/murrayc_ford_fulkerson
 /murrayc_johnsons
 /murrayc_kruskals
 /murrayc_prims

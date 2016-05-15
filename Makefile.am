@@ -23,6 +23,7 @@ check_PROGRAMS = \
   murrayc_breadth_first_search \
   murrayc_dijkstra \
   murrayc_floyd_warshall \
+  murrayc_ford_fulkerson \
   murrayc_kruskals \
   murrayc_johnsons \
   murrayc_prims \
@@ -102,6 +103,15 @@ murrayc_floyd_warshall_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_floyd_warshall_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_ford_fulkerson_SOURCES = \
+	src/graphs/ford_fulkerson/murrayc_ford_fulkerson.cc \
+	$(graphs_utils_sources)
+murrayc_ford_fulkerson_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_ford_fulkerson_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_johnsons_SOURCES = \

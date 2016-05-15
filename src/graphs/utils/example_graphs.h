@@ -12,6 +12,14 @@ const std::vector<Vertex> EXAMPLE_GRAPH_SMALL = {
   Vertex()
 };
 
+//0-indexed vertices:
+const std::vector<Vertex> EXAMPLE_GRAPH_SMALL_FOR_FLOW = {
+  Vertex({Edge(1, 3), Edge(2, 2)}),
+  Vertex({Edge(2, 5), Edge(3, 2)}),
+  Vertex({Edge(3, 3)}),
+  Vertex()
+};
+
 const std::vector<Vertex> EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES = {
   Vertex({Edge(5, -10), Edge(1, -5)}),
   Vertex({Edge(2, 1)}),

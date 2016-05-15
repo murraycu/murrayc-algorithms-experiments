@@ -15,12 +15,14 @@ public:
 
   Edge()
   : destination_vertex_(0),
-    length_(0)
+    length_(0),
+    reverse_edge_in_dest_(0)
   {}
 
   Edge(type_num destination_vertex, type_length length)
   : destination_vertex_(destination_vertex),
-    length_(length)
+    length_(length),
+    reverse_edge_in_dest_(0)
   {}
 
   Edge(const Edge& src) = default;
@@ -31,6 +33,9 @@ public:
 
   type_num destination_vertex_;
   type_length length_; //Or cost, capacity, etc.
+
+  //TODO: This is only used for max-flow algorithms.
+  type_num reverse_edge_in_dest_;
 };
 
 
