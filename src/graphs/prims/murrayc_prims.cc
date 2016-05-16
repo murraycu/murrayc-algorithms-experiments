@@ -99,7 +99,7 @@ int main()
   cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES);
   std::cout << "MST cost: " << cost << std::endl;
   assert(cost == -10013);
-  
+
   cost = compute_mst_cost(EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES);
   std::cout << "MST cost: " << cost << std::endl;
   assert(cost == 59);

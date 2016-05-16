@@ -126,7 +126,7 @@ type_length floyd_warshall_calc_all_pairs_shortest_path(const type_vec_nodes& ve
 
   //Use two 2-D vectors: One for k and one for k-1,
   //just swapping which one we use for k and which one for k-1,
-  //to avoid copying and allocating new memory each time we want 
+  //to avoid copying and allocating new memory each time we want
   //to store vector k as vector k-1 and have a new fresh vector k:
   type_shortest_paths shortest_paths_a(vertices_count + 1);
   type_shortest_paths shortest_paths_b(vertices_count + 1);

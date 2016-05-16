@@ -26,14 +26,14 @@ make_residual_graph(const type_vec_nodes& vertices)
       const auto dest_vertex_num = edge.destination_vertex_;
       auto& dest_vertex = result[dest_vertex_num];
       auto& edges = dest_vertex.edges_;
-      
+
       //Add reverse edge:
       edges.emplace_back(i, 0);
       auto& reverse = edges.back();
 
       //Tell each edge about its reverse edge:
       reverse.reverse_edge_in_dest_ = e;
-      
+
       auto& source_edge = vertex.edges_[e];
       source_edge.reverse_edge_in_dest_ = edges.size() - 1;
     }
@@ -67,24 +67,24 @@ ford_fulkerson_max_flow(const type_vec_nodes& vertices, type_num source_vertex_n
   type_vec_path path;
   while(bfs_compute_path(residual_graph, source_vertex_num, sink_vertex_num,
     path)) {
-    
+
     //std::cout << "path found: ";
     //const auto path_vertices = get_vertices_for_path(source_vertex_num, path, residual_graph);
     //for (const auto& v : path_vertices) {
     //  std::cout << v << ", ";
     //}
     //std::cout << std::endl;
-  
+
     //Find the bottleneck in this path
     //(The edge with the smallest remaining capacity.)
     const auto iter = std::min_element(path.begin(), path.end(),
       [&residual_graph] (const auto& a, const auto& b) {
         const auto& a_vertex = residual_graph[a.source_];
         const auto& a_edge = a_vertex.edges_[a.edge_];
-        
+
         const auto& b_vertex = residual_graph[b.source_];
         const auto& b_edge = b_vertex.edges_[b.edge_];
-    
+
         return a_edge.length_ < b_edge.length_;
       });
     const auto& min_vertex = residual_graph[iter->source_];
@@ -103,14 +103,14 @@ ford_fulkerson_max_flow(const type_vec_nodes& vertices, type_num source_vertex_n
       //  << ", residual=" << edge.residual_ << std::endl;
       edge.length_ -= c;
       //std::cout << "after: edge.length_=" << edge.length_ << std::endl;
-      
+
       //Increase the reverse edge's capacity, to allow an undo:
       auto& reverse_edge = get_reverse_edge(edge, residual_graph);
       reverse_edge.length_ += c;
 
 
     }
-    
+
     result += c;
   }
 
@@ -121,7 +121,7 @@ static
 void test_small(type_num source_vertex_num, type_num sink_vertex_num, Edge::type_length expected_max_flow)
 {
   const auto max_flow = ford_fulkerson_max_flow(EXAMPLE_GRAPH_SMALL_FOR_FLOW, source_vertex_num, sink_vertex_num);
-  
+
   std::cout << "max flow from " << source_vertex_num
     << " to " << sink_vertex_num
     << ": " << max_flow

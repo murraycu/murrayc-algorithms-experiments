@@ -23,7 +23,7 @@ public:
   : Edge(edge),
     source_vertex_(source_vertex)
   {}
-  
+
   EdgeWithSource(type_num source_vertex, type_num destination_vertex, type_length length)
   : Edge(destination_vertex, length),
     source_vertex_(source_vertex)
@@ -67,7 +67,7 @@ type_set_msts
 find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_nodes, type_num max_clusters)
 {
   type_set_msts result; //Declare this here to try to get some RVO.
-  
+
   //Map of roots to spanning tree costs:
   std::unordered_map<type_num, type_vec_edges_with_sources> map_msts;
 
@@ -98,7 +98,7 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
       //std::cout << "clusters_count=" << clusters_count << ", max_clusters=" << max_clusters << std::endl;
       if(clusters_count > max_clusters) {
         //std::cout << "  joining" << std::endl;
-        
+
         //Get and remove existing cost for these clusters/trees:
         //TODO: This would be easier if our UnionFind data structure could
         //store associated data, like a map.
@@ -142,7 +142,7 @@ find_clusters(const type_vec_edges_with_sources& sorted_edges, type_num count_no
   }
 
   //std::cout << "min_spacing: " << min_spacing << std::endl;
-  
+
   //Return only the costs of the clusters/trees,
   //not including the UnionFind's roots:
   std::transform(map_msts.begin(), map_msts.end(),

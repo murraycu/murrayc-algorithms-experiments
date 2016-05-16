@@ -87,7 +87,7 @@ bfs_compute_path(const type_vec_nodes& vertices,
       found = true;
       break;
     }
-    
+
     const auto& edges = vertex.edges_;
     const auto edges_count = edges.size();
     for (type_num e = 0; e < edges_count; ++e) {
@@ -101,7 +101,7 @@ bfs_compute_path(const type_vec_nodes& vertices,
       const auto edge_dest = edge.destination_vertex_;
       if (discovered[edge_dest])
         continue;
-      
+
       discovered[edge_dest] = true;
       queue.emplace(edge_dest);
 

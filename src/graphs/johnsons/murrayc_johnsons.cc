@@ -35,7 +35,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
     vertex_s.edges_.emplace_back(i, 0);
   }
 
-  //Run Bellman-Ford single source shortest path algorithm from our new vertex s to 
+  //Run Bellman-Ford single source shortest path algorithm from our new vertex s to
   //(We can't use Dijkstra's SSSP algorithm because we can have negative edge lengths).
   //This gives us a value (from s to the vertex) for each vertex:
   const auto shortest_paths_from_s =
@@ -64,7 +64,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
   auto vertices_reweighted = vertices;
   for (type_num i = 0; i < original_size; ++i) { //Not including the new vertex_s.
     const auto shortest_path_for_i = shortest_paths_from_s[i].length_;
-    
+
     auto& vertex = vertices_reweighted[i];
     for (auto& edge : vertex.edges_) {
       const auto shortest_path_for_dest = shortest_paths_from_s[edge.destination_vertex_].length_;
@@ -83,7 +83,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
     }
   }
 
-  //Use Dijkstra's single source shortest path algorithm on each u, v in 
+  //Use Dijkstra's single source shortest path algorithm on each u, v in
   //the reweighted graph:
   type_length min = Edge::LENGTH_INFINITY;
   for (type_num u = 0; u < original_size; ++u) {
@@ -108,7 +108,7 @@ type_length johnsons_all_pairs_shortest_path(const type_vec_nodes& vertices, boo
       }
     }
   }
-  
+
   return min;
 }
 
