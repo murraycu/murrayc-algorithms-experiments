@@ -28,6 +28,7 @@ check_PROGRAMS = \
   murrayc_kruskals \
   murrayc_johnsons \
   murrayc_prims \
+  murrayc_push_relabel \
   murrayc_dependency_resolution \
   murrayc_quickselect \
   murrayc_subset_iteration \
@@ -153,6 +154,16 @@ murrayc_prims_CXXFLAGS = \
 	$(graph_utils_cxxflags)
 murrayc_prims_LDADD = \
 	$(PROJECT_LIBS)
+
+murrayc_push_relabel_SOURCES = \
+	src/graphs/push_relabel/murrayc_push_relabel.cc \
+	$(graphs_utils_sources)
+murrayc_push_relabel_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_push_relabel_LDADD = \
+	$(PROJECT_LIBS)
+
 
 murrayc_dependency_resolution_SOURCES = \
 	src/graphs/dependency_resolution/murrayc_dependency_resolution.cc

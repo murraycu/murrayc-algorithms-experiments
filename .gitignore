@@ -60,6 +60,7 @@ Makefile.in
 /murrayc_dinic
 /murrayc_floyd_warshall
 /murrayc_ford_fulkerson
+/murrayc_push_relabel
 /murrayc_johnsons
 /murrayc_kruskals
 /murrayc_prims
