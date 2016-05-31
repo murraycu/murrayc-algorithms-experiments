@@ -65,7 +65,7 @@ bool has_outgoing_downhill_capacity(const type_vec_nodes& vertices,
 
 static
 Edge::type_length
-push_relabel_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num, type_num /* sink_vertex_num */)
+push_relabel_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num, type_num sink_vertex_num)
 {
   //TODO: Separate map of edges to their flows?
   auto residual_graph = make_residual_graph(vertices);
@@ -75,17 +75,44 @@ push_relabel_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num
   heights[source_vertex_num] = vertices_count;
   std::vector<Edge::type_length> excesses(vertices_count);
 
+  // This should return true if a is less than b.
   const auto comparator =
-    [&residual_graph, &heights, &excesses] (const auto& a, const auto& b)
+    [&residual_graph, &heights, &excesses, sink_vertex_num] (const auto& a, const auto& b)
     {
+      // If they are the same index, then a is not less than b.
+      if (a == b) {
+        return false;
+      }
+
       const auto excess_a = excesses[a];
       const auto excess_b = excesses[b];
-      if (excess_a != excess_b) {
-        return excess_a > excess_b;
+
+      // If only one has excess,the one with excess comes first.
+      if (excess_a > 0 && excess_b <= 0) {
+        return true;
+      } else if (excess_b > 0 && excess_a <= 0) {
+        return false;
+      }
+
+      // Both a and b have have excess:
+
+      //if (excess_a != excess_b) {
+      //  return excess_a > excess_b;
+      //}
+
+      //Make sure that the sink vertex is always the last one,
+      if (a == sink_vertex_num) {
+        return false;
+      } else if (b == sink_vertex_num) {
+        return false;
       }
 
       const auto height_a = heights[a];
       const auto height_b = heights[b];
+      if (height_a == height_b) {
+        return excess_a > excess_b; //TODO: Alternative ways of choosing?
+      }
+
       return height_a > height_b;
     };
 
@@ -139,6 +166,8 @@ push_relabel_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num
         iter_edge = std::find_if(iter_edge, edges.end(),
           predicate_edge_has_capacity);
       }
+    } else if (best == sink_vertex_num) {
+      std::cerr << "Unexpectedly trying to relabel destination vertex.\n";
     } else {
       // Relabel the highest vertex and try again.
       heights[best]++;
