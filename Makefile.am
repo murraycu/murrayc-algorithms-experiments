@@ -30,6 +30,7 @@ check_PROGRAMS = \
   murrayc_prims \
   murrayc_push_relabel \
   murrayc_dependency_resolution \
+  murrayc_fibonacci_by_matrix_multiplication \
   murrayc_quickselect \
   murrayc_subset_iteration \
   murrayc_dp_string_edit_distance
@@ -177,6 +178,13 @@ murrayc_quickselect_SOURCES = \
 murrayc_quickselect_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_quickselect_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_fibonacci_by_matrix_multiplication_SOURCES = \
+	src/fibonacci_by_matrix_multiplication/murrayc_fibonacci_by_matrix_multiplication.cc
+murrayc_fibonacci_by_matrix_multiplication_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_fibonacci_by_matrix_multiplication_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_subset_iteration_SOURCES = \

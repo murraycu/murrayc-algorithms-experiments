@@ -65,6 +65,7 @@ Makefile.in
 /murrayc_kruskals
 /murrayc_prims
 /murrayc_dependency_resolution
+/murrayc_fibonacci_by_matrix_multiplication
 /murrayc_quickselect
 /murrayc_subset_iteration
 
