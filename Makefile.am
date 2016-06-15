@@ -33,7 +33,8 @@ check_PROGRAMS = \
   murrayc_fibonacci_by_matrix_multiplication \
   murrayc_quickselect \
   murrayc_subset_iteration \
-  murrayc_dp_string_edit_distance
+  murrayc_dp_string_edit_distance \
+  murrayc_wang_tiles
 
 TESTS = $(check_PROGRAMS)
 
@@ -201,3 +202,11 @@ murrayc_dp_string_edit_distance_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_string_edit_distance_LDADD = \
 	$(PROJECT_LIBS)
+
+murrayc_wang_tiles_SOURCES = \
+	src/combinatorics/wang_tiles/murrayc_wang_tiles.cc
+murrayc_wang_tiles_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_wang_tiles_LDADD = \
+	$(PROJECT_LIBS)
+
