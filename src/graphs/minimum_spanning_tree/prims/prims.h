@@ -1,10 +1,8 @@
-#include "utils/example_graphs.h"
+#include "utils/vertex.h"
 #include <unordered_set>
 #include <queue>
 #include <limits>
 #include <iostream>
-#include <cstdlib>
-#include <cassert>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -89,22 +87,3 @@ compute_mst_cost(const type_vec_nodes& nodes)
 
   return cost;
 }
-
-int main()
-{
-  auto cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL);
-  std::cout << "MST cost: " << cost << std::endl;
-  assert(cost == 6);
-
-  cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES);
-  std::cout << "MST cost: " << cost << std::endl;
-  assert(cost == -10013);
-
-  cost = compute_mst_cost(EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES);
-  std::cout << "MST cost: " << cost << std::endl;
-  assert(cost == 59);
-
-  return EXIT_SUCCESS;
-}
-
-
