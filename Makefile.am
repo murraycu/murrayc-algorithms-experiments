@@ -72,8 +72,8 @@ graphs_utils_sources =  \
 graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
 
 murrayc_bellman_ford_SOURCES = \
-	src/graphs/bellman_ford/murrayc_bellman_ford.cc \
-	src/graphs/bellman_ford/bellman_ford.h \
+	src/graphs/shortest_path/bellman_ford/murrayc_bellman_ford.cc \
+	src/graphs/shortest_path/bellman_ford/bellman_ford.h \
 	$(graphs_utils_sources)
 murrayc_bellman_ford_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -82,8 +82,8 @@ murrayc_bellman_ford_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_breadth_first_search_SOURCES = \
-	src/graphs/breadth_first_search/murrayc_breadth_first_search.cc \
-	src/graphs/breadth_first_search/breadth_first_search.h \
+	src/graphs/shortest_path/breadth_first_search/murrayc_breadth_first_search.cc \
+	src/graphs/shortest_path/breadth_first_search/breadth_first_search.h \
 	$(graphs_utils_sources)
 murrayc_breadth_first_search_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -92,8 +92,8 @@ murrayc_breadth_first_search_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dijkstra_SOURCES = \
-	src/graphs/dijkstra/murrayc_dijkstra.cc \
-	src/graphs/dijkstra/dijkstra.h \
+	src/graphs/shortest_path/dijkstra/murrayc_dijkstra.cc \
+	src/graphs/shortest_path/dijkstra/dijkstra.h \
 	$(graphs_utils_sources)
 murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -101,17 +101,8 @@ murrayc_dijkstra_CXXFLAGS = \
 murrayc_dijkstra_LDADD = \
 	$(PROJECT_LIBS)
 
-murrayc_dinic_SOURCES = \
-	src/graphs/dinic/murrayc_dinic.cc \
-	$(graphs_utils_sources)
-murrayc_dinic_CXXFLAGS = \
-	$(COMMON_CXXFLAGS) \
-	$(graph_utils_cxxflags)
-murrayc_dinic_LDADD = \
-	$(PROJECT_LIBS)
-
 murrayc_floyd_warshall_SOURCES = \
-	src/graphs/floyd_warshall/murrayc_floyd_warshall.cc \
+	src/graphs/shortest_path/floyd_warshall/murrayc_floyd_warshall.cc \
 	$(graphs_utils_sources)
 murrayc_floyd_warshall_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -119,19 +110,10 @@ murrayc_floyd_warshall_CXXFLAGS = \
 murrayc_floyd_warshall_LDADD = \
 	$(PROJECT_LIBS)
 
-murrayc_ford_fulkerson_SOURCES = \
-	src/graphs/ford_fulkerson/murrayc_ford_fulkerson.cc \
-	$(graphs_utils_sources)
-murrayc_ford_fulkerson_CXXFLAGS = \
-	$(COMMON_CXXFLAGS) \
-	$(graph_utils_cxxflags)
-murrayc_ford_fulkerson_LDADD = \
-	$(PROJECT_LIBS)
-
 murrayc_johnsons_SOURCES = \
-	src/graphs/johnsons/murrayc_johnsons.cc \
-	src/graphs/bellman_ford/bellman_ford.h \
-	src/graphs/dijkstra/dijkstra.h \
+	src/graphs/shortest_path/johnsons/murrayc_johnsons.cc \
+	src/graphs/shortest_path/bellman_ford/bellman_ford.h \
+	src/graphs/shortest_path/dijkstra/dijkstra.h \
 	$(graphs_utils_sources)
 murrayc_johnsons_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -139,8 +121,26 @@ murrayc_johnsons_CXXFLAGS = \
 murrayc_johnsons_LDADD = \
 	$(PROJECT_LIBS)
 
+murrayc_dinic_SOURCES = \
+	src/graphs/max_flow/dinic/murrayc_dinic.cc \
+	$(graphs_utils_sources)
+murrayc_dinic_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_dinic_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_ford_fulkerson_SOURCES = \
+	src/graphs/max_flow/ford_fulkerson/murrayc_ford_fulkerson.cc \
+	$(graphs_utils_sources)
+murrayc_ford_fulkerson_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_ford_fulkerson_LDADD = \
+	$(PROJECT_LIBS)
+
 murrayc_kruskals_SOURCES = \
-	src/graphs/kruskals/murrayc_kruskals.cc \
+	src/graphs/minimum_spanning_tree/kruskals/murrayc_kruskals.cc \
 	$(graphs_utils_sources)
 murrayc_kruskals_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -149,7 +149,7 @@ murrayc_kruskals_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_prims_SOURCES = \
-	src/graphs/prims/murrayc_prims.cc \
+	src/graphs/minimum_spanning_tree/prims/murrayc_prims.cc \
 	$(graphs_utils_sources)
 murrayc_prims_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
@@ -158,7 +158,7 @@ murrayc_prims_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_push_relabel_SOURCES = \
-	src/graphs/push_relabel/murrayc_push_relabel.cc \
+	src/graphs/max_flow/push_relabel/murrayc_push_relabel.cc \
 	$(graphs_utils_sources)
 murrayc_push_relabel_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \

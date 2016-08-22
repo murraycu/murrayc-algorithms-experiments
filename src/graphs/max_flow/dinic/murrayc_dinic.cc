@@ -1,5 +1,5 @@
 #include "utils/example_graphs.h"
-#include "breadth_first_search/breadth_first_search.h"
+#include "shortest_path/breadth_first_search/breadth_first_search.h"
 #include <stack>
 #include <queue>
 #include <iostream>

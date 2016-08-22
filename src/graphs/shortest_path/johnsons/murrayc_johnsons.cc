@@ -1,5 +1,5 @@
-#include "bellman_ford/bellman_ford.h"
-#include "dijkstra/dijkstra.h"
+#include "shortest_path/bellman_ford/bellman_ford.h"
+#include "shortest_path/dijkstra/dijkstra.h"
 #include "utils/example_graphs.h"
 #include "utils/shortest_path.h"
 #include <algorithm>
