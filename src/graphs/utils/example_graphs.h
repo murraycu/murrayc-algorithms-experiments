@@ -4,30 +4,19 @@
 #include "utils/edge.h"
 #include "utils/vertex.h"
 
-//0-indexed vertices:
+// 0-indexed vertices:
 const std::vector<Vertex> EXAMPLE_GRAPH_SMALL = {
-  Vertex({Edge(1, 3), Edge(2, 3)}),
-  Vertex({Edge(2, 1), Edge(3, 2)}),
-  Vertex({Edge(3, 50)}),
-  Vertex()
-};
+  Vertex({Edge(1, 3), Edge(2, 3)}), Vertex({Edge(2, 1), Edge(3, 2)}),
+  Vertex({Edge(3, 50)}), Vertex()};
 
-//0-indexed vertices:
+// 0-indexed vertices:
 const std::vector<Vertex> EXAMPLE_GRAPH_SMALL_FOR_FLOW = {
-  Vertex({Edge(1, 3), Edge(2, 2)}),
-  Vertex({Edge(2, 5), Edge(3, 2)}),
-  Vertex({Edge(3, 3)}),
-  Vertex()
-};
+  Vertex({Edge(1, 3), Edge(2, 2)}), Vertex({Edge(2, 5), Edge(3, 2)}),
+  Vertex({Edge(3, 3)}), Vertex()};
 
 const std::vector<Vertex> EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES = {
-  Vertex({Edge(5, -10), Edge(1, -5)}),
-  Vertex({Edge(2, 1)}),
-  Vertex({Edge(3, 1)}),
-  Vertex({Edge(4, -10000)}),
-  Vertex(),
-  Vertex()
-};
+  Vertex({Edge(5, -10), Edge(1, -5)}), Vertex({Edge(2, 1)}),
+  Vertex({Edge(3, 1)}), Vertex({Edge(4, -10000)}), Vertex(), Vertex()};
 
 const std::vector<Vertex> EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES = {
   Vertex({Edge(9, -4), Edge(9, 3), Edge(6, 6), Edge(7, 17)}),
@@ -38,9 +27,8 @@ const std::vector<Vertex> EXAMPLE_GRAPH_LARGER_WITH_NEGATIVE_EDGES = {
   Vertex({Edge(2, 21), Edge(0, 18), Edge(3, -2), Edge(7, 15)}),
   Vertex({Edge(2, 3), Edge(9, 22), Edge(1, -1)}),
   Vertex({Edge(5, 17), Edge(4, 24)}),
-  Vertex({Edge(2, 8),  Edge(0, 18),  Edge(2, 7)}),
-  Vertex({Edge(8, 20), Edge(8, 17), Edge(8, 24), Edge(6, 24), Edge(3, 10), Edge(3, 13)})
-};
-
+  Vertex({Edge(2, 8), Edge(0, 18), Edge(2, 7)}),
+  Vertex({Edge(8, 20), Edge(8, 17), Edge(8, 24), Edge(6, 24), Edge(3, 10),
+    Edge(3, 13)})};
 
 #endif // MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EXAMPLE_GRAPHS

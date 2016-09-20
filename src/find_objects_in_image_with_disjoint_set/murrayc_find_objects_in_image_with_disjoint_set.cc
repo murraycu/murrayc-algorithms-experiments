@@ -78,9 +78,9 @@ first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
   int next_label = 1;
 
   const std::vector<std::pair<int, int>> neighbour_offsets = {
-    {-1, 0}, // The pixel to the left.
+    {-1, 0},  // The pixel to the left.
     {-1, -1}, // The pixel to the above left.
-    {0, -1}, // The pixel above.
+    {0, -1},  // The pixel above.
     {1, -1}}; // The pixel above and to the right.
 
   // Iterate through every pixel in every row:
@@ -199,9 +199,9 @@ main(int argc, char** argv) {
 
   if (argc < 2) {
     std::cerr << "Usage: theprogram theimagefile" << std::endl;
-    //return EXIT_FAILURE;
+    // return EXIT_FAILURE;
 
-    //This is just so we have something to do during "make check":
+    // This is just so we have something to do during "make check":
     std::cerr << "  Using test.png by default." << std::endl;
     filepath = "src/find_objects_in_image_with_disjoint_set/test.png";
   } else {

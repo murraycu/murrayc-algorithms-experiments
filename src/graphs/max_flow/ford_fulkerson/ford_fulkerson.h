@@ -1,17 +1,15 @@
-#include "utils/vertex.h"
 #include "shortest_path/breadth_first_search/breadth_first_search.h"
-#include <iostream>
+#include "utils/vertex.h"
 #include <cassert>
+#include <iostream>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
 
 using type_num = Edge::type_num;
 
-static
-type_vec_nodes
-make_residual_graph(const type_vec_nodes& vertices)
-{
+static type_vec_nodes
+make_residual_graph(const type_vec_nodes& vertices) {
   type_vec_nodes result = vertices;
 
   const auto vertices_count = result.size();
@@ -26,11 +24,11 @@ make_residual_graph(const type_vec_nodes& vertices)
       auto& dest_vertex = result[dest_vertex_num];
       auto& edges = dest_vertex.edges_;
 
-      //Add reverse edge:
+      // Add reverse edge:
       edges.emplace_back(i, 0);
       auto& reverse = edges.back();
 
-      //Tell each edge about its reverse edge:
+      // Tell each edge about its reverse edge:
       reverse.reverse_edge_in_dest_ = e;
 
       auto& source_edge = vertex.edges_[e];
@@ -41,9 +39,8 @@ make_residual_graph(const type_vec_nodes& vertices)
   return result;
 }
 
-static
-Edge& get_reverse_edge(const Edge& edge, type_vec_nodes& vertices)
-{
+static Edge&
+get_reverse_edge(const Edge& edge, type_vec_nodes& vertices) {
   auto& dest = vertices[edge.destination_vertex_];
   return dest.edges_[edge.reverse_edge_in_dest_];
 }
@@ -54,30 +51,30 @@ Edge& get_reverse_edge(const Edge& edge, type_vec_nodes& vertices)
  * Using DFS would still be Ford-Fulkerson, but not Edmunds-Karp, and would
  * be less efficient.
  */
-static
-Edge::type_length
-ford_fulkerson_max_flow(const type_vec_nodes& vertices, type_num source_vertex_num, type_num sink_vertex_num)
-{
+static Edge::type_length
+ford_fulkerson_max_flow(const type_vec_nodes& vertices,
+  type_num source_vertex_num, type_num sink_vertex_num) {
   Edge::type_length result = 0;
 
-  //TODO: Separate map of edges to their flows?
+  // TODO: Separate map of edges to their flows?
   auto residual_graph = make_residual_graph(vertices);
 
   type_vec_path path;
-  while(bfs_compute_path(residual_graph, source_vertex_num, sink_vertex_num,
-    path)) {
+  while (bfs_compute_path(
+    residual_graph, source_vertex_num, sink_vertex_num, path)) {
 
-    //std::cout << "path found: ";
-    //const auto path_vertices = get_vertices_for_path(source_vertex_num, path, residual_graph);
-    //for (const auto& v : path_vertices) {
+    // std::cout << "path found: ";
+    // const auto path_vertices = get_vertices_for_path(source_vertex_num, path,
+    // residual_graph);
+    // for (const auto& v : path_vertices) {
     //  std::cout << v << ", ";
     //}
-    //std::cout << std::endl;
+    // std::cout << std::endl;
 
-    //Find the bottleneck in this path
+    // Find the bottleneck in this path
     //(The edge with the smallest remaining capacity.)
     const auto iter = std::min_element(path.begin(), path.end(),
-      [&residual_graph] (const auto& a, const auto& b) {
+      [&residual_graph](const auto& a, const auto& b) {
         const auto& a_vertex = residual_graph[a.source_];
         const auto& a_edge = a_vertex.edges_[a.edge_];
 
@@ -89,25 +86,23 @@ ford_fulkerson_max_flow(const type_vec_nodes& vertices, type_num source_vertex_n
     const auto& min_vertex = residual_graph[iter->source_];
     const auto& min_edge = min_vertex.edges_[iter->edge_];
     const auto c = min_edge.length_;
-    //std::cout << "c: " << c << std::endl;
+    // std::cout << "c: " << c << std::endl;
 
-    //Augment the path:
+    // Augment the path:
     for (auto& source_and_edge : path) {
       auto& source = residual_graph[source_and_edge.source_];
       auto& edge = source.edges_[source_and_edge.edge_];
 
-      //Reduce the edge's capacity:
-      //std::cout << "before:"
+      // Reduce the edge's capacity:
+      // std::cout << "before:"
       //  << ", capacity=" << edge.length_
       //  << ", residual=" << edge.residual_ << std::endl;
       edge.length_ -= c;
-      //std::cout << "after: edge.length_=" << edge.length_ << std::endl;
+      // std::cout << "after: edge.length_=" << edge.length_ << std::endl;
 
-      //Increase the reverse edge's capacity, to allow an undo:
+      // Increase the reverse edge's capacity, to allow an undo:
       auto& reverse_edge = get_reverse_edge(edge, residual_graph);
       reverse_edge.length_ += c;
-
-
     }
 
     result += c;

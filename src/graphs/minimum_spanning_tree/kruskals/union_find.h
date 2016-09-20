@@ -1,7 +1,7 @@
 /** Copyright (C) 2015 Murray Cumming
  *
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
  * License, or (at your option) any later version.
  *
@@ -21,42 +21,36 @@
 
 #include <vector>
 
-template
-<typename T_Element = int>
-class UnionFind
-{
+template <typename T_Element = int>
+class UnionFind {
 public:
-  //TODO: Don't use the element type for the size type:
-  UnionFind(T_Element size)
-  : id_(size)
-  {
-    for(T_Element i = 0; i < size; ++i)
-    {
+  // TODO: Don't use the element type for the size type:
+  UnionFind(T_Element size) : id_(size) {
+    for (T_Element i = 0; i < size; ++i) {
       id_[i] = i;
     }
   }
 
-  //Useless if we default to id_[i] = i;
-  void make_set(T_Element i)
-  {
+  // Useless if we default to id_[i] = i;
+  void
+  make_set(T_Element i) {
     id_[i] = i;
   }
 
-  void union_set(T_Element p, T_Element q)
-  {
+  void
+  union_set(T_Element p, T_Element q) {
     auto i = find_set(p);
     auto j = find_set(q);
-    id_[i] = j;  
+    id_[i] = j;
   }
 
   /**
    * This gets the root.
    */
-  T_Element find_set(T_Element i)
-  {
-    while(i != id_[i])
-    {
-      //Path compression:
+  T_Element
+  find_set(T_Element i) {
+    while (i != id_[i]) {
+      // Path compression:
       id_[i] = id_[id_[i]];
 
       i = id_[i];
@@ -69,4 +63,3 @@ public:
 };
 
 #endif /* MURRAYC_UNION_FIND_H */
-

@@ -4,21 +4,20 @@
 #include "utils/edge.h"
 #include <vector>
 
-class Vertex
-{
+class Vertex {
 public:
-  Vertex()
-  {}
+  Vertex() {}
 
   explicit Vertex(std::initializer_list<Edge>&& edges)
-  : edges_(std::move(edges))
-  {}
+  : edges_(std::move(edges)) {}
 
   Vertex(const Vertex& src) = default;
-  Vertex& operator=(const Vertex& src) = default;
+  Vertex&
+  operator=(const Vertex& src) = default;
 
   Vertex(Vertex&& src) = default;
-  Vertex& operator=(Vertex&& src) = default;
+  Vertex&
+  operator=(Vertex&& src) = default;
 
   // A list of other vertices that the vertex has edges leading to.
   std::vector<Edge> edges_;
@@ -26,6 +25,5 @@ public:
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
-
 
 #endif // MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_VERTEX

@@ -1,9 +1,9 @@
 #include "utils/example_graphs.h"
-#include <limits>
 #include <algorithm>
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
+#include <limits>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -13,162 +13,155 @@ using type_length = Edge::type_length;
 
 const type_length LENGTH_INFINITY = std::numeric_limits<type_length>::max();
 
-static
-type_length get_direct_edge_length(const type_vec_nodes& vertices, type_num i, type_num j)
-{
+static type_length
+get_direct_edge_length(const type_vec_nodes& vertices, type_num i, type_num j) {
   const auto& vertex = vertices[i];
   const auto& edges = vertex.edges_;
   const auto iter = std::find_if(edges.begin(), edges.end(),
-    [j](const auto& edge) {
-       return edge.destination_vertex_ == j;
-    });
-  if(iter == edges.end())
+    [j](const auto& edge) { return edge.destination_vertex_ == j; });
+  if (iter == edges.end())
     return LENGTH_INFINITY;
   else
     return iter->length_;
 }
 
-using type_shortest_paths = std::vector<std::vector<type_length>> ;
+using type_shortest_paths = std::vector<std::vector<type_length>>;
 
-static
-void calc_with_cache(const type_vec_nodes& vertices, type_shortest_paths& shortest_paths_k, type_shortest_paths& shortest_paths_k_minus_1,
-  type_num i, type_num j, type_length k, type_length& shortest_path_so_far, bool& has_negative_cycles)
-{
-  //std::cout << "calc_with_cache(): i=" << i << ", j=" << j << ", k=" << k << std::endl;
+static void
+calc_with_cache(const type_vec_nodes& vertices,
+  type_shortest_paths& shortest_paths_k,
+  type_shortest_paths& shortest_paths_k_minus_1, type_num i, type_num j,
+  type_length k, type_length& shortest_path_so_far, bool& has_negative_cycles) {
+  // std::cout << "calc_with_cache(): i=" << i << ", j=" << j << ", k=" << k <<
+  // std::endl;
 
   type_length result = LENGTH_INFINITY;
-  if(k == 0)
-  {
-    if(i == j)
-    {
-      //std::cout << "  i==j: shortest_paths[" << i << "][" << j << "][" << k << "]:" << 0 << std::endl;
+  if (k == 0) {
+    if (i == j) {
+      // std::cout << "  i==j: shortest_paths[" << i << "][" << j << "][" << k
+      // << "]:" << 0 << std::endl;
       result = 0;
-    }
-    else
-    {
-      //std::cout << "  k==0: shortest_paths[" << i << "][" << j << "][" << k << "]:" << 0 << std::endl;
+    } else {
+      // std::cout << "  k==0: shortest_paths[" << i << "][" << j << "][" << k
+      // << "]:" << 0 << std::endl;
       result = get_direct_edge_length(vertices, i, j);
     }
 
-    //Cache it:
+    // Cache it:
     shortest_paths_k[i][j] = result;
     return;
   }
 
   const type_length case1 = shortest_paths_k_minus_1[i][j];
-  if(has_negative_cycles)
+  if (has_negative_cycles)
     return;
 
-  //std::cout << "  case1: shortest_paths[" << i << "][" << j << "][" << k-1 << "]:" << case1 << std::endl;
+  // std::cout << "  case1: shortest_paths[" << i << "][" << j << "][" << k-1 <<
+  // "]:" << case1 << std::endl;
 
-  //Avoid adding infinity to infinity, which would overflow.
+  // Avoid adding infinity to infinity, which would overflow.
   type_length case2 = LENGTH_INFINITY;
   const auto i_to_k = shortest_paths_k_minus_1[i][k];
-  //std::cout << "    i_to_k: shortest_paths[" << i << "][" << k << "][" << k - 1 << "]:" << i_to_k << std::endl;
+  // std::cout << "    i_to_k: shortest_paths[" << i << "][" << k << "][" << k -
+  // 1 << "]:" << i_to_k << std::endl;
   const auto k_to_j = shortest_paths_k_minus_1[k][j];
-  //std::cout << "    k_to_j: shortest_paths[" << k << "][" << j << "][" << k - 1 << "]:" << k_to_j << std::endl;
+  // std::cout << "    k_to_j: shortest_paths[" << k << "][" << j << "][" << k -
+  // 1 << "]:" << k_to_j << std::endl;
 
-  if(i_to_k != LENGTH_INFINITY && k_to_j != LENGTH_INFINITY)
-  {
+  if (i_to_k != LENGTH_INFINITY && k_to_j != LENGTH_INFINITY) {
     case2 = i_to_k + k_to_j;
   }
 
   result = std::min(case1, case2);
 
-  //Cache it:
-  //std::cout << "k=" << k << std::endl;
+  // Cache it:
+  // std::cout << "k=" << k << std::endl;
   shortest_paths_k[i][j] = result;
 
-  //Detect negative cycle,
-  //when k!=0 and i==j,
-  //meaning that there are some paths that are length less than the 0 it
-  //would take to just stay at the node itself.
-  if(i == j && result < 0) {
+  // Detect negative cycle,
+  // when k!=0 and i==j,
+  // meaning that there are some paths that are length less than the 0 it
+  // would take to just stay at the node itself.
+  if (i == j && result < 0) {
     has_negative_cycles = true;
     return;
   }
 
-  if(result < shortest_path_so_far) {
+  if (result < shortest_path_so_far) {
     shortest_path_so_far = result;
   }
 }
 
-void resize_shortest_paths(type_shortest_paths& shortest_paths_k, type_num vertices_count)
-{
-  for(auto& vec_j : shortest_paths_k)
-  {
-    vec_j.resize(vertices_count + 1); //1-indexed.
+void
+resize_shortest_paths(
+  type_shortest_paths& shortest_paths_k, type_num vertices_count) {
+  for (auto& vec_j : shortest_paths_k) {
+    vec_j.resize(vertices_count + 1); // 1-indexed.
   }
 }
 
-void wipe_shortest_paths(type_shortest_paths& shortest_paths_k)
-{
-  for(auto& vec_j : shortest_paths_k)
-  {
+void
+wipe_shortest_paths(type_shortest_paths& shortest_paths_k) {
+  for (auto& vec_j : shortest_paths_k) {
     std::fill(vec_j.begin(), vec_j.end(), 0);
   }
 }
 
-static
-type_length floyd_warshall_calc_all_pairs_shortest_path(const type_vec_nodes& vertices, bool& has_negative_cycles)
-{
+static type_length
+floyd_warshall_calc_all_pairs_shortest_path(
+  const type_vec_nodes& vertices, bool& has_negative_cycles) {
   type_length shortest_path_so_far = LENGTH_INFINITY;
 
-  //Initialize ouput variables:
+  // Initialize ouput variables:
   has_negative_cycles = false;
 
-  if(vertices.empty())
+  if (vertices.empty())
     return LENGTH_INFINITY;
 
   const type_num vertices_count = vertices.size();
 
   //[node i, node j, using path of k nodes]
 
-  //Use two 2-D vectors: One for k and one for k-1,
-  //just swapping which one we use for k and which one for k-1,
-  //to avoid copying and allocating new memory each time we want
-  //to store vector k as vector k-1 and have a new fresh vector k:
+  // Use two 2-D vectors: One for k and one for k-1,
+  // just swapping which one we use for k and which one for k-1,
+  // to avoid copying and allocating new memory each time we want
+  // to store vector k as vector k-1 and have a new fresh vector k:
   type_shortest_paths shortest_paths_a(vertices_count + 1);
   type_shortest_paths shortest_paths_b(vertices_count + 1);
   resize_shortest_paths(shortest_paths_a, vertices_count + 1);
   resize_shortest_paths(shortest_paths_b, vertices_count + 1);
 
   bool k_is_a = true;
-  for(type_num k = 0; k <= vertices_count; ++k)
-  {
-    type_shortest_paths& shortest_paths_k = k_is_a ?
-      shortest_paths_a : shortest_paths_b;
-    type_shortest_paths& shortest_paths_k_minus_1 = k_is_a ?
-      shortest_paths_b : shortest_paths_a;
+  for (type_num k = 0; k <= vertices_count; ++k) {
+    type_shortest_paths& shortest_paths_k =
+      k_is_a ? shortest_paths_a : shortest_paths_b;
+    type_shortest_paths& shortest_paths_k_minus_1 =
+      k_is_a ? shortest_paths_b : shortest_paths_a;
 
-    if(k > 1)
+    if (k > 1)
       wipe_shortest_paths(shortest_paths_k);
 
-    for(type_num i = 0; i < vertices_count; ++i)
-    {
-      for(type_num j = 0; j < vertices_count; ++j)
-      {
-        calc_with_cache(vertices, shortest_paths_k, shortest_paths_k_minus_1,
-          i, j, k,
-          shortest_path_so_far, has_negative_cycles);
+    for (type_num i = 0; i < vertices_count; ++i) {
+      for (type_num j = 0; j < vertices_count; ++j) {
+        calc_with_cache(vertices, shortest_paths_k, shortest_paths_k_minus_1, i,
+          j, k, shortest_path_so_far, has_negative_cycles);
 
-        //Abort as soon as we see a negative cycle
+        // Abort as soon as we see a negative cycle
         //(and elsewhere),
-        //because the Floyd Warshall algorithm cannot handle a negative cycle.
-        if(has_negative_cycles) {
+        // because the Floyd Warshall algorithm cannot handle a negative cycle.
+        if (has_negative_cycles) {
           return 0;
         }
       }
     }
 
-    if(k != 0 && k % 200 == 0)
-    {
+    if (k != 0 && k % 200 == 0) {
       std::cout << "k done: " << k << std::endl;
     }
 
-    //We don't need the previous set of values for k,
-    //after we have filled the values for k:
-    //Swap around which we use for k, using the other one for k-1;
+    // We don't need the previous set of values for k,
+    // after we have filled the values for k:
+    // Swap around which we use for k, using the other one for k-1;
     k_is_a = !k_is_a;
   }
 

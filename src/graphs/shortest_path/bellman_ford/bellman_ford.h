@@ -1,11 +1,11 @@
 #ifndef MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD
 #define MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD
 
-#include "utils/vertex.h"
 #include "utils/shortest_path.h"
+#include "utils/vertex.h"
+#include <iostream>
 #include <limits>
 #include <vector>
-#include <iostream>
 
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
@@ -20,56 +20,57 @@ using type_map_predecessors = std::vector<type_num>;
 /**
  * Calculate the shortest path from @a s to @a v, using at most @i hops (edges).
  */
-static
-void bellman_ford_update_adjacent_vertex(
-  const type_shortest_paths& shortest_paths_i_minus_1, type_shortest_paths& shortest_paths_i,
-  type_num i, type_num s, type_num w, const Edge& edge, type_length& shortest_path_so_far,
-  type_map_predecessors& predecessors)
-{
+static void
+bellman_ford_update_adjacent_vertex(
+  const type_shortest_paths& shortest_paths_i_minus_1,
+  type_shortest_paths& shortest_paths_i, type_num i, type_num s, type_num w,
+  const Edge& edge, type_length& shortest_path_so_far,
+  type_map_predecessors& predecessors) {
   const auto v = edge.destination_vertex_;
 
-  //Check the bounds:
-  //Otherwise a bad edge in the input can cause an out-of-bounds access:
-  if (v >= shortest_paths_i.size())
-  {
-    std::cerr << "bellman_ford_update_adjacent_vertex(): v is too large: " << v << std::endl;
+  // Check the bounds:
+  // Otherwise a bad edge in the input can cause an out-of-bounds access:
+  if (v >= shortest_paths_i.size()) {
+    std::cerr << "bellman_ford_update_adjacent_vertex(): v is too large: " << v
+              << std::endl;
     return;
   }
 
-  //std::cout << "bellman_ford_update_adjacent_vertex(): i=" << i << ", s=" << s << ", w=" << w << ", v=" << v << std::endl;
+  // std::cout << "bellman_ford_update_adjacent_vertex(): i=" << i << ", s=" <<
+  // s << ", w=" << w << ", v=" << v << std::endl;
 
   type_length result = Edge::LENGTH_INFINITY;
-  if(i == 0)
-  {
-    if(s == v)
-    {
-      //std::cout << "  i==j: shortest_paths[" << i << "][" << j << "][" << k << "]:" << 0 << std::endl;
-      //It takes 0 hops to get from s to v if s and v are the same vertex
+  if (i == 0) {
+    if (s == v) {
+      // std::cout << "  i==j: shortest_paths[" << i << "][" << j << "][" << k
+      // << "]:" << 0 << std::endl;
+      // It takes 0 hops to get from s to v if s and v are the same vertex
       result = 0;
-    }
-    else
-    {
-      //There is no way to get from s to v in 0 hops if s is not the same vertex as v:
+    } else {
+      // There is no way to get from s to v in 0 hops if s is not the same
+      // vertex as v:
       result = Edge::LENGTH_INFINITY;
     }
 
-    //Cache it:
-    shortest_paths_i[v]= result;
+    // Cache it:
+    shortest_paths_i[v] = result;
 
     return;
   }
 
   const type_length case1 = shortest_paths_i_minus_1[v];
-  //std::cout << "  case1: existing: shortest_paths[i=" << i-1 << "][" << v << "]:" << case1 << std::endl;
+  // std::cout << "  case1: existing: shortest_paths[i=" << i-1 << "][" << v <<
+  // "]:" << case1 << std::endl;
 
-  type_length case2 = Edge::LENGTH_INFINITY; //min( w_to_v ) for all w.
+  type_length case2 = Edge::LENGTH_INFINITY; // min( w_to_v ) for all w.
   const type_length direct_edge_length = edge.length_;
   const type_length minus_1_s_w = shortest_paths_i_minus_1[w];
   type_length s_to_w_to_v = Edge::LENGTH_INFINITY;
   if (direct_edge_length != Edge::LENGTH_INFINITY &&
-      minus_1_s_w != Edge::LENGTH_INFINITY) { //Avoid overflow
-    //std::cout << "direct_edge_length: " << direct_edge_length << std::endl;
-    //std::cout << "shortest_paths_i_minus_1[w]: " << shortest_paths_i_minus_1[w] << std::endl;
+      minus_1_s_w != Edge::LENGTH_INFINITY) { // Avoid overflow
+    // std::cout << "direct_edge_length: " << direct_edge_length << std::endl;
+    // std::cout << "shortest_paths_i_minus_1[w]: " <<
+    // shortest_paths_i_minus_1[w] << std::endl;
     s_to_w_to_v = minus_1_s_w + direct_edge_length;
     if (s_to_w_to_v < case2) {
       case2 = s_to_w_to_v;
@@ -78,116 +79,114 @@ void bellman_ford_update_adjacent_vertex(
 
   const auto best = std::min(case1, case2);
 
-  //Make sure that it's less than any cost calculated for the same vertex
-  //during this same iteration (i), for another other edge that goes to this
-  //same vertex.
+  // Make sure that it's less than any cost calculated for the same vertex
+  // during this same iteration (i), for another other edge that goes to this
+  // same vertex.
   const auto existing = shortest_paths_i[v];
   if (existing < best) {
     result = existing;
   } else {
     result = best;
 
-    //Also update the predecessor, if we've found a new best way to get to this vertex:
+    // Also update the predecessor, if we've found a new best way to get to this
+    // vertex:
     if (case2 < case1) {
       predecessors[v] = w;
     }
   }
 
-  //std::cout << "  result: " << result << std::endl;
+  // std::cout << "  result: " << result << std::endl;
 
-  //Cache it:
-  //std::cout << "  storing: shortest_paths[i=" << i << "][" << v << "]:" << result << std::endl;
+  // Cache it:
+  // std::cout << "  storing: shortest_paths[i=" << i << "][" << v << "]:" <<
+  // result << std::endl;
   shortest_paths_i[v] = result;
 
-  if(result < shortest_path_so_far) {
+  if (result < shortest_path_so_far) {
     shortest_path_so_far = result;
   }
-  
-  //std::cout << "bellman_ford_update_adjacent_vertex: i=" << i << ", s=" << s << ", v=" << v << ", shortest_path_so_far: " << shortest_path_so_far << std::endl;
+
+  // std::cout << "bellman_ford_update_adjacent_vertex: i=" << i << ", s=" << s
+  // << ", v=" << v << ", shortest_path_so_far: " << shortest_path_so_far <<
+  // std::endl;
 }
 
-static 
-void bellman_ford_single_iteration(const type_vec_nodes& vertices,
-  const type_shortest_paths& shortest_paths_i_minus_1, type_shortest_paths& shortest_paths_i,
-  type_num i, type_num s, type_length& shortest_path_so_far,
-  type_map_predecessors& predecessors)
-{
+static void
+bellman_ford_single_iteration(const type_vec_nodes& vertices,
+  const type_shortest_paths& shortest_paths_i_minus_1,
+  type_shortest_paths& shortest_paths_i, type_num i, type_num s,
+  type_length& shortest_path_so_far, type_map_predecessors& predecessors) {
   const auto vertices_count = vertices.size();
-  for(type_num v = 0; v < vertices_count; ++v) {
+  for (type_num v = 0; v < vertices_count; ++v) {
     if (v == s) {
       shortest_paths_i[v] = 0;
     }
 
-    for(const auto& edge : vertices[v].edges_) {
-      //bellman_ford_update_adjacent_vertex will use shortest_paths_i_minus_1 and then
-      //write new cached values in shortest_paths_i, for use as
-      //the minus_1 values for the next call:
-      bellman_ford_update_adjacent_vertex(shortest_paths_i_minus_1, shortest_paths_i,
-        i, s, v, edge,
-        shortest_path_so_far,
-        predecessors);
-      }
+    for (const auto& edge : vertices[v].edges_) {
+      // bellman_ford_update_adjacent_vertex will use shortest_paths_i_minus_1
+      // and then
+      // write new cached values in shortest_paths_i, for use as
+      // the minus_1 values for the next call:
+      bellman_ford_update_adjacent_vertex(shortest_paths_i_minus_1,
+        shortest_paths_i, i, s, v, edge, shortest_path_so_far, predecessors);
+    }
   }
 }
 
 /** Get all the shortests paths from s to all other paths.
- * This will be more efficient if the caller firsts removes excess parallel edges,
+ * This will be more efficient if the caller firsts removes excess parallel
+ * edges,
  * leaving only the lowest-cost edge between each vertex.
  */
-static
-std::vector<ShortestPath>
-bellman_ford_single_source_shortest_paths(const type_vec_nodes& vertices, type_num s, bool& has_negative_cycles)
-{
-  //Initialize output variable:
+static std::vector<ShortestPath>
+bellman_ford_single_source_shortest_paths(
+  const type_vec_nodes& vertices, type_num s, bool& has_negative_cycles) {
+  // Initialize output variable:
   has_negative_cycles = false;
 
-  //n:
+  // n:
   const type_num vertices_count = vertices.size();
 
   type_map_predecessors map_path_predecessor(vertices_count);
-  map_path_predecessor[s] = 0; //Invalid
+  map_path_predecessor[s] = 0; // Invalid
 
-  //Use two 2-D vectors: One for i and one for i-1,
-  //just swapping which one we use for i and which one for i-1,
-  //to avoid copying and allocating new memory each time we want 
-  //to store vector i as vector i-1 and have a new fresh vector i:
+  // Use two 2-D vectors: One for i and one for i-1,
+  // just swapping which one we use for i and which one for i-1,
+  // to avoid copying and allocating new memory each time we want
+  // to store vector i as vector i-1 and have a new fresh vector i:
   //
-  //Note that we could just use one single vertex,
-  //instead of always remembering the previous iteration's vertex,
-  //but this lets us compare the results to see if there was any
-  //change, allowing us to finish early if an iteration doesn't
-  //find any shorter paths.
+  // Note that we could just use one single vertex,
+  // instead of always remembering the previous iteration's vertex,
+  // but this lets us compare the results to see if there was any
+  // change, allowing us to finish early if an iteration doesn't
+  // find any shorter paths.
   type_shortest_paths shortest_paths_a(vertices_count);
   type_shortest_paths shortest_paths_b(vertices_count);
 
-  bool i_is_a = true; 
+  bool i_is_a = true;
   type_length shortest_path_so_far = Edge::LENGTH_INFINITY;
 
   // i is the number of steps for which we are calculating the shortest path.
   // We need n-1 iterations.
   type_num i = 0;
-  for(i = 0; i < (vertices_count - 1); ++i)
-  {
-    //std::cout << "i=" << i << std::endl;
-    auto& shortest_paths_i = i_is_a ?
-      shortest_paths_a : shortest_paths_b;
-    auto& shortest_paths_i_minus_1 = i_is_a ?
-      shortest_paths_b : shortest_paths_a;
+  for (i = 0; i < (vertices_count - 1); ++i) {
+    // std::cout << "i=" << i << std::endl;
+    auto& shortest_paths_i = i_is_a ? shortest_paths_a : shortest_paths_b;
+    auto& shortest_paths_i_minus_1 =
+      i_is_a ? shortest_paths_b : shortest_paths_a;
 
-    bellman_ford_single_iteration(vertices,
-      shortest_paths_i_minus_1, shortest_paths_i,
-      i, s, shortest_path_so_far,
-      map_path_predecessor);
+    bellman_ford_single_iteration(vertices, shortest_paths_i_minus_1,
+      shortest_paths_i, i, s, shortest_path_so_far, map_path_predecessor);
 
-    //We don't need the previous set of values for i,
-    //after we have filled the values for i:
-    //Swap around which we use for i, using the other one for i-1;
+    // We don't need the previous set of values for i,
+    // after we have filled the values for i:
+    // Swap around which we use for i, using the other one for i-1;
     i_is_a = !i_is_a;
 
-    //If the shortest paths so far have not changed, then they won't change
-    //next time, so we can finish early:
+    // If the shortest paths so far have not changed, then they won't change
+    // next time, so we can finish early:
     if (shortest_paths_i == shortest_paths_i_minus_1) {
-      //std::cout << "Finishing early at i=" << i <<
+      // std::cout << "Finishing early at i=" << i <<
       //  ", count=" << vertices_count << std::endl;
       break;
     }
@@ -195,18 +194,14 @@ bellman_ford_single_source_shortest_paths(const type_vec_nodes& vertices, type_n
 
   const auto shortest_path = shortest_path_so_far;
 
-  //Check for a negative cycle:
-  //Try one more calculation, this time with i=n.
-  //If we get a shorter path then we must have taken a negative cycle:
-  auto& shortest_paths_i = i_is_a ?
-    shortest_paths_a : shortest_paths_b;
-  auto& shortest_paths_i_minus_1 = i_is_a ?
-    shortest_paths_b : shortest_paths_a;
+  // Check for a negative cycle:
+  // Try one more calculation, this time with i=n.
+  // If we get a shorter path then we must have taken a negative cycle:
+  auto& shortest_paths_i = i_is_a ? shortest_paths_a : shortest_paths_b;
+  auto& shortest_paths_i_minus_1 = i_is_a ? shortest_paths_b : shortest_paths_a;
 
-  bellman_ford_single_iteration(vertices,
-    shortest_paths_i_minus_1, shortest_paths_i,
-    i + 1, s, shortest_path_so_far,
-    map_path_predecessor);
+  bellman_ford_single_iteration(vertices, shortest_paths_i_minus_1,
+    shortest_paths_i, i + 1, s, shortest_path_so_far, map_path_predecessor);
 
   if (shortest_path_so_far < shortest_path) {
     has_negative_cycles = true;
@@ -217,11 +212,10 @@ bellman_ford_single_source_shortest_paths(const type_vec_nodes& vertices, type_n
   for (const auto& length_and_predecessor : shortest_paths_i) {
     const auto length = length_and_predecessor;
 
-    //Examine the chain of predecessors to get the full path:
+    // Examine the chain of predecessors to get the full path:
     std::string path;
     type_num predecessor = end_vertex;
-    while(predecessor != s)
-    {
+    while (predecessor != s) {
       path = std::to_string(predecessor) + ", " + path;
       predecessor = map_path_predecessor[predecessor];
     }
@@ -235,4 +229,4 @@ bellman_ford_single_source_shortest_paths(const type_vec_nodes& vertices, type_n
   return result;
 }
 
-#endif //MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD
+#endif // MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD

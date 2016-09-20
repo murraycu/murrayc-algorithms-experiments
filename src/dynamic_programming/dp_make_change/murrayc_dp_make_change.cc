@@ -190,7 +190,7 @@ main() {
   // This is like the knapsack problem, but where:
   //- 1 (coin used) is like the knapsack problems' item value.
   //- coin used count (minimized) is like the knapsack problem's total item
-  //value (maximized).
+  // value (maximized).
   //- coin value is lke the knapsack problem's item weight.
   //- value_needed is like the knapsack problems' weight capacity
   //  We try to get under the limit, hoping to hit the exact limit.

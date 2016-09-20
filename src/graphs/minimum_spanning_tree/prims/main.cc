@@ -1,11 +1,11 @@
 #include "prims.h"
 #include "utils/example_graphs.h"
-#include <iostream>
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
+#include <iostream>
 
-int main()
-{
+int
+main() {
   auto cost = compute_mst_cost(EXAMPLE_GRAPH_SMALL);
   std::cout << "MST cost: " << cost << std::endl;
   assert(cost == 6);
@@ -20,5 +20,3 @@ int main()
 
   return EXIT_SUCCESS;
 }
-
-
