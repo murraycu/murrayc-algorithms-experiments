@@ -8,6 +8,8 @@
 *.gcov
 /gcov-report.txt
 
+*.swp
+
 .deps
 .dirstamp
 .libs
