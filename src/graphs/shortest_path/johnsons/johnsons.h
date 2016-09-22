@@ -33,9 +33,9 @@ johnsons_all_pairs_shortest_path(
   }
 
   // Run Bellman-Ford single source shortest path algorithm from our new vertex
-  // s to
-  //(We can't use Dijkstra's SSSP algorithm because we can have negative edge
-  //lengths).
+  // s.
+  // (We can't use Dijkstra's SSSP algorithm because we can have negative edge
+  // lengths).
   // This gives us a value (from s to the vertex) for each vertex:
   const auto shortest_paths_from_s = bellman_ford_single_source_shortest_paths(
     vertices_with_s, s, has_negative_cycles);
