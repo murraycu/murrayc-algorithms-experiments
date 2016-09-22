@@ -120,11 +120,11 @@ first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
 
             // If a "labelled" neighbour was found,
             // use the lowest neighbour label for the current position:
-            const auto pos_label = pixels_labelled[pos];
             const auto neighbour_label = pixels_labelled[neighbour_pos];
             // std::cout << "pos(" << pos << "): root(" << neighbour_pos << "):
             // " << root << std::endl;
             if (neighbour_label) {
+              const auto pos_label = pixels_labelled[pos];
               if (pos_label && (neighbour_label > pos_label)) {
                 // std::cout << " union_set(" << pos_label << ", " <<
                 // neighbour_label;
