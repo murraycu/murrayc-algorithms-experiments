@@ -168,7 +168,7 @@ first_pass(const guchar* pixels, int pixels_size, int width, int rowstride,
 }
 
 template <typename DistinctSets>
-void
+static unsigned int
 second_pass(int labels_count, DistinctSets& ds) {
   std::cout << "second_pass():" << std::endl;
   std::set<int> roots;
@@ -184,39 +184,15 @@ second_pass(int labels_count, DistinctSets& ds) {
 
     std::cout << ", ";
   }
+  std::cout << "\n";
 
-  std::cout << "count: " << roots.size() << std::endl;
+  return roots.size();
 }
 
-int
-main(int argc, char** argv) {
-  // TODO: gdkmm really needs a simple init() method, like gtkmm.
-  Glib::init();
-  // Gio::init();
-  Gdk::wrap_init();
-
-  const char* filepath = nullptr;
-
-  if (argc < 2) {
-    std::cerr << "Usage: theprogram theimagefile" << std::endl;
-    // return EXIT_FAILURE;
-
-    // This is just so we have something to do during "make check":
-    std::cerr << "  Using test.png by default." << std::endl;
-    filepath = "src/find_objects_in_image_with_disjoint_set/test.png";
-  } else {
-    filepath = argv[1];
-  }
-
-  std::cout << "Loading file: " << filepath << std::endl;
-
-  Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_file(filepath);
-  if (!pixbuf) {
-    std::cerr << "Could not load the pixbuf." << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  std::cout << "Processing file: " << filepath << std::endl;
+/** See https://en.wikipedia.org/wiki/Connected-component_labeling#Two-pass
+ */
+static unsigned int
+count_objects(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) {
   // const auto pixels = pixbuf->get_pixels(); //TODO: Wrap the _with_length()
   // version in gdkmm.
   guint pixels_length = 0;
@@ -245,7 +221,42 @@ main(int argc, char** argv) {
   const auto labels_count = first_pass(
     pixels, pixels_size, width, rowstride, n_channels, pixels_labelled, ds);
 
-  second_pass(labels_count, ds);
+  return second_pass(labels_count, ds);
+}
+
+int
+main(int argc, char** argv) {
+  // TODO: gdkmm really needs a simple init() method, like gtkmm.
+  Glib::init();
+  // Gio::init();
+  Gdk::wrap_init();
+
+  const char* filepath = nullptr;
+
+  if (argc < 2) {
+    std::cerr << "Usage: theprogram theimagefile" << std::endl;
+    // return EXIT_FAILURE;
+
+    // This is just so we have something to do during "make check":
+    std::cerr << "  Using test.png by default." << std::endl;
+    filepath = "src/find_objects_in_image_with_disjoint_set/test.png";
+  } else {
+    filepath = argv[1];
+  }
+
+  std::cout << "Loading file: " << filepath << std::endl;
+
+  auto pixbuf = Gdk::Pixbuf::create_from_file(filepath);
+  if (!pixbuf) {
+    std::cerr << "Could not load the pixbuf." << std::endl;
+    return EXIT_FAILURE;
+  }
+
+  std::cout << "Processing file: " << filepath << std::endl;
+
+  const auto result = count_objects(pixbuf);
+  std::cout << "result: " << result << '\n';
+  assert(result == 2);
 
   return EXIT_SUCCESS;
 }
