@@ -209,15 +209,12 @@ count_objects(const Glib::RefPtr<Gdk::Pixbuf>& pixbuf) {
   // const auto pixels_end = pixels + pixels_size;
 
   const auto pos_count = width * height;
-  std::vector<int> rank;
-  rank.resize(pos_count);
-  std::vector<int> parent;
-  parent.resize(pos_count);
+  std::vector<int> rank(pos_count);
+  std::vector<int> parent(pos_count);
   boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
   // UnionFind<int> ds(pos_count);
 
-  std::vector<int> pixels_labelled;
-  pixels_labelled.resize(pos_count);
+  std::vector<int> pixels_labelled(pos_count);
   const auto labels_count = first_pass(
     pixels, pixels_size, width, rowstride, n_channels, pixels_labelled, ds);
 
