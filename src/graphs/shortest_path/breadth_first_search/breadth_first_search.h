@@ -41,7 +41,7 @@ get_path_from_predecessors(type_num start_vertex, type_num dest_vertex,
     predecessor = iter->second.source_;
   }
 
-  // path.emplace_back(SourceAndEdge(start_vertex, 0));
+  // path.emplace_back(start_vertex, 0);
 
   std::reverse(path.begin(), path.end());
   return path;

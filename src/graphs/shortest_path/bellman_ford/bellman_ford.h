@@ -213,7 +213,7 @@ bellman_ford_single_source_shortest_paths(
 
     path = std::to_string(s) + ", " + path;
 
-    result.emplace_back(ShortestPath(length, path));
+    result.emplace_back(length, path);
 
     ++end_vertex;
   }

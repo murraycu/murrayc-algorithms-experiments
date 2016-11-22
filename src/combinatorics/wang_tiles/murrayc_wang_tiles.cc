@@ -313,7 +313,7 @@ get_solutions(const Grid& grid, const std::vector<Card>& cards,
         // std::cout << "match: card=" << i << ", rotation=" << rotation <<
         // '\n';
         auto solution = prefix;
-        solution.emplace_back(std::make_pair(i, rotation));
+        solution.emplace_back(i, rotation);
 
         // print_solution(solution, grid, cards);
 
