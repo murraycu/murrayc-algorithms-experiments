@@ -39,7 +39,7 @@ bellman_ford_update_adjacent_vertex(
   // std::cout << "bellman_ford_update_adjacent_vertex(): i=" << i << ", s=" <<
   // s << ", w=" << w << ", v=" << v << std::endl;
 
-  type_length result = Edge::LENGTH_INFINITY;
+  auto result = Edge::LENGTH_INFINITY;
   if (i == 0) {
     if (s == v) {
       // std::cout << "  i==j: shortest_paths[" << i << "][" << j << "][" << k
@@ -58,14 +58,14 @@ bellman_ford_update_adjacent_vertex(
     return;
   }
 
-  const type_length case1 = shortest_paths_i_minus_1[v];
+  const auto case1 = shortest_paths_i_minus_1[v];
   // std::cout << "  case1: existing: shortest_paths[i=" << i-1 << "][" << v <<
   // "]:" << case1 << std::endl;
 
-  type_length case2 = Edge::LENGTH_INFINITY; // min( w_to_v ) for all w.
-  const type_length direct_edge_length = edge.length_;
-  const type_length minus_1_s_w = shortest_paths_i_minus_1[w];
-  type_length s_to_w_to_v = Edge::LENGTH_INFINITY;
+  auto case2 = Edge::LENGTH_INFINITY; // min( w_to_v ) for all w.
+  const auto direct_edge_length = edge.length_;
+  const auto minus_1_s_w = shortest_paths_i_minus_1[w];
+  auto s_to_w_to_v = Edge::LENGTH_INFINITY;
   if (direct_edge_length != Edge::LENGTH_INFINITY &&
       minus_1_s_w != Edge::LENGTH_INFINITY) { // Avoid overflow
     // std::cout << "direct_edge_length: " << direct_edge_length << std::endl;
@@ -145,7 +145,7 @@ bellman_ford_single_source_shortest_paths(
   has_negative_cycles = false;
 
   // n:
-  const type_num vertices_count = vertices.size();
+  const auto vertices_count = vertices.size();
 
   type_map_predecessors map_path_predecessor(vertices_count);
   map_path_predecessor[s] = 0; // Invalid
@@ -164,7 +164,7 @@ bellman_ford_single_source_shortest_paths(
   type_shortest_paths shortest_paths_b(vertices_count);
 
   bool i_is_a = true;
-  type_length shortest_path_so_far = Edge::LENGTH_INFINITY;
+  auto shortest_path_so_far = Edge::LENGTH_INFINITY;
 
   // i is the number of steps for which we are calculating the shortest path.
   // We need n-1 iterations.
@@ -214,7 +214,7 @@ bellman_ford_single_source_shortest_paths(
 
     // Examine the chain of predecessors to get the full path:
     std::string path;
-    type_num predecessor = end_vertex;
+    auto predecessor = end_vertex;
     while (predecessor != s) {
       path = std::to_string(predecessor) + ", " + path;
       predecessor = map_path_predecessor[predecessor];
