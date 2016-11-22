@@ -116,6 +116,31 @@ bellman_ford_update_adjacent_vertex(
   return changed;
 }
 
+
+
+/**
+ * Calculate the shortest path from @a s to @a v, using at most @i hops (edges).
+ * @result true if the shortest path was changed.
+ */
+static bool
+bellman_ford_update_for_vertex(const type_vec_nodes& vertices,
+  type_shortest_paths& shortest_paths, type_num i, type_num s, type_num v,
+  type_length& shortest_path_so_far,
+  type_map_predecessors& predecessors) {
+  bool changed = false;
+  for (const auto& edge : vertices[v].edges_) {
+    // bellman_ford_update_adjacent_vertex will use the existing shortest_paths
+    // and write new values in shortest_paths.
+    const auto this_changed = bellman_ford_update_adjacent_vertex(shortest_paths,
+        i, s, v, edge, shortest_path_so_far, predecessors);
+    if (this_changed) {
+      changed = true;
+    }
+  }
+
+  return changed;
+}
+
 /**
  * @result true if at least one shortest path was changed.
  */
@@ -126,14 +151,12 @@ bellman_ford_single_iteration(const type_vec_nodes& vertices,
   bool changed = false;
   const auto vertices_count = vertices.size();
   for (type_num v = 0; v < vertices_count; ++v) {
-    for (const auto& edge : vertices[v].edges_) {
-      // bellman_ford_update_adjacent_vertex will use the existing shortest_paths
-      // and write new values in shortest_paths.
-      const auto this_changed = bellman_ford_update_adjacent_vertex(shortest_paths,
-        i, s, v, edge, shortest_path_so_far, predecessors);
-      if (this_changed) {
-        changed = true;
-      }
+    // Relax the shortest path to this vertex:
+    const auto this_changed = bellman_ford_update_for_vertex(vertices,
+        shortest_paths,
+        i, s, v, shortest_path_so_far, predecessors);
+    if (this_changed) {
+      changed = true;
     }
   }
 
