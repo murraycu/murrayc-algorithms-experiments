@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+#include <numeric>
 
 static void
 test_mst(const std::vector<Vertex>& graph, type_length expected_cost) {
