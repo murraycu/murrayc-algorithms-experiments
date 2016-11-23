@@ -5,6 +5,7 @@
 #include "utils/vertex.h"
 
 // 0-indexed vertices:
+// (Has a cycle)
 const std::vector<Vertex> EXAMPLE_GRAPH_SMALL = {
   Vertex({Edge(1, 3), Edge(2, 3)}), Vertex({Edge(2, 1), Edge(3, 2)}),
   Vertex({Edge(3, 50)}), Vertex()};

@@ -58,6 +58,7 @@ Makefile.in
 /murrayc_greedy_make_change
 /murrayc_bellman_ford
 /murrayc_breadth_first_search
+/murrayc_detect_cycle
 /murrayc_dijkstra
 /murrayc_dinic
 /murrayc_floyd_warshall
