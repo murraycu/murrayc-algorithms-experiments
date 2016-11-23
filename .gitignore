@@ -59,6 +59,7 @@ Makefile.in
 /murrayc_bellman_ford
 /murrayc_breadth_first_search
 /murrayc_detect_cycle
+/murrayc_output_dot_file
 /murrayc_dijkstra
 /murrayc_dinic
 /murrayc_floyd_warshall
@@ -72,6 +73,10 @@ Makefile.in
 /murrayc_quickselect
 /murrayc_subset_iteration
 /murrayc_wang_tiles
+
+/example_graph_larger_with_negative_edges.dot
+/example_graph_small.dot
+/example_graph_small_with_negative_edges.dot
 
 *.log
 *.trs

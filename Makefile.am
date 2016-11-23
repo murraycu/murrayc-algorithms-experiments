@@ -22,6 +22,7 @@ check_PROGRAMS = \
   murrayc_bellman_ford \
   murrayc_breadth_first_search \
   murrayc_detect_cycle \
+  murrayc_output_dot_file \
   murrayc_dijkstra \
   murrayc_dinic \
   murrayc_floyd_warshall \
@@ -100,6 +101,15 @@ murrayc_detect_cycle_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_detect_cycle_LDADD = \
+	$(PROJECT_LIBS)
+
+murrayc_output_dot_file_SOURCES = \
+	src/graphs/output_dot_file/main.cc
+	$(graphs_utils_sources)
+murrayc_output_dot_file_CXXFLAGS = \
+	$(COMMON_CXXFLAGS) \
+	$(graph_utils_cxxflags)
+murrayc_output_dot_file_LDADD = \
 	$(PROJECT_LIBS)
 
 murrayc_dijkstra_SOURCES = \
