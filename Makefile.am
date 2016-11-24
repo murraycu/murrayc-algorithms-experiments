@@ -76,6 +76,7 @@ graph_utils_cxxflags = -I$(top_srcdir)/src/graphs
 murrayc_bellman_ford_SOURCES = \
 	src/graphs/shortest_path/bellman_ford/main.cc \
 	src/graphs/shortest_path/bellman_ford/bellman_ford.h \
+	src/graphs/shortest_path/bellman_ford/bellman_ford_with_queue.h \
 	$(graphs_utils_sources)
 murrayc_bellman_ford_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
