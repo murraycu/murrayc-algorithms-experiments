@@ -20,6 +20,9 @@ main() {
               << ", path: " << shortest_path.path_ << std::endl;
   }
 
+  assert(!has_negative_cycles);
+  assert(!shortest_paths.empty());
+
   assert(shortest_paths[0].length_ == 0);
   assert(shortest_paths[1].length_ == -5);
   assert(shortest_paths[2].length_ == -4);
