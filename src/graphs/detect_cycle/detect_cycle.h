@@ -36,8 +36,9 @@ detect_cycle_recursive(const type_vec_nodes& vertices,
   return false;
 }
 
+
 /**
- * DFS to discover any cycle.
+ * DFS to discover any cycle starting from vertex @a s.
  */
 bool
 detect_cycle_recursive(const type_vec_nodes& vertices,
@@ -48,6 +49,23 @@ detect_cycle_recursive(const type_vec_nodes& vertices,
   std::vector<bool> discovered(n);
   std::vector<bool> completed(n);
   return detect_cycle_recursive(vertices, s, discovered, completed);
+}
+
+/**
+ * DFS to discover any cycle.
+ */
+bool
+detect_cycle_recursive(const type_vec_nodes& vertices) {
+  const auto n = vertices.size();
+  std::vector<bool> discovered(n);
+  std::vector<bool> completed(n);
+  for (std::size_t i = 0; i < n; ++i) {
+    if (detect_cycle_recursive(vertices, i, discovered, completed)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**
@@ -94,7 +112,7 @@ detect_cycle_iterative(const type_vec_nodes& vertices,
 
       st.emplace(d, false);
     }
- 
+
     // Make sure that we pull a completion for this node off
     // the stack after we pull its child nodes (and their completions).
     st.emplace(vnum, true);
@@ -104,7 +122,7 @@ detect_cycle_iterative(const type_vec_nodes& vertices,
 }
 
 /**
- * DFS to discover any cycle.
+ * DFS to discover any cycle starting from vertex @a s.
  */
 bool
 detect_cycle_iterative(const type_vec_nodes& vertices,
@@ -116,8 +134,26 @@ detect_cycle_iterative(const type_vec_nodes& vertices,
   std::vector<bool> completed(n);
   return detect_cycle_iterative(vertices, s, discovered, completed);
 }
+
 /**
  * DFS to discover any cycle.
+ */
+bool
+detect_cycle_iterative(const type_vec_nodes& vertices) {
+  const auto n = vertices.size();
+  std::vector<bool> discovered(n);
+  std::vector<bool> completed(n);
+  for (std::size_t i = 0; i < n; ++i) {
+    if (detect_cycle_iterative(vertices, i, discovered, completed)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * DFS to discover any cycle starting from vertex @a s.
  */
 bool
 detect_cycle(const type_vec_nodes& vertices,
