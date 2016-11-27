@@ -36,7 +36,8 @@ check_PROGRAMS = \
   murrayc_quickselect \
   murrayc_subset_iteration \
   murrayc_dp_string_edit_distance \
-  murrayc_wang_tiles
+  murrayc_wang_tiles \
+  murrayc_substring_search_z_algorithm
 
 TESTS = $(check_PROGRAMS)
 
@@ -238,3 +239,9 @@ murrayc_wang_tiles_CXXFLAGS = \
 murrayc_wang_tiles_LDADD = \
 	$(PROJECT_LIBS)
 
+murrayc_substring_search_z_algorithm_SOURCES = \
+	src/substring_search/z_algorithm/main.cc
+murrayc_substring_search_z_algorithm_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_substring_search_z_algorithm_LDADD = \
+	$(PROJECT_LIBS)

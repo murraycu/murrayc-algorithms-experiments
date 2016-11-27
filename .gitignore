@@ -73,6 +73,7 @@ Makefile.in
 /murrayc_quickselect
 /murrayc_subset_iteration
 /murrayc_wang_tiles
+/murrayc_substring_search_z_algorithm
 
 /example_graph_larger_with_negative_edges.dot
 /example_graph_small.dot
