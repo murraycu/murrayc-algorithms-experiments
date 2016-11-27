@@ -36,8 +36,10 @@ test_bellman_ford_with_queue() {
   const auto dest_vertices = {0, 1, 2, 3};
 
   bool has_negative_cycles = false;
-  const auto shortest_paths = bellman_ford_single_source_shortest_paths_with_queue(
-    EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES, start_vertex, has_negative_cycles);
+  const auto shortest_paths =
+    bellman_ford_single_source_shortest_paths_with_queue(
+      EXAMPLE_GRAPH_SMALL_WITH_NEGATIVE_EDGES, start_vertex,
+      has_negative_cycles);
 
   for (auto dest_vertex_num : dest_vertices) {
     const auto& shortest_path = shortest_paths[dest_vertex_num];

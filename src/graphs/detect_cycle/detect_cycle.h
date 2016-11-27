@@ -1,15 +1,15 @@
 #ifndef MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_DETECT_CYCLE
 #define MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_DETECT_CYCLE
 
-#include "utils/vertex.h"
 #include "utils/example_graphs.h"
-#include <vector>
-#include <stack>
+#include "utils/vertex.h"
 #include <iostream>
+#include <stack>
+#include <vector>
 
 bool
-detect_cycle_recursive(const type_vec_nodes& vertices,
-  Edge::type_num s, std::vector<bool>& discovered, std::vector<bool>& completed) {
+detect_cycle_recursive(const type_vec_nodes& vertices, Edge::type_num s,
+  std::vector<bool>& discovered, std::vector<bool>& completed) {
   discovered[s] = true;
 
   const auto& v = vertices[s];
@@ -36,13 +36,11 @@ detect_cycle_recursive(const type_vec_nodes& vertices,
   return false;
 }
 
-
 /**
  * DFS to discover any cycle starting from vertex @a s.
  */
 bool
-detect_cycle_recursive(const type_vec_nodes& vertices,
-  Edge::type_num s) {
+detect_cycle_recursive(const type_vec_nodes& vertices, Edge::type_num s) {
   const auto n = vertices.size();
 
   // DFS on the tree to find a cycle.
@@ -72,8 +70,8 @@ detect_cycle_recursive(const type_vec_nodes& vertices) {
  * DFS to discover any cycle.
  */
 bool
-detect_cycle_iterative(const type_vec_nodes& vertices,
-  Edge::type_num s, std::vector<bool>& discovered, std::vector<bool>& completed) {
+detect_cycle_iterative(const type_vec_nodes& vertices, Edge::type_num s,
+  std::vector<bool>& discovered, std::vector<bool>& completed) {
 
   // DFS on the tree to find a cycle.
 
@@ -125,8 +123,7 @@ detect_cycle_iterative(const type_vec_nodes& vertices,
  * DFS to discover any cycle starting from vertex @a s.
  */
 bool
-detect_cycle_iterative(const type_vec_nodes& vertices,
-  Edge::type_num s) {
+detect_cycle_iterative(const type_vec_nodes& vertices, Edge::type_num s) {
   const auto n = vertices.size();
 
   // DFS on the tree to find a cycle.
@@ -156,8 +153,7 @@ detect_cycle_iterative(const type_vec_nodes& vertices) {
  * DFS to discover any cycle starting from vertex @a s.
  */
 bool
-detect_cycle(const type_vec_nodes& vertices,
-  Edge::type_num s) {
+detect_cycle(const type_vec_nodes& vertices, Edge::type_num s) {
   return detect_cycle_recursive(vertices, s);
 }
 

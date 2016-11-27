@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <iostream>
 
-
 static void
 test_recursive_without_cycle() {
   assert(!detect_cycle_recursive(EXAMPLE_GRAPH_SMALL));

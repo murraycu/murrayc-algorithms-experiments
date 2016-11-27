@@ -1,5 +1,5 @@
-#include <cstdlib>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -18,7 +18,7 @@ make_z(const std::string& s) {
       const auto prev = z[i - l];
       if (i + prev < r) {
         z[i] = prev;
-        //std::cout << "(" << z[i] << ") ";
+        // std::cout << "(" << z[i] << ") ";
         continue;
       }
     }
@@ -33,16 +33,16 @@ make_z(const std::string& s) {
       }
     }
 
-    //if (a > 0) {
-      l = i;
-      r = j;
+    // if (a > 0) {
+    l = i;
+    r = j;
     //}
 
     z[i] = a;
 
-    //std::cout << z[i] << " ";
+    // std::cout << z[i] << " ";
   }
-  //std::cout << std::endl;
+  // std::cout << std::endl;
 
   return z;
 }

@@ -22,9 +22,8 @@ using type_map_predecessors = std::vector<type_num>;
  * @result true if the shortest path was changed.
  */
 static bool
-bellman_ford_update_adjacent_vertex(
-  type_shortest_paths& shortest_paths, type_num w,
-  const Edge& edge, type_length& shortest_path_so_far,
+bellman_ford_update_adjacent_vertex(type_shortest_paths& shortest_paths,
+  type_num w, const Edge& edge, type_length& shortest_path_so_far,
   type_map_predecessors& predecessors) {
   const auto v = edge.destination_vertex_;
 
@@ -98,8 +97,6 @@ bellman_ford_update_adjacent_vertex(
   return changed;
 }
 
-
-
 /**
  * Calculate the shortest path from @a s to @a v, using at most @i hops (edges).
  * @result true if the shortest path was changed.
@@ -107,14 +104,13 @@ bellman_ford_update_adjacent_vertex(
 static bool
 bellman_ford_update_for_vertex(const type_vec_nodes& vertices,
   type_shortest_paths& shortest_paths, type_num v,
-  type_length& shortest_path_so_far,
-  type_map_predecessors& predecessors) {
+  type_length& shortest_path_so_far, type_map_predecessors& predecessors) {
   bool changed = false;
   for (const auto& edge : vertices[v].edges_) {
     // bellman_ford_update_adjacent_vertex will use the existing shortest_paths
     // and write new values in shortest_paths.
-    const auto this_changed = bellman_ford_update_adjacent_vertex(shortest_paths,
-        v, edge, shortest_path_so_far, predecessors);
+    const auto this_changed = bellman_ford_update_adjacent_vertex(
+      shortest_paths, v, edge, shortest_path_so_far, predecessors);
     if (this_changed) {
       changed = true;
     }
@@ -128,15 +124,14 @@ bellman_ford_update_for_vertex(const type_vec_nodes& vertices,
  */
 static bool
 bellman_ford_single_iteration(const type_vec_nodes& vertices,
-  type_shortest_paths& shortest_paths,
-  type_length& shortest_path_so_far, type_map_predecessors& predecessors) {
+  type_shortest_paths& shortest_paths, type_length& shortest_path_so_far,
+  type_map_predecessors& predecessors) {
   bool changed = false;
   const auto vertices_count = vertices.size();
   for (type_num v = 0; v < vertices_count; ++v) {
     // Relax the shortest path to this vertex:
-    const auto this_changed = bellman_ford_update_for_vertex(vertices,
-        shortest_paths,
-        v, shortest_path_so_far, predecessors);
+    const auto this_changed = bellman_ford_update_for_vertex(
+      vertices, shortest_paths, v, shortest_path_so_far, predecessors);
     if (this_changed) {
       changed = true;
     }
@@ -174,8 +169,8 @@ bellman_ford_single_source_shortest_paths(
   // We need n-1 iterations.
   for (type_num i = 0; i < (vertices_count - 1); ++i) {
     // std::cout << "i=" << i << std::endl;
-    const auto changed = bellman_ford_single_iteration(vertices, shortest_paths,
-      shortest_path_so_far, map_path_predecessor);
+    const auto changed = bellman_ford_single_iteration(
+      vertices, shortest_paths, shortest_path_so_far, map_path_predecessor);
 
     // If the shortest paths so far have not changed, then they won't change
     // next time, so we can finish early:
@@ -191,8 +186,8 @@ bellman_ford_single_source_shortest_paths(
   // Check for a negative cycle:
   // Try one more calculation, this time with i=n.
   // If we get a shorter path then we must have taken a negative cycle:
-  bellman_ford_single_iteration(vertices, shortest_paths,
-    shortest_path_so_far, map_path_predecessor);
+  bellman_ford_single_iteration(
+    vertices, shortest_paths, shortest_path_so_far, map_path_predecessor);
 
   if (shortest_path_so_far < shortest_path) {
     has_negative_cycles = true;

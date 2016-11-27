@@ -1,9 +1,9 @@
-#include "utils/vertex.h"
 #include "utils/example_graphs.h"
+#include "utils/vertex.h"
 #include <cassert>
 #include <cstdlib>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 static std::string
 build_dot_file(const type_vec_nodes& vertices) {

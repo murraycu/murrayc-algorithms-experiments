@@ -1,15 +1,14 @@
 #ifndef MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD_WITH_QUEUE
 #define MURRAYC_ALGORITHMS_EXPERIMENTS_BELLMAN_FORD_WITH_QUEUE
 
+#include "detect_cycle/detect_cycle.h"
 #include "utils/shortest_path.h"
 #include "utils/vertex.h"
-#include "detect_cycle/detect_cycle.h"
 #include <iostream>
-#include <queue>
 #include <limits>
+#include <queue>
 #include <stack>
 #include <vector>
-
 
 using type_num = Edge::type_num;
 using type_length = Edge::type_length;
@@ -17,15 +16,15 @@ using type_length = Edge::type_length;
 using type_shortest_paths = std::vector<type_length>;
 
 using type_map_predecessors = std::vector<type_num>;
-constexpr type_num INVALID_PREDECESSOR = std::numeric_limits<type_num>::max(); 
+constexpr type_num INVALID_PREDECESSOR = std::numeric_limits<type_num>::max();
 
 /**
  * DFS to discover any negative cycle so far
  */
 static bool
-check_has_negative_cycle(const type_vec_nodes& vertices,
-  type_num s, const type_map_predecessors& predecessors) {
-  
+check_has_negative_cycle(const type_vec_nodes& vertices, type_num s,
+  const type_map_predecessors& predecessors) {
+
   // Build a graph that is just the shortest path tree so far:
   // Well, it should be a tree, but it could have a cycle,
   // which would be negative, which we will then find.
@@ -42,16 +41,13 @@ check_has_negative_cycle(const type_vec_nodes& vertices,
   return detect_cycle(g, s);
 }
 
-
 /**
  * Calculate the shortest path from @a s to @a v, using at most @i hops (edges).
  */
 static void
-bellman_ford_update_adjacent_vertex(
-  std::queue<type_num>& q, std::vector<bool>& on_q,
-  type_shortest_paths& shortest_paths, type_num w,
-  const Edge& edge,
-  type_map_predecessors& predecessors) {
+bellman_ford_update_adjacent_vertex(std::queue<type_num>& q,
+  std::vector<bool>& on_q, type_shortest_paths& shortest_paths, type_num w,
+  const Edge& edge, type_map_predecessors& predecessors) {
   const auto v = edge.destination_vertex_;
 
   // Check the bounds:
@@ -120,22 +116,18 @@ bellman_ford_update_adjacent_vertex(
   // std::endl;
 }
 
-
-
 /**
  * "Relax" the path to v.
  */
 static void
 bellman_ford_update_for_vertex(std::queue<type_num>& q, std::vector<bool>& on_q,
-  const type_vec_nodes& vertices,
-  type_shortest_paths& shortest_paths, type_num v,
-  type_map_predecessors& predecessors) {
+  const type_vec_nodes& vertices, type_shortest_paths& shortest_paths,
+  type_num v, type_map_predecessors& predecessors) {
   for (const auto& edge : vertices[v].edges_) {
     // bellman_ford_update_adjacent_vertex will use the existing shortest_paths
     // and write new values in shortest_paths.
-    bellman_ford_update_adjacent_vertex(q, on_q,
-      shortest_paths,
-      v, edge, predecessors);
+    bellman_ford_update_adjacent_vertex(
+      q, on_q, shortest_paths, v, edge, predecessors);
   }
 }
 
@@ -154,11 +146,13 @@ bellman_ford_update_for_vertex(std::queue<type_num>& q, std::vector<bool>& on_q,
  *
  * This is based on Sedgewick/Wayne's implementation in
  * Algorithms (4th edition), page 674.
- * That book doesn't say so, but this might be the implementation described here:
+ * That book doesn't say so, but this might be the implementation described
+ * here:
  * http://wcipeg.com/wiki/Shortest_Path_Faster_Algorithm
  * which says that this is inaccurate, at the time of writing:
  * https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm
- * However, I think I've also read somewhere that this was Bellman's original algorithm.
+ * However, I think I've also read somewhere that this was Bellman's original
+ * algorithm.
  */
 std::vector<ShortestPath>
 bellman_ford_single_source_shortest_paths_with_queue(
@@ -169,7 +163,8 @@ bellman_ford_single_source_shortest_paths_with_queue(
   // n:
   const auto vertices_count = vertices.size();
 
-  type_map_predecessors map_path_predecessor(vertices_count, INVALID_PREDECESSOR);
+  type_map_predecessors map_path_predecessor(
+    vertices_count, INVALID_PREDECESSOR);
 
   // Initialize shortest paths:
   // - 0 to get to the source from the source.
@@ -189,10 +184,8 @@ bellman_ford_single_source_shortest_paths_with_queue(
     q.pop();
 
     // Relax the shortest path to this vertex:
-    bellman_ford_update_for_vertex(q, on_q,
-      vertices,
-      shortest_paths,
-      v, map_path_predecessor);
+    bellman_ford_update_for_vertex(
+      q, on_q, vertices, shortest_paths, v, map_path_predecessor);
     if (check_has_negative_cycle(vertices, s, map_path_predecessor)) {
       has_negative_cycles = true;
       return {};
@@ -202,10 +195,10 @@ bellman_ford_single_source_shortest_paths_with_queue(
   // Check for a negative cycle:
   // Try one more calculation, this time with i=n.
   // If we get a shorter path then we must have taken a negative cycle:
-  //TODO: bellman_ford_single_iteration(q, on_q, vertices, shortest_paths,
+  // TODO: bellman_ford_single_iteration(q, on_q, vertices, shortest_paths,
   //  map_path_predecessor);
 
-  //if (shortest_path_so_far < shortest_path) {
+  // if (shortest_path_so_far < shortest_path) {
   //  has_negative_cycles = true;
   //}
 

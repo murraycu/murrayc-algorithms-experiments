@@ -37,6 +37,7 @@ public:
   type_num reverse_edge_in_dest_;
 };
 
-const Edge::type_length Edge::LENGTH_INFINITY = std::numeric_limits<type_length>::max();
+const Edge::type_length Edge::LENGTH_INFINITY =
+  std::numeric_limits<type_length>::max();
 
 #endif // MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EDGE
