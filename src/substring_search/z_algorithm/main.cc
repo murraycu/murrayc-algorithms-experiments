@@ -47,8 +47,10 @@ make_z(const std::string& s) {
   return z;
 }
 
-static std::size_t
+static std::vector<std::size_t>
 find(const std::string& str, const std::string& pat) {
+  std::vector<std::size_t> result;
+
   const auto s = pat + "$" + str;
   const auto z = make_z(s);
 
@@ -58,11 +60,11 @@ find(const std::string& str, const std::string& pat) {
   const auto start = pat_size + 1;
   for (std::size_t i = start; i < n; ++i) {
     if (z[i] == pat_size) {
-      return i - start;
+      result.emplace_back(i - start);
     }
   }
 
-  return std::string::npos;
+  return result;
 }
 
 int main() {
@@ -70,9 +72,12 @@ int main() {
   const auto expected_z = std::vector<std::size_t>{0, 1, 0, 0, 4, 1, 0, 0, 0, 8, 1, 0, 0, 5, 1, 0, 0, 1, 0};
   assert(z == expected_z);
 
-  assert(find("xabcabzabc", "abc") == 1);
-  assert(find("foobarmoo", "oob") == 1);
-  assert(find("foobarmoo", "bar") == 3);
+  assert(find("xabcabzabc", "abc") == std::vector<std::size_t>({1, 7}));
+  assert(find("foobarmoo", "oob") == std::vector<std::size_t>({1}));
+  assert(find("foobarmoo", "bar") == std::vector<std::size_t>({3}));
+
+  // Overlapping:
+  assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
   return EXIT_SUCCESS;
 }
