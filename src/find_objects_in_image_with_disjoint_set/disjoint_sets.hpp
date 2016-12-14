@@ -52,10 +52,10 @@ namespace boost {
     inline disjoint_sets() {}
   public:
     inline disjoint_sets(RankPA r, ParentPA p) 
-      : rank(r), parent(p) {}
+      : rank(r), parent(p), rep() {}
 
     inline disjoint_sets(const self& c) 
-      : rank(c.rank), parent(c.parent) {}
+      : rank(c.rank), parent(c.parent), rep() {}
     
     // Make Set -- Create a singleton set containing vertex x
     template <class Element>
