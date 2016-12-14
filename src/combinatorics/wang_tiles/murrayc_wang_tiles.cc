@@ -16,7 +16,7 @@ public:
   };
 
   Card(Color top, Color right, Color bottom, Color left)
-  : edges_{top, right, bottom, left} {}
+  : edges_{{top, right, bottom, left}} {}
 
   static constexpr unsigned int EDGES_COUNT = 4;
   using edges_type = std::array<Color, EDGES_COUNT>;
