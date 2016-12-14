@@ -89,7 +89,7 @@ namespace boost {
     }
 
     template <class ElementIterator>
-    inline std::size_t count_sets(ElementIterator first, ElementIterator last)
+    inline std::size_t count_sets(ElementIterator first, ElementIterator last) const
     {
       std::size_t count = 0;  
       for ( ; first != last; ++first)
@@ -168,7 +168,7 @@ namespace boost {
     }
 
     template <class ElementIterator>
-    inline std::size_t count_sets(ElementIterator first, ElementIterator last)
+    inline std::size_t count_sets(ElementIterator first, ElementIterator last) const
     {
       std::size_t count = 0;  
       for ( ; first != last; ++first)
@@ -192,7 +192,7 @@ namespace boost {
                                                           *first);
     }    
 
-    const ParentContainer& parents() { return parent; }
+    const ParentContainer& parents() const { return parent; }
 
   protected:
 
