@@ -25,7 +25,7 @@ template <typename T_Element = int>
 class UnionFind {
 public:
   // TODO: Don't use the element type for the size type:
-  UnionFind(T_Element size) : id_(size) {
+  explicit UnionFind(T_Element size) : id_(size) {
     for (T_Element i = 0; i < size; ++i) {
       id_[i] = i;
     }
