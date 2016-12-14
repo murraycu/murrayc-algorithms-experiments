@@ -40,17 +40,18 @@ public:
   explicit SubSolution(type_size coin_count_used_in)
   : coin_count_used(coin_count_used_in) {}
 
-  SubSolution(const SubSolution& src) = default;
-  SubSolution&
-  operator=(const SubSolution& src) = default;
-
-  SubSolution(SubSolution&& src) = default;
-  SubSolution&
-  operator=(SubSolution&& src) = default;
-
   type_size coin_count_used;
   type_vec_coins solution;
 };
+
+static_assert(std::is_copy_assignable<SubSolution>::value,
+  "SubSolution should be copy assignable.");
+static_assert(std::is_copy_constructible<SubSolution>::value,
+  "SubSolution should be copy constructible.");
+static_assert(std::is_move_assignable<SubSolution>::value,
+  "SubSolution should be move assignable.");
+static_assert(std::is_move_constructible<SubSolution>::value,
+  "SubSolution should be move constructible.");
 
 typedef std::vector<std::unordered_map<type_value, SubSolution>>
   type_sub_problems;

@@ -24,16 +24,17 @@ public:
     type_num source_vertex, type_num destination_vertex, type_length length)
   : Edge(destination_vertex, length), source_vertex_(source_vertex) {}
 
-  EdgeWithSource(const EdgeWithSource& src) = default;
-  EdgeWithSource&
-  operator=(const EdgeWithSource& src) = default;
-
-  EdgeWithSource(EdgeWithSource&& src) = default;
-  EdgeWithSource&
-  operator=(EdgeWithSource&& src) = default;
-
   type_num source_vertex_;
 };
+
+static_assert(std::is_copy_assignable<EdgeWithSource>::value,
+  "EdgeWithSource should be copy assignable.");
+static_assert(std::is_copy_constructible<EdgeWithSource>::value,
+  "EdgeWithSource should be copy constructible.");
+static_assert(std::is_move_assignable<EdgeWithSource>::value,
+  "EdgeWithSource should be move assignable.");
+static_assert(std::is_move_constructible<EdgeWithSource>::value,
+  "EdgeWithSource should be move constructible.");
 
 using type_vec_edges_with_sources = std::vector<EdgeWithSource>;
 

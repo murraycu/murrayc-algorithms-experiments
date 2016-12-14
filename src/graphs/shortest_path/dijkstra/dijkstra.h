@@ -25,18 +25,19 @@ public:
     type_num vertex, type_length total_length, type_num predecessor)
   : vertex_(vertex), total_length_(total_length), predecessor_(predecessor) {}
 
-  VertexAndLength(const VertexAndLength& src) = default;
-  VertexAndLength&
-  operator=(const VertexAndLength& src) = default;
-
-  VertexAndLength(VertexAndLength&& src) = default;
-  VertexAndLength&
-  operator=(VertexAndLength&& src) = default;
-
   type_num vertex_;
   type_length total_length_;
   type_num predecessor_;
 };
+
+static_assert(std::is_copy_assignable<VertexAndLength>::value,
+  "VertexAndLength should be copy assignable.");
+static_assert(std::is_copy_constructible<VertexAndLength>::value,
+  "VertexAndLength should be copy constructible.");
+static_assert(std::is_move_assignable<VertexAndLength>::value,
+  "VertexAndLength should be move assignable.");
+static_assert(std::is_move_constructible<VertexAndLength>::value,
+  "VertexAndLength should be move constructible.");
 
 static std::string
 get_path_from_predecessors(type_num start_vertex, type_num end_vertex,

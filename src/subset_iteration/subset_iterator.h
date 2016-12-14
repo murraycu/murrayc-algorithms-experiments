@@ -32,14 +32,6 @@ public:
 
   SubsetIterator() : bits_(0), n_(0), end_(false) {}
 
-  SubsetIterator(const SubsetIterator& src) = default;
-  SubsetIterator&
-  operator=(const SubsetIterator& src) = default;
-
-  SubsetIterator(SubsetIterator&& src) = default;
-  SubsetIterator&
-  operator=(SubsetIterator&& src) = default;
-
   /** create an "n choose k" iterator.
    *
    * @param n The size of the whole set.
@@ -147,5 +139,16 @@ private:
   type_size n_;
   bool end_;
 };
+
+/*
+static_assert(std::is_copy_assignable<SubsetIterator>::value,
+  "SubsetIterator should be copy assignable.");
+static_assert(std::is_copy_constructible<SubsetIterator>::value,
+  "SubsetIterator should be copy constructible.");
+static_assert(std::is_move_assignable<SubsetIterator>::value,
+  "SubsetIterator should be move assignable.");
+static_assert(std::is_move_constructible<SubsetIterator>::value,
+  "SubsetIterator should be move constructible.");
+*/
 
 #endif //__MURRAYC_SUBSET_ITERATOR_H

@@ -2,6 +2,7 @@
 #define MURRAYC_ALGORITHMS_EXPERIMENTS_GRAPHS_EDGE
 
 #include <limits>
+#include <type_traits>
 
 class Edge {
 public:
@@ -22,20 +23,21 @@ public:
     length_(length),
     reverse_edge_in_dest_(0) {}
 
-  Edge(const Edge& src) = default;
-  Edge&
-  operator=(const Edge& src) = default;
-
-  Edge(Edge&& src) = default;
-  Edge&
-  operator=(Edge&& src) = default;
-
   type_num destination_vertex_;
   type_length length_; // Or cost, capacity, etc.
 
   // TODO: This is only used for max-flow algorithms.
   type_num reverse_edge_in_dest_;
 };
+
+static_assert(std::is_copy_assignable<Edge>::value,
+  "Edge should be copy assignable.");
+static_assert(std::is_copy_constructible<Edge>::value,
+  "Edge should be copy constructible.");
+static_assert(std::is_move_assignable<Edge>::value,
+  "Edge should be move assignable.");
+static_assert(std::is_move_constructible<Edge>::value,
+  "Edge should be move constructible.");
 
 const Edge::type_length Edge::LENGTH_INFINITY =
   std::numeric_limits<type_length>::max();

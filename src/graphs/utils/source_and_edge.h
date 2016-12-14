@@ -13,14 +13,6 @@ public:
   SourceAndEdge(type_num source, type_num edge)
   : source_(source), edge_(edge) {}
 
-  SourceAndEdge(const SourceAndEdge& src) = default;
-  SourceAndEdge&
-  operator=(const SourceAndEdge& src) = default;
-
-  SourceAndEdge(SourceAndEdge&& src) = default;
-  SourceAndEdge&
-  operator=(SourceAndEdge&& src) = default;
-
   bool
   operator==(const SourceAndEdge& src) const {
     return source_ == src.source_ && edge_ == src.edge_;
@@ -29,6 +21,15 @@ public:
   type_num source_;
   type_num edge_;
 };
+
+static_assert(std::is_copy_assignable<SourceAndEdge>::value,
+  "SourceAndEdge should be copy assignable.");
+static_assert(std::is_copy_constructible<SourceAndEdge>::value,
+  "SourceAndEdge should be copy constructible.");
+static_assert(std::is_move_assignable<SourceAndEdge>::value,
+  "SourceAndEdge should be move assignable.");
+static_assert(std::is_move_constructible<SourceAndEdge>::value,
+  "SourceAndEdge should be move constructible.");
 
 using type_vec_path = std::vector<SourceAndEdge>;
 
