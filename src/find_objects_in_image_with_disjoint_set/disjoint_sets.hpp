@@ -19,14 +19,14 @@ namespace boost {
 
   struct find_with_path_halving {
     template <class ParentPA, class Vertex>
-    Vertex operator()(ParentPA p, Vertex v) { 
+    Vertex operator()(ParentPA p, Vertex v) const {
       return detail::find_representative_with_path_halving(p, v);
     }
   };
 
   struct find_with_full_path_compression {
     template <class ParentPA, class Vertex>
-    Vertex operator()(ParentPA p, Vertex v){
+    Vertex operator()(ParentPA p, Vertex v) const {
       return detail::find_representative_with_full_compression(p, v);
     }
   };

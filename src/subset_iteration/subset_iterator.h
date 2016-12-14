@@ -76,12 +76,12 @@ public:
   }
 
   bool
-  operator==(const SubsetIterator& src) {
+  operator==(const SubsetIterator& src) const {
     return (end_ == src.end_) && (bits_ == src.bits_) && (n_ == src.n_);
   }
 
   bool
-  operator!=(const SubsetIterator& src) {
+  operator!=(const SubsetIterator& src) const {
     return !operator==(src);
   }
 
