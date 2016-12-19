@@ -311,7 +311,7 @@ contains_card(const solution_type& solution, std::size_t size,
 /**
  */
 static std::vector<solution_type>
-get_solutions(const Grid& grid, const std::vector<Card>& cards) {
+get_solutions(const Grid& grid, const Grid::cards_type& cards) {
   std::vector<solution_type> result;
   const auto solution_size_needed = grid.get_cells_count();
 
@@ -389,7 +389,7 @@ main() {
   using Color = Card::Color;
 
   // See http://www.cr31.co.uk/stagecast/wang/3corn.html
-  const std::vector<Card> cards = {
+  const Grid::cards_type cards = {
     {Color::RED, Color::GREEN, Color::YELLOW, Color::BLUE},
     {Color::GREEN, Color::BLUE, Color::YELLOW, Color::GREEN},
     {Color::GREEN, Color::BLUE, Color::GREEN, Color::RED},
