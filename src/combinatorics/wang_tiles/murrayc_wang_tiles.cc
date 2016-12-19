@@ -371,6 +371,8 @@ main() {
 
   const auto solutions = get_solutions(grid, cards);
   std::cout << "solutions count: " << solutions.size() << std::endl;
+  assert(!solutions.empty());
+  assert(solutions.size() == 5472);
   if (solutions.empty()) {
     return EXIT_FAILURE;
   }
