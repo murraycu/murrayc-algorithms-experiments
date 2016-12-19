@@ -13,7 +13,13 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-warnings=fatal --disable-update-mime-databa
 AM_CXXFLAGS = $(PROJECT_WXXFLAGS)
 
 # TODO: Why do we still need to specify this for each executable that we build?
-COMMON_CXXFLAGS = $(PROJECT_CFLAGS) $(PROJECT_WXXFLAGS)
+COMMON_CXXFLAGS = $(PROJECT_CFLAGS) \
+  $(PROJECT_WXXFLAGS) \
+  $(BOOST_CPPFLAGS)
+
+COMMON_LIBS = $(PROJECT_LIBS) \
+  $(BOOST_SYSTEM_LIB) \
+  $(BOOST_TIMER_LIB)
 
 check_PROGRAMS = \
   murrayc_find_objects_in_image_with_disjoint_set \
@@ -48,21 +54,21 @@ murrayc_find_objects_in_image_with_disjoint_set_SOURCES = \
 murrayc_find_objects_in_image_with_disjoint_set_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) $(PROJECT_GDKMM_CFLAGS)
 murrayc_find_objects_in_image_with_disjoint_set_LDADD = \
-	$(PROJECT_LIBS)	$(PROJECT_GDKMM_LIBS)
+	$(COMMON_LIBS)	$(PROJECT_GDKMM_LIBS)
 
 murrayc_greedy_make_change_SOURCES = \
 	src/greedy_make_change/murrayc_greedy_make_change.cc
 murrayc_greedy_make_change_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_greedy_make_change_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_dp_make_change_SOURCES = \
 	src/dynamic_programming/dp_make_change/murrayc_dp_make_change.cc
 murrayc_dp_make_change_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_make_change_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 
 graphs_utils_sources =  \
@@ -83,7 +89,7 @@ murrayc_bellman_ford_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_bellman_ford_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_breadth_first_search_SOURCES = \
 	src/graphs/shortest_path/breadth_first_search/main.cc \
@@ -93,7 +99,7 @@ murrayc_breadth_first_search_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_breadth_first_search_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_detect_cycle_SOURCES = \
 	src/graphs/detect_cycle/main.cc \
@@ -103,7 +109,7 @@ murrayc_detect_cycle_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_detect_cycle_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_output_dot_file_SOURCES = \
 	src/graphs/output_dot_file/main.cc
@@ -112,7 +118,7 @@ murrayc_output_dot_file_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_output_dot_file_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_dijkstra_SOURCES = \
 	src/graphs/shortest_path/dijkstra/main.cc \
@@ -122,7 +128,7 @@ murrayc_dijkstra_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_dijkstra_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_floyd_warshall_SOURCES = \
 	src/graphs/shortest_path/floyd_warshall/floyd_warshall.h \
@@ -132,7 +138,7 @@ murrayc_floyd_warshall_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_floyd_warshall_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_johnsons_SOURCES = \
 	src/graphs/shortest_path/johnsons/johnsons.h \
@@ -144,7 +150,7 @@ murrayc_johnsons_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_johnsons_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_dinic_SOURCES = \
 	src/graphs/max_flow/dinic/dinic.h \
@@ -154,7 +160,7 @@ murrayc_dinic_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_dinic_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_push_relabel_SOURCES = \
 	src/graphs/max_flow/push_relabel/push_relabel.h \
@@ -164,7 +170,7 @@ murrayc_push_relabel_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_push_relabel_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_ford_fulkerson_SOURCES = \
 	src/graphs/max_flow/ford_fulkerson/ford_fulkerson.h \
@@ -174,7 +180,7 @@ murrayc_ford_fulkerson_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_ford_fulkerson_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_kruskals_SOURCES = \
 	src/graphs/minimum_spanning_tree/kruskals/kruskals.h \
@@ -184,7 +190,7 @@ murrayc_kruskals_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_kruskals_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_prims_SOURCES = \
 	src/graphs/minimum_spanning_tree/prims/prims.h \
@@ -194,28 +200,28 @@ murrayc_prims_CXXFLAGS = \
 	$(COMMON_CXXFLAGS) \
 	$(graph_utils_cxxflags)
 murrayc_prims_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_dependency_resolution_SOURCES = \
 	src/graphs/dependency_resolution/murrayc_dependency_resolution.cc
 murrayc_dependency_resolution_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dependency_resolution_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_quickselect_SOURCES = \
 	src/quickselect/murrayc_quickselect.cc
 murrayc_quickselect_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_quickselect_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_fibonacci_by_matrix_multiplication_SOURCES = \
 	src/fibonacci_by_matrix_multiplication/murrayc_fibonacci_by_matrix_multiplication.cc
 murrayc_fibonacci_by_matrix_multiplication_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_fibonacci_by_matrix_multiplication_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_subset_iteration_SOURCES = \
 	src/subset_iteration/murrayc_subset_iteration.cc \
@@ -223,25 +229,25 @@ murrayc_subset_iteration_SOURCES = \
 murrayc_subset_iteration_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_subset_iteration_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_dp_string_edit_distance_SOURCES = \
 	src/dynamic_programming/dp_string_edit_distance/murrayc_dp_string_edit_distance.cc
 murrayc_dp_string_edit_distance_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_string_edit_distance_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_wang_tiles_SOURCES = \
 	src/combinatorics/wang_tiles/murrayc_wang_tiles.cc
 murrayc_wang_tiles_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_wang_tiles_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)
 
 murrayc_substring_search_z_algorithm_SOURCES = \
 	src/substring_search/z_algorithm/main.cc
 murrayc_substring_search_z_algorithm_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_substring_search_z_algorithm_LDADD = \
-	$(PROJECT_LIBS)
+	$(COMMON_LIBS)

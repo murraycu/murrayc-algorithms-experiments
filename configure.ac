@@ -20,7 +20,10 @@ AX_CXX_COMPILE_STDCXX([14], [noext], [mandatory])
 PKG_CHECK_MODULES([PROJECT_GDKMM], [gdkmm-3.0])
 
 # See http://www.gnu.org/software/autoconf-archive/ax_boost_base.html
-#AX_BOOST_BASE
+# Boost System is needed by Boost Timer
+AX_BOOST_BASE
+AX_BOOST_SYSTEM
+AX_BOOST_TIMER
 
 # Allow use of mm-common macros for the warnings option.
 MM_PREREQ([0.9.5])

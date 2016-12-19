@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <boost/timer/timer.hpp>
 
 class Card {
 public:
@@ -376,14 +377,19 @@ main() {
     {Color::BLUE, Color::YELLOW, Color::RED, Color::GREEN}};
   assert(cards.size() >= COUNT);
 
-  const auto solutions = get_solutions(grid, cards);
-  std::cout << "solutions count: " << solutions.size() << std::endl;
-  assert(!solutions.empty());
-  assert(solutions.size() == 5472);
-  if (solutions.empty()) {
-    return EXIT_FAILURE;
+
+  {
+    boost::timer::auto_cpu_timer timer;
+    for (int i = 0; i < 50; i++) {
+      const auto solutions = get_solutions(grid, cards);
+      //std::cout << "solutions count: " << solutions.size() << std::endl;
+      assert(!solutions.empty());
+      assert(solutions.size() == 5472);
+    }
   }
 
+  const auto solutions = get_solutions(grid, cards);
+  std::cout << "solutions count: " << solutions.size() << std::endl;
   for (int i = 0; i < 10; ++i) {
     std::cout << i << ":\n";
     const auto& solution = solutions[i];
