@@ -322,7 +322,7 @@ get_solutions(const Grid& grid, const std::vector<Card>& cards) {
 
   const auto cards_count = cards.size();
 
-  while (i < cards_count) {
+  while (true) {
     //std::cout << "LOOP: " << i << std::endl;
     //std::cout << "  card: " << try_card << ", rotation: " << try_rotation << std::endl;
     if (try_rotation >= Card::EDGES_COUNT) {
