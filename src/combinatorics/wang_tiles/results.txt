@@ -1,0 +1,139 @@
+0:
+(0, 0) (1, 0) (2, 2) (8, 3) (3, 2) (6, 2) (4, 2) (5, 3) (7, 0) 
+ R   G   G  
+B G G B B R 
+ Y   Y   G  
+
+ Y   Y   G  
+B R R Y Y R 
+ G   G   G  
+
+ G   G   G  
+Y R R Y Y B 
+ B   B   R  
+
+1:
+(0, 0) (1, 0) (7, 2) (4, 3) (5, 2) (2, 2) (8, 2) (3, 3) (6, 2) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+B G G B B R 
+ R   R   G  
+
+ R   R   G  
+Y G G Y Y R 
+ B   Y   G  
+
+2:
+(0, 0) (1, 0) (7, 2) (5, 2) (8, 3) (2, 0) (3, 3) (4, 2) (6, 0) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+G B B R R B 
+ R   G   G  
+
+ R   G   G  
+G Y Y R R Y 
+ Y   B   G  
+
+3:
+(0, 0) (1, 0) (7, 2) (5, 2) (8, 3) (6, 0) (3, 3) (4, 2) (2, 0) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+G B B R R Y 
+ R   G   G  
+
+ R   G   G  
+G Y Y R R B 
+ Y   B   G  
+
+4:
+(0, 0) (1, 0) (7, 2) (6, 3) (5, 2) (2, 2) (8, 2) (3, 3) (4, 2) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+G G G B B R 
+ R   R   G  
+
+ R   R   G  
+Y G G Y Y R 
+ B   Y   B  
+
+5:
+(0, 0) (1, 0) (7, 2) (8, 3) (3, 2) (4, 2) (2, 2) (6, 0) (5, 1) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+B R R Y Y R 
+ G   G   B  
+
+ G   G   B  
+B R R Y Y R 
+ G   G   G  
+
+6:
+(0, 0) (1, 0) (7, 2) (8, 3) (3, 2) (6, 2) (2, 2) (5, 3) (4, 2) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+B R R Y Y R 
+ G   G   G  
+
+ G   G   G  
+B R R Y Y R 
+ G   B   B  
+
+7:
+(0, 0) (1, 0) (7, 2) (8, 3) (3, 2) (6, 2) (5, 3) (4, 2) (2, 0) 
+ R   G   R  
+B G G B B Y 
+ Y   Y   G  
+
+ Y   Y   G  
+B R R Y Y R 
+ G   G   G  
+
+ G   G   G  
+R Y Y R R B 
+ B   B   G  
+
+8:
+(0, 0) (1, 0) (8, 3) (3, 1) (5, 2) (2, 2) (4, 1) (7, 2) (6, 2) 
+ R   G   Y  
+B G G B B R 
+ Y   Y   G  
+
+ Y   Y   G  
+Y G G B B R 
+ R   R   G  
+
+ R   R   G  
+G B B Y Y R 
+ Y   G   G  
+
+9:
+(0, 0) (1, 0) (8, 3) (4, 3) (5, 2) (2, 2) (6, 1) (3, 3) (7, 0) 
+ R   G   Y  
+B G G B B R 
+ Y   Y   G  
+
+ Y   Y   G  
+B G G B B R 
+ R   R   G  
+
+ R   R   G  
+G G G Y Y B 
+ Y   Y   R  

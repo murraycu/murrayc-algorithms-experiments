@@ -246,6 +246,13 @@ print_solution(const solution_type& solution, const Grid& grid,
   const auto cards_count = grid.get_cells_count();
   const auto placement_count = solution.size();
 
+  /*
+  for (const auto& p : solution) {
+    std::cout << "(" << p.first << ", " << p.second << ") ";
+  }
+  std::cout << std::endl;
+  */
+
   for (unsigned int y = 0; y < height; ++y) {
     // Print the top, the middle, and then the bottom:
     for (unsigned int part = 0; part < 3; ++part) {
