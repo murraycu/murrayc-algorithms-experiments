@@ -85,9 +85,8 @@ public:
 
   bool
   next_card_satisfies_constraints(const cards_type& cards,
-    const solution_type& prefix, const Card& card,
-    unsigned int rotation) const {
-    const auto prefix_size = prefix.size();
+    const solution_type& prefix, std::size_t prefix_size,
+    const Card& card, unsigned int rotation) const {
     const auto card_pos = prefix_size; // 1 later.
     // std::cout << "  testing: card_pos=" << card_pos << ", rotation=" <<
     // rotation << '\n';
@@ -119,7 +118,7 @@ public:
       // std::cout << "        card edge=" << edge << ", with rotation=" <<
       // rotation << ": " << card_edge << "\n";
       if (!edges_match(neighbour_card, neighbour_edge, card, card_edge)) {
-        // std::cout << "        conflict.\n";
+        //std::cout << "        conflict.\n";
         return false;
       }
 
@@ -240,19 +239,18 @@ private:
 };
 
 static void
-print_solution(const solution_type& solution, const Grid& grid,
+print_solution(const solution_type& solution, std::size_t solution_size, const Grid& grid,
   const Grid::cards_type& cards) {
   const auto width = grid.get_width();
   const auto height = grid.get_height();
   const auto cards_count = grid.get_cells_count();
-  const auto placement_count = solution.size();
+  const auto placement_count = solution_size;
 
-  /*
-  for (const auto& p : solution) {
+  for (std::size_t i = 0; i < solution_size; ++i) {
+    const auto& p = solution[i];
     std::cout << "(" << p.first << ", " << p.second << ") ";
   }
   std::cout << std::endl;
-  */
 
   for (unsigned int y = 0; y < height; ++y) {
     // Print the top, the middle, and then the bottom:
@@ -269,7 +267,7 @@ print_solution(const solution_type& solution, const Grid& grid,
         const auto rotation = placement.second;
 
         if (card_index >= cards_count) {
-          std::cerr << "Unexpected card index in solution: " << card_index
+          std::cerr << "Unexpected card index " << card_index << " (count: " << cards_count << ") in solution: " << card_index
                     << '\n';
           continue;
         }
@@ -294,64 +292,90 @@ print_solution(const solution_type& solution, const Grid& grid,
   }
 }
 
+static void
+print_solution(const solution_type& solution, const Grid& grid,
+  const Grid::cards_type& cards) {
+  print_solution(solution, solution.size(), grid, cards);
+}
+
+static inline bool
+contains_card(const solution_type& solution, std::size_t size,
+  std::size_t card_index) {
+  const auto end = std::cbegin(solution) + size;
+  return std::find_if(std::cbegin(solution), end,
+    [card_index](const auto& item) {
+      return item.first == card_index;
+    }) != end;
+}
+
 /**
- * @param prefix A valid prefix.
  */
 static std::vector<solution_type>
-get_solutions(const Grid& grid, const std::vector<Card>& cards,
-  const solution_type& prefix) {
+get_solutions(const Grid& grid, const std::vector<Card>& cards) {
   std::vector<solution_type> result;
   const auto solution_size_needed = grid.get_cells_count();
-  const auto prefix_size = prefix.size();
 
-  // Try to find a next item that will match.
+  solution_type solution(solution_size_needed);
+  std::size_t i = 0;
+  std::size_t try_card = 0;
+  std::size_t try_rotation = 0;
+
   const auto cards_count = cards.size();
-  for (unsigned int i = 0; i < cards_count; ++i) {
-    // Ignore already-used card:
-    // TODO: Receive only unused cards?
-    if (std::find_if(std::begin(prefix), std::end(prefix),
-          [i](const card_and_rotation& item) { return item.first == i; }) !=
-        std::end(prefix)) {
+
+  while (i < cards_count) {
+    //std::cout << "LOOP: " << i << std::endl;
+    //std::cout << "  card: " << try_card << ", rotation: " << try_rotation << std::endl;
+    if (try_rotation >= Card::EDGES_COUNT) {
+      ++try_card;
+      try_rotation = 0;
+    }
+
+    if (try_card >= cards_count) {
+      if (i == 0) {
+        // We have tried all possibilities:
+        break;
+      } else {
+        // Backtrack, to try an alternative choice for the previous step:
+        //std::cout << "i = " << i << ": BACKTRACK" << std::endl;
+        --i;
+        const auto& prev = solution[i];
+        try_card = prev.first;
+        try_rotation = prev.second;
+        ++try_rotation;
+        continue;
+      }
+    }
+
+    // Ignore already-used cards:
+    if (contains_card(solution, i, try_card)) {
+      ++try_card;
+      try_rotation = 0;
       continue;
     }
 
-    const auto& card = cards[i];
-    for (unsigned int rotation = 0; rotation < Card::EDGES_COUNT; ++rotation) {
-      if (grid.next_card_satisfies_constraints(cards, prefix, card, rotation)) {
-        // std::cout << "match: card=" << i << ", rotation=" << rotation <<
-        // '\n';
-        auto solution = prefix;
-        solution.emplace_back(i, rotation);
+    const auto& card = cards[try_card];
+    if (grid.next_card_satisfies_constraints(cards, solution, i, card, try_rotation)) {
+      //std::cout << "  Adding: i=" << i << ", card=" << try_card << ", rotation=" << try_rotation << std::endl;
+      solution[i] = std::make_pair(try_card, try_rotation);
 
-        // print_solution(solution, grid, cards);
+      //print_solution(solution, i+1, grid, cards);
 
-        /*
-        for (unsigned int j = 0; j < prefix.size(); ++j) {
-          std::cout << " ";
-        }
-        std::cout << "sub-solution size: " << solution.size() << '\n';
-        */
-
-        const auto solution_size = prefix_size + 1;
-        if (solution_size == solution_size_needed) {
-          // Return this complete solution:
-          result.emplace_back(solution);
-        } else {
-          // Try to get a complete solution using this prefix:
-          const auto solutions = get_solutions(grid, cards, solution);
-          result.insert(
-            std::end(result), std::begin(solutions), std::end(solutions));
-        }
+      if (i == (solution_size_needed - 1)) {
+        //std::cout << "USING solution." << std::endl;
+        result.emplace_back(solution);
+        // Continue, trying the next card/rotation.
+      } else {
+        ++i;
+        try_card = 0;
+        try_rotation = 0;
+        continue;
       }
     }
+
+    ++try_rotation;
   }
 
   return result;
-}
-
-static std::vector<solution_type>
-get_solutions(const Grid& grid, const std::vector<Card>& cards) {
-  return get_solutions(grid, cards, solution_type());
 }
 
 int
