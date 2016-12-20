@@ -30,12 +30,12 @@ public:
   type_num reverse_edge_in_dest_;
 };
 
-static_assert(std::is_copy_assignable<Edge>::value,
-  "Edge should be copy assignable.");
+static_assert(
+  std::is_copy_assignable<Edge>::value, "Edge should be copy assignable.");
 static_assert(std::is_copy_constructible<Edge>::value,
   "Edge should be copy constructible.");
-static_assert(std::is_move_assignable<Edge>::value,
-  "Edge should be move assignable.");
+static_assert(
+  std::is_move_assignable<Edge>::value, "Edge should be move assignable.");
 static_assert(std::is_move_constructible<Edge>::value,
   "Edge should be move constructible.");
 

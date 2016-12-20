@@ -15,12 +15,12 @@ public:
   std::vector<Edge> edges_;
 };
 
-static_assert(std::is_copy_assignable<Vertex>::value,
-  "Vertex should be copy assignable.");
+static_assert(
+  std::is_copy_assignable<Vertex>::value, "Vertex should be copy assignable.");
 static_assert(std::is_copy_constructible<Vertex>::value,
   "Vertex should be copy constructible.");
-static_assert(std::is_move_assignable<Vertex>::value,
-  "Vertex should be move assignable.");
+static_assert(
+  std::is_move_assignable<Vertex>::value, "Vertex should be move assignable.");
 static_assert(std::is_move_constructible<Vertex>::value,
   "Vertex should be move constructible.");
 

@@ -67,9 +67,11 @@ find(const std::string& str, const std::string& pat) {
   return result;
 }
 
-int main() {
+int
+main() {
   const auto z = make_z("aabxaabxcaabxaabxay");
-  const auto expected_z = std::vector<std::size_t>{0, 1, 0, 0, 4, 1, 0, 0, 0, 8, 1, 0, 0, 5, 1, 0, 0, 1, 0};
+  const auto expected_z = std::vector<std::size_t>{
+    0, 1, 0, 0, 4, 1, 0, 0, 0, 8, 1, 0, 0, 5, 1, 0, 0, 1, 0};
   assert(z == expected_z);
 
   assert(find("xabcabzabc", "abc") == std::vector<std::size_t>({1, 7}));

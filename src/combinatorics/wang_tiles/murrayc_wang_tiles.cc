@@ -1,10 +1,10 @@
 #include <algorithm>
 #include <array>
+#include <boost/timer/timer.hpp>
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <vector>
-#include <boost/timer/timer.hpp>
 
 class Card {
 public:
@@ -85,8 +85,8 @@ public:
 
   bool
   next_card_satisfies_constraints(const cards_type& cards,
-    const solution_type& prefix, std::size_t prefix_size,
-    const Card& card, unsigned int rotation) const {
+    const solution_type& prefix, std::size_t prefix_size, const Card& card,
+    unsigned int rotation) const {
     const auto card_pos = prefix_size; // 1 later.
     // std::cout << "  testing: card_pos=" << card_pos << ", rotation=" <<
     // rotation << '\n';
@@ -118,7 +118,7 @@ public:
       // std::cout << "        card edge=" << edge << ", with rotation=" <<
       // rotation << ": " << card_edge << "\n";
       if (!edges_match(neighbour_card, neighbour_edge, card, card_edge)) {
-        //std::cout << "        conflict.\n";
+        // std::cout << "        conflict.\n";
         return false;
       }
 
@@ -239,8 +239,8 @@ private:
 };
 
 static void
-print_solution(const solution_type& solution, std::size_t solution_size, const Grid& grid,
-  const Grid::cards_type& cards) {
+print_solution(const solution_type& solution, std::size_t solution_size,
+  const Grid& grid, const Grid::cards_type& cards) {
   const auto width = grid.get_width();
   const auto height = grid.get_height();
   const auto cards_count = grid.get_cells_count();
@@ -267,8 +267,9 @@ print_solution(const solution_type& solution, std::size_t solution_size, const G
         const auto rotation = placement.second;
 
         if (card_index >= cards_count) {
-          std::cerr << "Unexpected card index " << card_index << " (count: " << cards_count << ") in solution: " << card_index
-                    << '\n';
+          std::cerr << "Unexpected card index " << card_index
+                    << " (count: " << cards_count
+                    << ") in solution: " << card_index << '\n';
           continue;
         }
 
@@ -299,13 +300,13 @@ print_solution(const solution_type& solution, const Grid& grid,
 }
 
 static inline bool
-contains_card(const solution_type& solution, std::size_t size,
-  std::size_t card_index) {
+contains_card(
+  const solution_type& solution, std::size_t size, std::size_t card_index) {
   const auto end = std::cbegin(solution) + size;
-  return std::find_if(std::cbegin(solution), end,
-    [card_index](const auto& item) {
-      return item.first == card_index;
-    }) != end;
+  return std::find_if(
+           std::cbegin(solution), end, [card_index](const auto& item) {
+             return item.first == card_index;
+           }) != end;
 }
 
 /**
@@ -323,8 +324,9 @@ get_solutions(const Grid& grid, const Grid::cards_type& cards) {
   const auto cards_count = cards.size();
 
   while (true) {
-    //std::cout << "LOOP: " << i << std::endl;
-    //std::cout << "  card: " << try_card << ", rotation: " << try_rotation << std::endl;
+    // std::cout << "LOOP: " << i << std::endl;
+    // std::cout << "  card: " << try_card << ", rotation: " << try_rotation <<
+    // std::endl;
     if (try_rotation >= Card::EDGES_COUNT) {
       ++try_card;
       try_rotation = 0;
@@ -336,7 +338,7 @@ get_solutions(const Grid& grid, const Grid::cards_type& cards) {
         break;
       } else {
         // Backtrack, to try an alternative choice for the previous step:
-        //std::cout << "i = " << i << ": BACKTRACK" << std::endl;
+        // std::cout << "i = " << i << ": BACKTRACK" << std::endl;
         --i;
         const auto& prev = solution[i];
         try_card = prev.first;
@@ -354,14 +356,16 @@ get_solutions(const Grid& grid, const Grid::cards_type& cards) {
     }
 
     const auto& card = cards[try_card];
-    if (grid.next_card_satisfies_constraints(cards, solution, i, card, try_rotation)) {
-      //std::cout << "  Adding: i=" << i << ", card=" << try_card << ", rotation=" << try_rotation << std::endl;
+    if (grid.next_card_satisfies_constraints(
+          cards, solution, i, card, try_rotation)) {
+      // std::cout << "  Adding: i=" << i << ", card=" << try_card << ",
+      // rotation=" << try_rotation << std::endl;
       solution[i] = std::make_pair(try_card, try_rotation);
 
-      //print_solution(solution, i+1, grid, cards);
+      // print_solution(solution, i+1, grid, cards);
 
       if (i == (solution_size_needed - 1)) {
-        //std::cout << "USING solution." << std::endl;
+        // std::cout << "USING solution." << std::endl;
         result.emplace_back(solution);
         // Continue, trying the next card/rotation.
       } else {
@@ -401,12 +405,11 @@ main() {
     {Color::BLUE, Color::YELLOW, Color::RED, Color::GREEN}};
   assert(cards.size() >= COUNT);
 
-
   {
     boost::timer::auto_cpu_timer timer;
     for (int i = 0; i < 50; i++) {
       const auto solutions = get_solutions(grid, cards);
-      //std::cout << "solutions count: " << solutions.size() << std::endl;
+      // std::cout << "solutions count: " << solutions.size() << std::endl;
       assert(!solutions.empty());
       assert(solutions.size() == 5472);
     }

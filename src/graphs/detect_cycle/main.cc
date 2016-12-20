@@ -11,17 +11,13 @@ test_recursive_without_cycle() {
 
   // 1 vertex that links to 2 vertices, one of which links to the other.
   const std::vector<Vertex> g1 = {
-    Vertex({Edge(1, 1), Edge(2, 1)}),
-    Vertex({Edge(2, 1)}),
-    Vertex()};
+    Vertex({Edge(1, 1), Edge(2, 1)}), Vertex({Edge(2, 1)}), Vertex()};
   assert(!detect_cycle_recursive(g1));
 
   // 1 vertex that links to 2 vertices, one of which links to the other.
   // (A mirror of the g1).
   const std::vector<Vertex> g2 = {
-    Vertex({Edge(1, 1), Edge(2, 1)}),
-    Vertex(),
-    Vertex({Edge(1, 1)})};
+    Vertex({Edge(1, 1), Edge(2, 1)}), Vertex(), Vertex({Edge(1, 1)})};
   assert(!detect_cycle_recursive(g2));
 }
 
@@ -42,17 +38,13 @@ test_iterative_without_cycle() {
 
   // 1 vertex that links to 2 vertices, one of which links to the other.
   const std::vector<Vertex> g1 = {
-    Vertex({Edge(1, 1), Edge(2, 1)}),
-    Vertex({Edge(2, 1)}),
-    Vertex()};
+    Vertex({Edge(1, 1), Edge(2, 1)}), Vertex({Edge(2, 1)}), Vertex()};
   assert(!detect_cycle_iterative(g1));
 
   // 1 vertex that links to 2 vertices, one of which links to the other.
   // (A mirror of the g1).
   const std::vector<Vertex> g2 = {
-    Vertex({Edge(1, 1), Edge(2, 1)}),
-    Vertex(),
-    Vertex({Edge(1, 1)})};
+    Vertex({Edge(1, 1), Edge(2, 1)}), Vertex(), Vertex({Edge(1, 1)})};
   assert(!detect_cycle_iterative(g2));
 }
 
