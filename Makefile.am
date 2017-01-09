@@ -43,7 +43,8 @@ check_PROGRAMS = \
   murrayc_subset_iteration \
   murrayc_dp_string_edit_distance \
   murrayc_wang_tiles \
-  murrayc_substring_search_z_algorithm
+  murrayc_substring_search_z_algorithm \
+  murrayc_substring_search_rabin_karp
 
 TESTS = $(check_PROGRAMS)
 
@@ -250,4 +251,11 @@ murrayc_substring_search_z_algorithm_SOURCES = \
 murrayc_substring_search_z_algorithm_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_substring_search_z_algorithm_LDADD = \
+	$(COMMON_LIBS)
+
+murrayc_substring_search_rabin_karp_SOURCES = \
+	src/substring_search/rabin_karp/main.cc
+murrayc_substring_search_rabin_karp_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_substring_search_rabin_karp_LDADD = \
 	$(COMMON_LIBS)
