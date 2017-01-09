@@ -74,6 +74,8 @@ main() {
     0, 1, 0, 0, 4, 1, 0, 0, 0, 8, 1, 0, 0, 5, 1, 0, 0, 1, 0};
   assert(z == expected_z);
 
+  assert(find("foo", "fo") == std::vector<std::size_t>({0}));
+  assert(find("fop", "p") == std::vector<std::size_t>({2}));
   assert(find("xabcabzabc", "abc") == std::vector<std::size_t>({1, 7}));
   assert(find("foobarmoo", "oob") == std::vector<std::size_t>({1}));
   assert(find("foobarmoo", "bar") == std::vector<std::size_t>({3}));
