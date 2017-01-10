@@ -19,6 +19,20 @@ hash(const std::string& str, uint32_t R, uint32_t Q) {
   return hash(str, str.size(), R, Q);
 }
 
+static inline bool
+check(const std::string& str, std::size_t start, const std::string& pat) {
+  auto i = std::cbegin(str) + start;
+  for (auto ch : pat) {
+    if (ch != *i) {
+      return false;
+    }
+
+    ++i;
+  }
+
+  return true;
+}
+
 static std::vector<std::size_t>
 find(const std::string& str, const std::string& pat) {
   std::vector<std::size_t> result;
@@ -36,7 +50,7 @@ find(const std::string& str, const std::string& pat) {
   const auto pHash = hash(pat, R, Q);
   auto sHash = hash(str, m, R, Q);
 
-  if (pHash == sHash) {
+  if (pHash == sHash && check(str, 0, pat)) {
     result.emplace_back(0);
   }
 
@@ -50,7 +64,10 @@ find(const std::string& str, const std::string& pat) {
     sHash = (sHash * R + str[i]) % Q;
 
     if (pHash == sHash) {
-      result.emplace_back(i - m + 1);
+      const auto pos = i - m + 1;
+      if (check(str, pos, pat)) {
+        result.emplace_back(pos);
+      }
     }
   }
 
