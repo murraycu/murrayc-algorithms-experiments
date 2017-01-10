@@ -46,7 +46,7 @@ check_PROGRAMS = \
   murrayc_substring_search_z_algorithm \
   murrayc_substring_search_rabin_karp \
   murrayc_substring_search_boyer_moore \
-  murrayc_substring_search_kmp
+  murrayc_substring_search_kmp_with_dfa
 
 TESTS = $(check_PROGRAMS)
 
@@ -269,9 +269,9 @@ murrayc_substring_search_boyer_moore_CXXFLAGS = \
 murrayc_substring_search_boyer_moore_LDADD = \
 	$(COMMON_LIBS)
 
-murrayc_substring_search_kmp_SOURCES = \
-	src/substring_search/kmp/main.cc
-murrayc_substring_search_kmp_CXXFLAGS = \
+murrayc_substring_search_kmp_with_dfa_SOURCES = \
+	src/substring_search/kmp_with_dfa/main.cc
+murrayc_substring_search_kmp_with_dfa_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
-murrayc_substring_search_kmp_LDADD = \
+murrayc_substring_search_kmp_with_dfa_LDADD = \
 	$(COMMON_LIBS)
