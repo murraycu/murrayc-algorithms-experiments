@@ -75,6 +75,7 @@ Makefile.in
 /murrayc_wang_tiles
 /murrayc_substring_search_z_algorithm
 /murrayc_substring_search_rabin_karp
+/murrayc_substring_search_boyer_moore
 
 /example_graph_larger_with_negative_edges.dot
 /example_graph_small.dot

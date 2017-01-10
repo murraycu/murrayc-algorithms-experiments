@@ -44,7 +44,8 @@ check_PROGRAMS = \
   murrayc_dp_string_edit_distance \
   murrayc_wang_tiles \
   murrayc_substring_search_z_algorithm \
-  murrayc_substring_search_rabin_karp
+  murrayc_substring_search_rabin_karp \
+  murrayc_substring_search_boyer_moore
 
 TESTS = $(check_PROGRAMS)
 
@@ -258,4 +259,11 @@ murrayc_substring_search_rabin_karp_SOURCES = \
 murrayc_substring_search_rabin_karp_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_substring_search_rabin_karp_LDADD = \
+	$(COMMON_LIBS)
+
+murrayc_substring_search_boyer_moore_SOURCES = \
+	src/substring_search/boyer_moore/main.cc
+murrayc_substring_search_boyer_moore_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_substring_search_boyer_moore_LDADD = \
 	$(COMMON_LIBS)
