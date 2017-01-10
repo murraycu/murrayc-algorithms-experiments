@@ -83,5 +83,8 @@ main() {
   // Overlapping:
   assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
+  // Longer:
+  assert(find("findindahaystackneedleina", "needle") == std::vector<std::size_t>({16}));
+
   return EXIT_SUCCESS;
 }
