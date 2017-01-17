@@ -36,7 +36,7 @@ find(const std::string& str, const std::string& pat) {
     // Transitions for matches.
     // Finding a matching character takes us to the next position in the pattern:
     const auto pch = pat[i];
-    dfa[i][pch] = i + 1;
+    dfai[pch] = i + 1;
 
     x = dfax[pch];
   }
