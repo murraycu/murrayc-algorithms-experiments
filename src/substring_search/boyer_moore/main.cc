@@ -38,7 +38,11 @@ find(const std::string& str, const std::string& pat) {
       if (pch != ch) {
         found = false;
         const auto rightmost = r[ch];
-        if (rightmost > 0 && (uint32_t)(rightmost) < p) {
+        if (rightmost == -1 && p > 0) {
+          // The character is nowhere in the pattern,
+          // so skip completely past this character.
+          i += p - 1; //We always increment by 1 anyway.
+        } else if (rightmost > 0 && (uint32_t)(rightmost) < p) {
           const auto skip = p - rightmost;
           i += skip - 1; // We always increment by 1 anyway.
         }
