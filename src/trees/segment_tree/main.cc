@@ -29,6 +29,12 @@ private :
     Node* right = nullptr;
   };
 
+  class NodeSummary {
+  public:
+    bool contributes = false;
+    T_Value min = T_Value();
+    bool to_delete = false;
+  };
 public:
   SegmentTree() {
   }
@@ -55,9 +61,9 @@ public:
 
     root_lo = 0;
     root_hi = values.size() - 1;
-    T_Value min = T_Value();
-    root = add_node_from_vector(root_lo, root_hi, values, min);
-    assert(root->min == min);
+    NodeSummary summary;
+    root = add_node_from_vector(root_lo, root_hi, values, summary);
+    assert(root->min == summary.min);
   }
 
   /**
@@ -98,31 +104,31 @@ private:
    * Using the indices as the keys.
    */
   static Node*
-  add_node_from_vector(std::size_t lo, std::size_t hi, const std::vector<T_Value>& values, T_Value& min) {
+  add_node_from_vector(std::size_t lo, std::size_t hi, const std::vector<T_Value>& values, NodeSummary& summary) {
     const auto mid = lo + ((hi - lo) / 2);
     const auto& midval = values[mid];
     auto result = new Node(mid, midval);
 
-    min = midval;
+    summary.min = midval;
 
     if (lo != hi) {
       // The left range, including mid:
-      T_Value min_left = T_Value();
-      result->left = add_node_from_vector(lo, mid, values, min_left);
-      min = std::min(min, min_left);
+      NodeSummary summary_left;
+      result->left = add_node_from_vector(lo, mid, values, summary_left);
+      summary.min = std::min(summary.min, summary_left.min);
 
       // The right range, not including mid:
       if (mid < hi) {
-        T_Value min_right = T_Value();
-        result->right = add_node_from_vector(mid + 1, hi, values, min_right);
-        min = std::min(min, min_right);
+        NodeSummary summary_right;
+        result->right = add_node_from_vector(mid + 1, hi, values, summary_right);
+        summary.min = std::min(summary.min, summary_right.min);
       }
     }
 
     // Store the range's minimum:
     // The actual range for this node is implict depending on
     // whether it is the left or right of the parent.
-    result->min = min;
+    result->min = summary.min;
 
     return result;
   }
@@ -137,13 +143,6 @@ private:
     delete_node(node->right);
     delete node;
   }
-
-  class NodeSummary {
-  public:
-    bool contributes = false;
-    T_Value min = T_Value();
-    bool to_delete = false;
-  };
 
   /**
    * @param start
