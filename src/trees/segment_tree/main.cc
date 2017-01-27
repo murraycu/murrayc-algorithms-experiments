@@ -79,7 +79,7 @@ public:
       return {false, T_Value()};
     }
 
-    const auto summary = min_from_node(root, root_lo, root_hi, start, end);
+    const auto summary = summary_from_node(root, root_lo, root_hi, start, end);
     return {summary.contributes, summary.min};
   }
 
@@ -88,7 +88,7 @@ public:
       return;
     }
 
-    const auto summary = remove_and_get_min_from_node(root, root_lo, root_hi, key);
+    const auto summary = remove_and_get_summary_from_node(root, root_lo, root_hi, key);
     if (summary.to_delete) {
       delete root;
       root = nullptr;
@@ -149,7 +149,7 @@ private:
    * @param end inclusive.
    */
   static NodeSummary
-  min_from_node(Node* node, std::size_t node_lo, std::size_t node_hi, std::size_t start, std::size_t end) {
+  summary_from_node(Node* node, std::size_t node_lo, std::size_t node_hi, std::size_t start, std::size_t end) {
     if (!node ||
       node_lo > node_hi ||
       node_hi < node_lo) {
@@ -169,8 +169,8 @@ private:
     // Partial overlap:
     // Look at left and right:
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
-    const auto l = min_from_node(node->left, node_lo, mid, start, end);
-    const auto r = min_from_node(node->right, mid + 1, node_hi, start, end);
+    const auto l = summary_from_node(node->left, node_lo, mid, start, end);
+    const auto r = summary_from_node(node->right, mid + 1, node_hi, start, end);
     if (l.contributes && r.contributes) {
       return {true, std::min(l.min, r.min)};
     } else if (l.contributes) {
@@ -181,7 +181,7 @@ private:
   }
 
   static NodeSummary
-  remove_and_get_min_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
+  remove_and_get_summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
       return {false};
     }
@@ -189,16 +189,16 @@ private:
     // Total overlap:
     // Remove this key by removing this node:
     if (node_lo == key && node_hi == key) {
-      return {false, T_Key(), true /* delete it */};
+      return {false, T_Key(), 0, true /* delete it */};
     }
 
     // No overlap:
     if (node_lo > key  || node_hi < key) {
-      return {true, node->min, false};
+      return {true, node->min, node->count, false};
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
-    const auto l = remove_and_get_min_from_node(node->left, node_lo, mid, key);
+    const auto l = remove_and_get_summary_from_node(node->left, node_lo, mid, key);
     if (l.to_delete) {
       delete node->left;
       node->left = nullptr;
@@ -206,7 +206,7 @@ private:
       node->left->min = l.min;
     }
 
-    const auto r = remove_and_get_min_from_node(node->right, mid + 1, node_hi, key);
+    const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
     if (r.to_delete) {
       delete node->right;
       node->right = nullptr;
