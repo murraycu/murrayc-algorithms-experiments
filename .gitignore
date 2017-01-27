@@ -78,6 +78,7 @@ Makefile.in
 /murrayc_substring_search_boyer_moore
 /murrayc_substring_search_kmp_with_dfa
 /murrayc_substring_search_kmp_with_prefix_array
+/murrayc_trees_segment_tree
 
 /example_graph_larger_with_negative_edges.dot
 /example_graph_small.dot

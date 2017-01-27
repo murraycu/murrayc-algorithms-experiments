@@ -47,7 +47,8 @@ check_PROGRAMS = \
   murrayc_substring_search_rabin_karp \
   murrayc_substring_search_boyer_moore \
   murrayc_substring_search_kmp_with_dfa \
-  murrayc_substring_search_kmp_with_prefix_array
+  murrayc_substring_search_kmp_with_prefix_array \
+  murrayc_trees_segment_tree
 
 TESTS = $(check_PROGRAMS)
 
@@ -282,4 +283,11 @@ murrayc_substring_search_kmp_with_prefix_array_SOURCES = \
 murrayc_substring_search_kmp_with_prefix_array_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_substring_search_kmp_with_prefix_array_LDADD = \
+	$(COMMON_LIBS)
+
+murrayc_trees_segment_tree_SOURCES = \
+	src/trees/segment_tree/main.cc
+murrayc_trees_segment_tree_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_trees_segment_tree_LDADD = \
 	$(COMMON_LIBS)
