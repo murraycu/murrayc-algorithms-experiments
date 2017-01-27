@@ -2,6 +2,11 @@
 #include <cstdlib>
 #include <cassert>
 
+// Note: This can be implemented more efficiently
+// with an array instead of tree nodes,
+// but that might make implementation of add() and
+// remove() inefficient.
+
 template <typename T_Key, typename T_Value>
 class SegmentTree {
 private :
