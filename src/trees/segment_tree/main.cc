@@ -154,7 +154,7 @@ private:
     if (!node ||
       node_lo > node_hi ||
       node_hi < node_lo) {
-      return {false, T_Value()};
+      return {false};
     }
 
     // Total overlap of start/end over node's lo/hi:
@@ -164,7 +164,7 @@ private:
 
     // No overlap:
     if (node_lo > end  || node_hi < start) {
-      return {false, T_Value()};
+      return {false};
     }
 
     // Partial overlap:
@@ -184,7 +184,7 @@ private:
   static NodeSummary
   remove_and_get_min_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
-      return {false, T_Value(), false};
+      return {false};
     }
 
     // Total overlap:
