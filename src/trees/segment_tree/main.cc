@@ -16,8 +16,6 @@ private :
     T_Value value = T_Value();
 
     // The minimum value in this node's range:
-    T_Key lo = T_Key();
-    T_Key hi = T_Key();
     T_Value min = T_Value();
 
     // Smaller sub-ranges are in the children:
@@ -43,10 +41,10 @@ public:
       return;
     }
 
-    std::size_t lo = 0;
-    std::size_t hi = values.size() - 1;
+    root_lo = 0;
+    root_hi = values.size() - 1;
     T_Value min = T_Value();
-    root = add_node_from_vector(lo, hi, values, min);
+    root = add_node_from_vector(root_lo, root_hi, values, min);
     assert(root->min == min);
   }
 
@@ -63,7 +61,7 @@ public:
       return {false, T_Value()};
     }
 
-    return min_from_node(root, start, end);
+    return min_from_node(root, root_lo, root_hi, start, end);
   }
 
 
@@ -94,9 +92,9 @@ private:
       }
     }
 
-    // Store the range and its minimum:
-    result->lo = lo;
-    result->hi = hi;
+    // Store the range's minimum:
+    // The actual range for this node is implict depending on
+    // whether it is the left or right of the parent.
     result->min = min;
 
     return result;
@@ -118,25 +116,28 @@ private:
    * @param end inclusive.
    */
   static std::pair<bool, T_Value>
-  min_from_node(Node* node, std::size_t start, std::size_t end) {
-    if (!node) {
+  min_from_node(Node* node, std::size_t node_lo, std::size_t node_hi, std::size_t start, std::size_t end) {
+    if (!node ||
+      node_lo > node_hi ||
+      node_hi < node_lo) {
       return {false, T_Value()};
     }
 
     // Total overlap of start/end over node's lo/hi:
-    if (start <= node->lo && end >= node->hi) {
+    if (start <= node_lo && end >= node_hi) {
       return {true, node->min};
     }
 
     // No overlap:
-    if (node->lo > end  || node->hi < start) {
+    if (node_lo > end  || node_hi < start) {
       return {false, T_Value()};
     }
 
     // Partial overlap:
     // Look at left and right:
-    const auto l = min_from_node(node->left, start, end);
-    const auto r = min_from_node(node->right, start, end);
+    const auto mid = node_lo + ((node_hi - node_lo) / 2);
+    const auto l = min_from_node(node->left, node_lo, mid, start, end);
+    const auto r = min_from_node(node->right, mid + 1, node_hi, start, end);
     if (l.first && r.first) {
       return {true, std::min(l.second, r.second)};
     } else if (l.first) {
@@ -147,6 +148,8 @@ private:
   }
 
   Node* root = nullptr;
+  T_Key root_lo = T_Key();
+  T_Key root_hi = T_Key();
 };
 
 int main() {
