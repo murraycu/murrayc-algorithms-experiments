@@ -79,7 +79,7 @@ public:
    * @param end inclusive.
    */
   std::pair<bool, T_Value>
-  min(std::size_t start, std::size_t end) const {
+  min(T_Key start, T_Key end) const {
     if (!root) {
       return {false, T_Value()};
     }
@@ -89,7 +89,7 @@ public:
   }
 
 
-  std::size_t count(std::size_t start, std::size_t end) const {
+  std::size_t count(T_Key start, T_Key end) const {
     if (!root) {
       return 0;
     }
@@ -173,7 +173,7 @@ private:
    * @param end inclusive.
    */
   static NodeSummary
-  summary_from_node(Node* node, std::size_t node_lo, std::size_t node_hi, std::size_t start, std::size_t end) {
+  summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key start, T_Key end) {
     if (!node ||
       node_lo > node_hi ||
       node_hi < node_lo) {
