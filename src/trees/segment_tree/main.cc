@@ -24,6 +24,9 @@ private :
     // The minimum value in this node's range:
     T_Value min = T_Value();
 
+    // The number of keys in this node's range:
+    std::size_t count = 0;
+
     // Smaller sub-ranges are in the children:
     Node* left = nullptr;
     Node* right = nullptr;
@@ -33,6 +36,7 @@ private :
   public:
     bool contributes = false;
     T_Value min = T_Value();
+    std::size_t count = 0;
     bool to_delete = false;
   };
 public:
@@ -64,6 +68,7 @@ public:
     NodeSummary summary;
     root = add_node_from_vector(root_lo, root_hi, values, summary);
     assert(root->min == summary.min);
+    assert(root->count == summary.count);
   }
 
   /**
@@ -83,6 +88,16 @@ public:
     return {summary.contributes, summary.min};
   }
 
+
+  std::size_t count(std::size_t start, std::size_t end) const {
+    if (!root) {
+      return 0;
+    }
+
+    const auto summary = summary_from_node(root, root_lo, root_hi, start, end);
+    return summary.count;
+  }
+
   void remove(T_Key key) {
     if (!root) {
       return;
@@ -96,6 +111,7 @@ public:
     }
 
     root->min = summary.min;
+    root->count = summary.count;
   }
 
 private:
@@ -110,18 +126,21 @@ private:
     auto result = new Node(mid, midval);
 
     summary.min = midval;
+    summary.count = 1;
 
     if (lo != hi) {
       // The left range, including mid:
       NodeSummary summary_left;
       result->left = add_node_from_vector(lo, mid, values, summary_left);
       summary.min = std::min(summary.min, summary_left.min);
+      summary.count = summary_left.count;
 
       // The right range, not including mid:
       if (mid < hi) {
         NodeSummary summary_right;
         result->right = add_node_from_vector(mid + 1, hi, values, summary_right);
         summary.min = std::min(summary.min, summary_right.min);
+        summary.count += summary_right.count;
       }
     }
 
@@ -129,6 +148,7 @@ private:
     // The actual range for this node is implict depending on
     // whether it is the left or right of the parent.
     result->min = summary.min;
+    result->count = summary.count;
 
     return result;
   }
@@ -158,7 +178,7 @@ private:
 
     // Total overlap of start/end over node's lo/hi:
     if (start <= node_lo && end >= node_hi) {
-      return {true, node->min};
+      return {true, node->min, node->count};
     }
 
     // No overlap:
@@ -172,7 +192,7 @@ private:
     const auto l = summary_from_node(node->left, node_lo, mid, start, end);
     const auto r = summary_from_node(node->right, mid + 1, node_hi, start, end);
     if (l.contributes && r.contributes) {
-      return {true, std::min(l.min, r.min)};
+      return {true, std::min(l.min, r.min), l.count + r.count};
     } else if (l.contributes) {
       return l;
     } else {
@@ -204,6 +224,7 @@ private:
       node->left = nullptr;
     } else if (l.contributes) {
       node->left->min = l.min;
+      node->left->count = l.count;
     }
 
     const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
@@ -212,10 +233,11 @@ private:
       node->right = nullptr;
     } else if (r.contributes) {
       node->right->min = r.min;
+      node->right->count = r.count;
     }
 
     if (l.contributes && r.contributes) {
-      return {true, std::min(l.min, r.min), false};
+      return {true, std::min(l.min, r.min), l.count + r.count, false};
     } else if (l.contributes) {
       return l;
     } else {
@@ -286,9 +308,24 @@ test_remove_and_min() {
   assert(st.min(2, 4).second == 4);
 }
 
+static void
+test_count() {
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+
+  SegmentTree<std::size_t, int> st(values);
+
+  assert(st.count(0, 5) == 6);
+  assert(st.count(1, 2) == 2);
+
+  st.remove(2);
+  assert(st.count(1, 2) == 1);
+}
+
 int main() {
   test_min();
   test_remove_and_min();
+
+  test_count();
 
   return EXIT_SUCCESS;
 }
