@@ -76,6 +76,20 @@ public:
     return min_from_node(root, root_lo, root_hi, start, end);
   }
 
+  void remove(T_Key key) {
+    if (!root) {
+      return;
+    }
+
+    const auto summary = remove_and_get_min_from_node(root, root_lo, root_hi, key);
+    if (summary.to_delete) {
+      delete root;
+      root = nullptr;
+      return;
+    }
+
+    root->min = summary.min;
+  }
 
 private:
   /** Add the node for the middle values,
@@ -123,6 +137,13 @@ private:
     delete node;
   }
 
+  class NodeSummary {
+  public:
+    bool contributes = false;
+    T_Value min = T_Value();
+    bool to_delete = false;
+  };
+
   /**
    * @param start
    * @param end inclusive.
@@ -159,46 +180,115 @@ private:
     }
   }
 
+  static NodeSummary 
+  remove_and_get_min_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
+    if (!node) {
+      return {false, T_Value(), false};
+    }
+
+    // Total overlap:
+    // Remove this key by removing this node:
+    if (node_lo == key && node_hi == key) {
+      return {false, T_Key(), true /* delete it */};
+    }
+
+    // No overlap:
+    if (node_lo > key  || node_hi < key) {
+      return {true, node->min, false};
+    }
+
+    const auto mid = node_lo + ((node_hi - node_lo) / 2);
+    const auto l = remove_and_get_min_from_node(node->left, node_lo, mid, key);
+    if (l.to_delete) {
+      delete node->left;
+      node->left = nullptr;
+    } else if (l.contributes) {
+      node->left->min = l.min;
+    }
+
+    const auto r = remove_and_get_min_from_node(node->right, mid + 1, node_hi, key);
+    if (r.to_delete) {
+      delete node->right;
+      node->right = nullptr;
+    } else if (r.contributes) {
+      node->right->min = r.min;
+    }
+
+    if (l.contributes && r.contributes) {
+      return {true, std::min(l.min, r.min), false};
+    } else if (l.contributes) {
+      return l;
+    } else {
+      return r;
+    }
+  }
+
   Node* root = nullptr;
   T_Key root_lo = T_Key();
   T_Key root_hi = T_Key();
 };
 
-int main() {
-
+static void
+test_min() {
   // RMQ (Range Minium Query)
   // to find the lowest value in the range:
-  {
-    std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
 
-    // A segment tree mapping indices (keys) to values,
-    // which can return the minimum value in a range of indices.
-    SegmentTree<std::size_t, int> st(values);
+  // A segment tree mapping indices (keys) to values,
+  // which can return the minimum value in a range of indices.
+  SegmentTree<std::size_t, int> st(values);
 
-    /* TODO: Implement this alternative:
-    for (auto i = 0u; i < values.size(); ++i) {
-      st.add(values[i], i);
-    }
-    */
-
-    assert(st.min(1, 2).second == 3);
-
-    assert(st.min(2, 4).first == true);
-    assert(st.min(2, 4).second == 0);
-    assert(st.min(0, 4).first == true);
-    assert(st.min(0, 4).second == -1);
-
-    assert(st.min(0, 5).first == true);
-    assert(st.min(0, 5).second == -1);
-
-    assert(st.min(7, 8).first == false);
-
-    assert(st.min(0, 2).second == -1);
-    assert(st.min(0, 1).second == -1);
-    assert(st.min(1, 2).second == 3);
-    assert(st.min(4, 5).second == 1);
-    assert(st.min(3, 5).second == 0);
+  /* TODO: Implement this alternative:
+  for (auto i = 0u; i < values.size(); ++i) {
+    st.add(values[i], i);
   }
+  */
+
+  assert(st.min(1, 2).second == 3);
+
+  assert(st.min(2, 4).first == true);
+  assert(st.min(2, 4).second == 0);
+  assert(st.min(0, 4).first == true);
+  assert(st.min(0, 4).second == -1);
+
+  assert(st.min(0, 5).first == true);
+  assert(st.min(0, 5).second == -1);
+
+  assert(st.min(7, 8).first == false);
+
+  assert(st.min(0, 2).second == -1);
+  assert(st.min(0, 1).second == -1);
+  assert(st.min(1, 2).second == 3);
+  assert(st.min(4, 5).second == 1);
+  assert(st.min(3, 5).second == 0);
+}
+
+static void
+test_remove_and_min() {
+  // RMQ (Range Minium Query)
+  // to find the lowest value in the range:
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+
+  // A segment tree mapping indices (keys) to values,
+  // which can return the minimum value in a range of indices.
+  SegmentTree<std::size_t, int> st(values);
+
+  assert(st.min(2, 4).first == true);
+  assert(st.min(2, 4).second == 0);
+
+  // Remove the 0 at index 3.
+  // This doesn't change the index of entries to the right
+  // - the SegmentTree knows about these simply as key values.
+  st.remove(3);
+  assert(st.min(2, 4).second == 2);
+
+  st.remove(4);
+  assert(st.min(2, 4).second == 4);
+}
+
+int main() {
+  test_min();
+  test_remove_and_min();
 
   return EXIT_SUCCESS;
 }
