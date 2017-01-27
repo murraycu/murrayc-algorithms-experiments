@@ -1,3 +1,4 @@
+#include <type_traits>
 #include <vector>
 #include <cstdlib>
 #include <cassert>
@@ -42,6 +43,12 @@ public:
    * In O(log(n)) time.
    */
   SegmentTree(const std::vector<T_Value>& values) {
+    /* TODO: Allow other suitable types?
+    static_assert(std::is_same<T_Key, std::size_t>::value,
+      "This constructor should only be used if T_Key is std::size_t, "
+      "because it uses the vector indices as keys");
+    */
+
     if (values.empty()) {
       return;
     }
