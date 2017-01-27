@@ -268,6 +268,8 @@ test_min() {
   }
   */
 
+  assert(st.min(10, 11).first == false);
+
   assert(st.min(1, 2).second == 3);
 
   assert(st.min(2, 4).first == true);
@@ -304,9 +306,11 @@ test_remove_and_min() {
   // This doesn't change the index of entries to the right
   // - the SegmentTree knows about these simply as key values.
   st.remove(3);
+  assert(st.min(3, 3).first == false);
   assert(st.min(2, 4).second == 2);
 
   st.remove(4);
+  assert(st.min(4, 4).first == false);
   assert(st.min(2, 4).second == 4);
 }
 
@@ -316,10 +320,13 @@ test_count() {
 
   SegmentTree<std::size_t, int> st(values);
 
+  assert(st.count(10, 11) == 0);
+
   assert(st.count(0, 5) == 6);
   assert(st.count(1, 2) == 2);
 
   st.remove(2);
+  assert(st.count(2, 2) == 0);
   assert(st.count(1, 2) == 1);
 }
 
