@@ -73,7 +73,8 @@ public:
       return {false, T_Value()};
     }
 
-    return min_from_node(root, root_lo, root_hi, start, end);
+    const auto summary = min_from_node(root, root_lo, root_hi, start, end);
+    return {summary.contributes, summary.min};
   }
 
   void remove(T_Key key) {
@@ -148,7 +149,7 @@ private:
    * @param start
    * @param end inclusive.
    */
-  static std::pair<bool, T_Value>
+  static NodeSummary
   min_from_node(Node* node, std::size_t node_lo, std::size_t node_hi, std::size_t start, std::size_t end) {
     if (!node ||
       node_lo > node_hi ||
@@ -171,16 +172,16 @@ private:
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
     const auto l = min_from_node(node->left, node_lo, mid, start, end);
     const auto r = min_from_node(node->right, mid + 1, node_hi, start, end);
-    if (l.first && r.first) {
-      return {true, std::min(l.second, r.second)};
-    } else if (l.first) {
+    if (l.contributes && r.contributes) {
+      return {true, std::min(l.min, r.min)};
+    } else if (l.contributes) {
       return l;
     } else {
       return r;
     }
   }
 
-  static NodeSummary 
+  static NodeSummary
   remove_and_get_min_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
       return {false, T_Value(), false};
