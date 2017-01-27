@@ -110,11 +110,16 @@ public:
       return;
     }
 
-    root->min = summary.min;
-    root->count = summary.count;
+    use_summary(root, summary);
   }
 
 private:
+  static void
+  use_summary(Node* node, const NodeSummary& summary) {
+    node->min = summary.min;
+    node->count = summary.count;
+  }
+
   /** Add the node for the middle values,
    * and its child nodes for the left and right parts.
    * Using the indices as the keys.
@@ -144,11 +149,10 @@ private:
       }
     }
 
-    // Store the range's minimum:
+    // Store the range's minimum, count, etc:
     // The actual range for this node is implict depending on
     // whether it is the left or right of the parent.
-    result->min = summary.min;
-    result->count = summary.count;
+    use_summary(result, summary);
 
     return result;
   }
@@ -223,8 +227,7 @@ private:
       delete node->left;
       node->left = nullptr;
     } else if (l.contributes) {
-      node->left->min = l.min;
-      node->left->count = l.count;
+      use_summary(node->left, l);
     }
 
     const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
@@ -232,8 +235,7 @@ private:
       delete node->right;
       node->right = nullptr;
     } else if (r.contributes) {
-      node->right->min = r.min;
-      node->right->count = r.count;
+      use_summary(node->right, r);
     }
 
     if (l.contributes && r.contributes) {
