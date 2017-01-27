@@ -89,13 +89,41 @@ public:
   }
 
 
-  std::size_t count(T_Key start, T_Key end) const {
+  /** Count the items whose keys are in the specified range.
+   *
+   * @param start
+   * @param end inclusive.
+   */
+  std::size_t
+  count(T_Key start, T_Key end) const {
     if (!root) {
       return 0;
     }
 
     const auto summary = summary_from_node(root, root_lo, root_hi, start, end);
     return summary.count;
+  }
+
+  /** Count the missing items in the specified range.
+   *
+   * @param start
+   * @param end inclusive.
+   */
+  std::size_t
+  count_empty(T_Key start, T_Key end) const {
+    const auto full = end - start + 1;
+    if (!root) {
+      // They are al missing:
+      return full;
+    }
+
+    if (end < root_lo || start > root_hi) {
+      // They are al missing:
+      return full;
+    }
+
+    const auto c = count(start, end);
+    return full - c;
   }
 
   void remove(T_Key key) {
@@ -323,11 +351,13 @@ test_count() {
   assert(st.count(10, 11) == 0);
 
   assert(st.count(0, 5) == 6);
+  assert(st.count_empty(0, 5) == 0);
   assert(st.count(1, 2) == 2);
 
   st.remove(2);
   assert(st.count(2, 2) == 0);
   assert(st.count(1, 2) == 1);
+  assert(st.count_empty(1, 5) == 1);
 }
 
 int main() {
