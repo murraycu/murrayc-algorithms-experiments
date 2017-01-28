@@ -215,8 +215,8 @@ public:
       return;
     }
 
-    const auto summary = remove_and_get_summary_from_node(root, root_lo, root_hi, key);
-    if (summary.second) {
+    const auto del = remove_and_update_summary_from_node(root, root_lo, root_hi, key);
+    if (del) {
       delete root;
       root = nullptr;
       return;
@@ -301,42 +301,40 @@ private:
   }
 
   /**
-   * @result {summary, to_delete}
+   * @result True if the caller should delete and forget about this child node.
    */
-  static std::pair<NodeSummary, bool>
-  remove_and_get_summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
+  static bool
+  remove_and_update_summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
-      return {{false}, false};
+      return false;
     }
 
     // Total overlap:
     // Remove this key by removing this node:
     if (node_lo == key && node_hi == key) {
-      return {{false, T_Key(), T_Key(), 0}, true /* delete it */};
+      return true; /* delete it */
     }
 
     // No overlap:
     if (node_lo > key  || node_hi < key) {
-      return {node->summary, false};
+      return false;
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
-    const auto l = remove_and_get_summary_from_node(node->left, node_lo, mid, key);
-    if (l.second) {
+    const auto ldelete = remove_and_update_summary_from_node(node->left, node_lo, mid, key);
+    if (ldelete) {
       delete node->left;
       node->left = nullptr;
     }
-    const auto& lsum = l.first;
 
-    const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
-    if (r.second) {
+    const auto rdelete = remove_and_update_summary_from_node(node->right, mid + 1, node_hi, key);
+    if (rdelete) {
       delete node->right;
       node->right = nullptr;
     }
-    const auto& rsum = r.first;
 
-    node->summary = summary_of_children(lsum, rsum);
-    return {node->summary, false};
+    node->summary = summary_of_children(node->left, node->right);
+    return false;
   }
 
   static NodeSummary
@@ -355,6 +353,22 @@ private:
 
     return summary;
   }
+
+  static NodeSummary
+  summary_of_children(const Node* l, const Node* r) {
+    if (l && r) {
+      return summary_of_children(l->summary, r->summary);
+    }
+
+    if (l) {
+      return l->summary;
+    } else if (r) {
+      return r->summary;
+    } else {
+      return {false};
+    }
+  }
+
 
   Node* root = nullptr;
   T_Key root_lo = T_Key();
