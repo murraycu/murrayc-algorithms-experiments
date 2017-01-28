@@ -77,6 +77,7 @@ public:
    *
    * @param start
    * @param end inclusive.
+   * @result {some key exists, minimum}
    */
   std::pair<bool, T_Value>
   min(T_Key start, T_Key end) const {
@@ -124,6 +125,64 @@ public:
 
     const auto c = count(start, end);
     return full - c;
+  }
+
+  /**
+   * Find the kth missing key in the tree.
+   * In O(log(n)) time.
+   *
+   * @param start
+   * @param end inclusive.
+   * @result {a kth key is missing, key}
+   */
+  std::pair<bool, T_Key>
+  get_kth_empty(std::size_t k) const {
+    if (!root) {
+      // Nothing is missing from nothing.
+      return {false, T_Key()};
+    }
+
+    auto lo = root_lo;
+    auto hi = root_hi;
+
+    // Gradually move into the range where the missing value would have to be,
+    // by examining the count and the expected count in the halves, until we
+    // are looking at a single-item range, and looking for just one missing item (k=0).
+    //
+    // For instance (with indices as keys, and values conveniently equal to those keys):
+    //
+    // If k = 0th with (0, 1, 2, 3, 4, 5):
+    //   lo/mid/hi=0,2,5 then 3,4,5, then ends on 5,5, when k=0, but count(5) = 1.
+    //
+    // If k = 0th with (0, _, 2, 3, 4):
+    //   lo/mid/hi=0,2,5 then 0,1,2, then 0,0,1, then ends on 1,1, when k=0 and count(1) = 0.
+    //
+    // If k = 1th with (0, _, 2, 3, _, 5):
+    //   lo/mid/hi=0,2,5 then 3,4,5, then 3,3,4, then ends on 4,4, when k=0 and count(4) = 0.
+    while (lo < hi) {
+      const auto mid = lo + ((hi - lo) / 2);
+      const auto lc = count(lo, mid);
+
+      const auto halfn = mid - lo + 1;
+      const auto missing = halfn - lc;
+
+      if (missing >= (k + 1)) {
+        hi = mid;
+      } else {
+        k -= missing;
+        lo = mid + 1;
+      }
+    }
+
+    // Now lo == hi.
+    // And either that key is missing or it is not.
+    const auto c = count(lo, lo);
+    if (k == 0 &&
+        c == 0) {
+      return {true, lo};
+    }
+
+    return {false, T_Key()};
   }
 
   void remove(T_Key key) {
@@ -360,11 +419,30 @@ test_count() {
   assert(st.count_empty(1, 5) == 1);
 }
 
+static void
+test_kth_empty() {
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+
+  SegmentTree<std::size_t, int> st(values);
+
+  assert(st.get_kth_empty(0).first == false);
+  st.remove(1);
+  assert(st.get_kth_empty(0).first == true);
+  assert(st.get_kth_empty(0).second == 1);
+
+  st.remove(4);
+  assert(st.get_kth_empty(0).first == true);
+  assert(st.get_kth_empty(0).second == 1);
+  assert(st.get_kth_empty(1).first == true);
+  assert(st.get_kth_empty(1).second == 4);
+}
+
 int main() {
   test_min();
   test_remove_and_min();
 
   test_count();
+  test_kth_empty();
 
   return EXIT_SUCCESS;
 }
