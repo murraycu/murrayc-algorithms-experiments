@@ -241,19 +241,13 @@ private:
 
     if (lo != hi) {
       // The left range, including mid:
-      NodeSummary summary_left;
-      result->left = add_node_from_vector(lo, mid, values, summary_left);
-      summary.min = std::min(summary.min, summary_left.min);
-      summary.max = std::max(summary.max, summary_left.max);
-      summary.count = summary_left.count;
+      result->left = add_node_from_vector(lo, mid, values, summary);
 
       // The right range, not including mid:
       if (mid < hi) {
         NodeSummary summary_right;
         result->right = add_node_from_vector(mid + 1, hi, values, summary_right);
-        summary.min = std::min(summary.min, summary_right.min);
-        summary.max = std::max(summary.max, summary_right.max);
-        summary.count += summary_right.count;
+        summary = summary_of_children(summary, summary_right);
       }
     }
 
@@ -303,16 +297,7 @@ private:
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
     const auto l = summary_from_node(node->left, node_lo, mid, start, end);
     const auto r = summary_from_node(node->right, mid + 1, node_hi, start, end);
-    if (l.contributes && r.contributes) {
-      const auto min = std::min(l.min, r.min);
-      const auto max = std::max(l.max, r.max);
-      const auto count = l.count + r.count;
-      return {true, min, max, count};
-    } else if (l.contributes) {
-      return l;
-    } else {
-      return r;
-    }
+    return summary_of_children(l, r);
   }
 
   /**
@@ -350,6 +335,12 @@ private:
     }
     const auto& rsum = r.first;
 
+    node->summary = summary_of_children(lsum, rsum);
+    return {node->summary, false};
+  }
+
+  static NodeSummary
+  summary_of_children(const NodeSummary& lsum, const NodeSummary& rsum) {
     NodeSummary summary;
     if (lsum.contributes && rsum.contributes) {
       const auto min = std::min(lsum.min, rsum.min);
@@ -362,8 +353,7 @@ private:
       summary = rsum;
     }
 
-    node->summary = summary;
-    return {summary, false};
+    return summary;
   }
 
   Node* root = nullptr;
