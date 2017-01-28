@@ -11,15 +11,9 @@
 template <typename T_Key, typename T_Value>
 class SegmentTree {
 private :
-  class Node {
+  class NodeSummary {
   public:
-    Node(T_Key in_key, T_Value in_value)
-    : key(in_key),
-      value(in_value) {
-    }
-
-    T_Key key = T_Key();
-    T_Value value = T_Value();
+    bool contributes = false;
 
     // The minimum value in this node's range:
     T_Value min = T_Value();
@@ -30,19 +24,27 @@ private :
     // The number of keys in this node's range:
     std::size_t count = 0;
 
+    bool to_delete = false;
+  };
+
+  class Node {
+  public:
+    Node(T_Key in_key, T_Value in_value)
+    : key(in_key),
+      value(in_value) {
+        summary.contributes = true;
+    }
+
+    T_Key key = T_Key();
+    T_Value value = T_Value();
+
+    NodeSummary summary;
+
     // Smaller sub-ranges are in the children:
     Node* left = nullptr;
     Node* right = nullptr;
   };
 
-  class NodeSummary {
-  public:
-    bool contributes = false;
-    T_Value min = T_Value();
-    T_Value max = T_Value();
-    std::size_t count = 0;
-    bool to_delete = false;
-  };
 public:
   SegmentTree() {
   }
@@ -71,9 +73,9 @@ public:
     root_hi = values.size() - 1;
     NodeSummary summary;
     root = add_node_from_vector(root_lo, root_hi, values, summary);
-    assert(root->min == summary.min);
-    assert(root->max == summary.max);
-    assert(root->count == summary.count);
+    assert(root->summary.min == summary.min);
+    assert(root->summary.max == summary.max);
+    assert(root->summary.count == summary.count);
   }
 
   /**
@@ -225,9 +227,7 @@ public:
 private:
   static void
   use_summary(Node* node, const NodeSummary& summary) {
-    node->min = summary.min;
-    node->max = summary.max;
-    node->count = summary.count;
+    node->summary = summary;
   }
 
   /** Add the node for the middle values,
@@ -240,6 +240,7 @@ private:
     const auto& midval = values[mid];
     auto result = new Node(mid, midval);
 
+    summary.contributes = true;
     summary.min = midval;
     summary.max = midval;
     summary.count = 1;
@@ -295,7 +296,7 @@ private:
 
     // Total overlap of start/end over node's lo/hi:
     if (start <= node_lo && end >= node_hi) {
-      return {true, node->min, node->max, node->count};
+      return node->summary;
     }
 
     // No overlap:
@@ -334,7 +335,7 @@ private:
 
     // No overlap:
     if (node_lo > key  || node_hi < key) {
-      return {true, node->min, node->max, node->count, false};
+      return node->summary;
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
