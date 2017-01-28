@@ -24,6 +24,9 @@ private :
     // The minimum value in this node's range:
     T_Value min = T_Value();
 
+    // The maximum value in this node's range:
+    T_Value max = T_Value();
+
     // The number of keys in this node's range:
     std::size_t count = 0;
 
@@ -36,6 +39,7 @@ private :
   public:
     bool contributes = false;
     T_Value min = T_Value();
+    T_Value max = T_Value();
     std::size_t count = 0;
     bool to_delete = false;
   };
@@ -68,6 +72,7 @@ public:
     NodeSummary summary;
     root = add_node_from_vector(root_lo, root_hi, values, summary);
     assert(root->min == summary.min);
+    assert(root->max == summary.max);
     assert(root->count == summary.count);
   }
 
@@ -89,6 +94,23 @@ public:
     return {summary.contributes, summary.min};
   }
 
+  /**
+   * Find the maximum value in the tree, within the specifed range of keys.
+   * In O(log(n)) time.
+   *
+   * @param start
+   * @param end inclusive.
+   * @result {some key exists, maximum}
+   */
+  std::pair<bool, T_Value>
+  max(T_Key start, T_Key end) const {
+    if (!root) {
+      return {false, T_Value()};
+    }
+
+    const auto summary = summary_from_node(root, root_lo, root_hi, start, end);
+    return {summary.contributes, summary.max};
+  }
 
   /** Count the items whose keys are in the specified range.
    *
@@ -204,6 +226,7 @@ private:
   static void
   use_summary(Node* node, const NodeSummary& summary) {
     node->min = summary.min;
+    node->max = summary.max;
     node->count = summary.count;
   }
 
@@ -218,6 +241,7 @@ private:
     auto result = new Node(mid, midval);
 
     summary.min = midval;
+    summary.max = midval;
     summary.count = 1;
 
     if (lo != hi) {
@@ -225,6 +249,7 @@ private:
       NodeSummary summary_left;
       result->left = add_node_from_vector(lo, mid, values, summary_left);
       summary.min = std::min(summary.min, summary_left.min);
+      summary.max = std::max(summary.max, summary_left.max);
       summary.count = summary_left.count;
 
       // The right range, not including mid:
@@ -232,6 +257,7 @@ private:
         NodeSummary summary_right;
         result->right = add_node_from_vector(mid + 1, hi, values, summary_right);
         summary.min = std::min(summary.min, summary_right.min);
+        summary.max = std::max(summary.max, summary_right.max);
         summary.count += summary_right.count;
       }
     }
@@ -269,7 +295,7 @@ private:
 
     // Total overlap of start/end over node's lo/hi:
     if (start <= node_lo && end >= node_hi) {
-      return {true, node->min, node->count};
+      return {true, node->min, node->max, node->count};
     }
 
     // No overlap:
@@ -283,7 +309,10 @@ private:
     const auto l = summary_from_node(node->left, node_lo, mid, start, end);
     const auto r = summary_from_node(node->right, mid + 1, node_hi, start, end);
     if (l.contributes && r.contributes) {
-      return {true, std::min(l.min, r.min), l.count + r.count};
+      const auto min = std::min(l.min, r.min);
+      const auto max = std::max(l.max, r.max);
+      const auto count = l.count + r.count;
+      return {true, min, max, count};
     } else if (l.contributes) {
       return l;
     } else {
@@ -300,12 +329,12 @@ private:
     // Total overlap:
     // Remove this key by removing this node:
     if (node_lo == key && node_hi == key) {
-      return {false, T_Key(), 0, true /* delete it */};
+      return {false, T_Key(), T_Key(), 0, true /* delete it */};
     }
 
     // No overlap:
     if (node_lo > key  || node_hi < key) {
-      return {true, node->min, node->count, false};
+      return {true, node->min, node->max, node->count, false};
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
@@ -326,7 +355,10 @@ private:
     }
 
     if (l.contributes && r.contributes) {
-      return {true, std::min(l.min, r.min), l.count + r.count, false};
+      const auto min = std::min(l.min, r.min);
+      const auto max = std::max(l.max, r.max);
+      const auto count = l.count + r.count;
+      return {true, min, max, count};
     } else if (l.contributes) {
       return l;
     } else {
@@ -402,6 +434,62 @@ test_remove_and_min() {
 }
 
 static void
+test_max() {
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+
+  // A segment tree mapping indices (keys) to values,
+  // which can return the maximum value in a range of indices.
+  SegmentTree<std::size_t, int> st(values);
+
+  assert(st.max(10, 11).first == false);
+
+  assert(st.max(1, 2).first == true);
+  assert(st.max(1, 2).second == 4);
+
+  assert(st.max(2, 4).first == true);
+  assert(st.max(2, 4).second == 4);
+  assert(st.max(0, 4).first == true);
+  assert(st.max(0, 4).second == 4);
+
+  assert(st.max(0, 5).first == true);
+  assert(st.max(0, 5).second == 4);
+
+  assert(st.max(7, 8).first == false);
+
+  assert(st.max(0, 2).second == 4);
+  assert(st.max(0, 1).second == 3);
+  assert(st.max(1, 2).second == 4);
+  assert(st.max(4, 5).second == 2);
+  assert(st.max(3, 5).second == 2);
+}
+
+static void
+test_remove_and_max() {
+  // RMQ (Range Minium Query)
+  // to find the lowest value in the range:
+  std::vector<int> values = {-1, 3, 4, 0, 2, 1};
+
+  // A segment tree mapping indices (keys) to values,
+  // which can return the minimum value in a range of indices.
+  SegmentTree<std::size_t, int> st(values);
+
+  assert(st.max(2, 4).first == true);
+  assert(st.max(2, 4).second == 4);
+
+  // Remove the 4 at index 2.
+  // This doesn't change the index of entries to the right
+  // - the SegmentTree knows about these simply as key values.
+  st.remove(2);
+  assert(st.max(2, 2).first == false);
+  assert(st.max(2, 4).first == true);
+  assert(st.max(2, 4).second == 2);
+
+  st.remove(4);
+  assert(st.max(4, 4).first == false);
+  assert(st.max(2, 4).second == 0);
+}
+
+static void
 test_count() {
   std::vector<int> values = {-1, 3, 4, 0, 2, 1};
 
@@ -440,6 +528,9 @@ test_kth_empty() {
 int main() {
   test_min();
   test_remove_and_min();
+
+  test_max();
+  test_remove_and_max();
 
   test_count();
   test_kth_empty();
