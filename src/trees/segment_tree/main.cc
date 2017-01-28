@@ -38,6 +38,9 @@ private :
     T_Key key = T_Key();
     T_Value value = T_Value();
 
+    // TODO: Node doesn't use the contributes or to_delete members,
+    // so split those out when C++17 makes it more convenient
+    // to return a std::tuple<contributes, summary, to_delete>.
     NodeSummary summary;
 
     // Smaller sub-ranges are in the children:
