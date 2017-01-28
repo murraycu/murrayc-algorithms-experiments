@@ -23,8 +23,6 @@ private :
 
     // The number of keys in this node's range:
     std::size_t count = 0;
-
-    bool to_delete = false;
   };
 
   class Node {
@@ -38,9 +36,9 @@ private :
     T_Key key = T_Key();
     T_Value value = T_Value();
 
-    // TODO: Node doesn't use the contributes or to_delete members,
+    // TODO: Node doesn't use the contributes member,
     // so split those out when C++17 makes it more convenient
-    // to return a std::tuple<contributes, summary, to_delete>.
+    // to return a std::tuple<contributes, summary>.
     NodeSummary summary;
 
     // Smaller sub-ranges are in the children:
@@ -218,7 +216,7 @@ public:
     }
 
     const auto summary = remove_and_get_summary_from_node(root, root_lo, root_hi, key);
-    if (summary.to_delete) {
+    if (summary.second) {
       delete root;
       root = nullptr;
       return;
@@ -317,50 +315,55 @@ private:
     }
   }
 
-  static NodeSummary
+  /**
+   * @result {summary, to_delete}
+   */
+  static std::pair<NodeSummary, bool>
   remove_and_get_summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
-      return {false};
+      return {{false}, false};
     }
 
     // Total overlap:
     // Remove this key by removing this node:
     if (node_lo == key && node_hi == key) {
-      return {false, T_Key(), T_Key(), 0, true /* delete it */};
+      return {{false, T_Key(), T_Key(), 0}, true /* delete it */};
     }
 
     // No overlap:
     if (node_lo > key  || node_hi < key) {
-      return node->summary;
+      return {node->summary, false};
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
     const auto l = remove_and_get_summary_from_node(node->left, node_lo, mid, key);
-    if (l.to_delete) {
+    if (l.second) {
       delete node->left;
       node->left = nullptr;
     }
+    const auto& lsum = l.first;
 
     const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
-    if (r.to_delete) {
+    if (r.second) {
       delete node->right;
       node->right = nullptr;
     }
+    const auto& rsum = r.first;
 
     NodeSummary summary;
-    if (l.contributes && r.contributes) {
-      const auto min = std::min(l.min, r.min);
-      const auto max = std::max(l.max, r.max);
-      const auto count = l.count + r.count;
+    if (lsum.contributes && rsum.contributes) {
+      const auto min = std::min(lsum.min, rsum.min);
+      const auto max = std::max(lsum.max, rsum.max);
+      const auto count = lsum.count + rsum.count;
       summary = {true, min, max, count};
-    } else if (l.contributes) {
-      summary = l;
+    } else if (lsum.contributes) {
+      summary = lsum;
     } else {
-      summary = r;
+      summary = rsum;
     }
 
     node->summary = summary;
-    return summary;
+    return {summary, false};
   }
 
   Node* root = nullptr;
