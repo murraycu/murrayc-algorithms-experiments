@@ -334,6 +334,14 @@ private:
     }
 
     node->summary = summary_of_children(node->left, node->right);
+
+    // Delete this node if its children are both empty:
+    const auto count = (node->left ? node->left->summary.count : 0) +
+      (node->right ? node->right->summary.count : 0);
+    if (count == 0) {
+      return true;
+    }
+
     return false;
   }
 
