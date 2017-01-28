@@ -220,16 +220,9 @@ public:
       root = nullptr;
       return;
     }
-
-    use_summary(root, summary);
   }
 
 private:
-  static void
-  use_summary(Node* node, const NodeSummary& summary) {
-    node->summary = summary;
-  }
-
   /** Add the node for the middle values,
    * and its child nodes for the left and right parts.
    * Using the indices as the keys.
@@ -266,7 +259,7 @@ private:
     // Store the range's minimum, count, etc:
     // The actual range for this node is implict depending on
     // whether it is the left or right of the parent.
-    use_summary(result, summary);
+    result->summary = summary;
 
     return result;
   }
@@ -343,28 +336,28 @@ private:
     if (l.to_delete) {
       delete node->left;
       node->left = nullptr;
-    } else if (l.contributes) {
-      use_summary(node->left, l);
     }
 
     const auto r = remove_and_get_summary_from_node(node->right, mid + 1, node_hi, key);
     if (r.to_delete) {
       delete node->right;
       node->right = nullptr;
-    } else if (r.contributes) {
-      use_summary(node->right, r);
     }
 
+    NodeSummary summary;
     if (l.contributes && r.contributes) {
       const auto min = std::min(l.min, r.min);
       const auto max = std::max(l.max, r.max);
       const auto count = l.count + r.count;
-      return {true, min, max, count};
+      summary = {true, min, max, count};
     } else if (l.contributes) {
-      return l;
+      summary = l;
     } else {
-      return r;
+      summary = r;
     }
+
+    node->summary = summary;
+    return summary;
   }
 
   Node* root = nullptr;
