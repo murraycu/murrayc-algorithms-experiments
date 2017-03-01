@@ -97,9 +97,7 @@ dijkstra_compute_shortest_paths(const type_vec_nodes& vertices,
   // start_vertex << ", end_vertex: " << end_vertex << std::endl;
   // TODO: A simple vector would probably be more efficient,
   // as long as we need to explore almost all the vertices.
-  std::unordered_map<type_num, type_length> map_path_lengths;
   std::unordered_map<type_num, type_num> map_path_predecessor;
-  map_path_lengths[start_vertex] = 0;
   map_path_predecessor[start_vertex] = 0; // Invalid
 
   // TODO: A simple vector would probably be more efficient,
@@ -131,7 +129,6 @@ dijkstra_compute_shortest_paths(const type_vec_nodes& vertices,
       continue;
     }
 
-    map_path_lengths[best_vertex] = best.total_length_;
     map_path_predecessor[best_vertex] = best.predecessor_;
 
     // Optionally, remember the shortest path to all destination vertices:
