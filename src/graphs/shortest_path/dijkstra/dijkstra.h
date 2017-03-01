@@ -111,7 +111,7 @@ dijkstra_compute_shortest_paths(const type_vec_nodes& vertices,
   std::priority_queue<VertexAndLength, std::vector<VertexAndLength>,
     decltype(comparator)>
     heap(comparator);
-  heap.push(VertexAndLength(start_vertex, 0, 0));
+  heap.emplace(start_vertex, 0, 0);
 
   // Optionally, store the shortest paths for all destination vertices:
   std::unordered_map<type_num, VertexAndLength> total_lengths;
@@ -163,8 +163,8 @@ dijkstra_compute_shortest_paths(const type_vec_nodes& vertices,
         continue;
 
       const auto total_length = best.total_length_ + edge.length_;
-      heap.push(VertexAndLength(
-        edge_destination_vertex, total_length, best_vertex /* predecessor */));
+      heap.emplace(
+        edge_destination_vertex, total_length, best_vertex /* predecessor */);
     }
   }
 

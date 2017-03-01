@@ -204,7 +204,7 @@ namespace boost {
       if (needed > parent.size()) {
         rank.insert(rank.end(), needed - rank.size(), 0);
         for (Index k = parent.size(); k < needed; ++k)
-        parent.push_back(k);
+        parent.emplace_back(k);
       } 
     }
 
