@@ -48,7 +48,8 @@ check_PROGRAMS = \
   murrayc_substring_search_boyer_moore \
   murrayc_substring_search_kmp_with_dfa \
   murrayc_substring_search_kmp_with_prefix_array \
-  murrayc_trees_segment_tree
+  murrayc_trees_segment_tree \
+  murrayc_median_of_medians
 
 TESTS = $(check_PROGRAMS)
 
@@ -290,4 +291,11 @@ murrayc_trees_segment_tree_SOURCES = \
 murrayc_trees_segment_tree_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_trees_segment_tree_LDADD = \
+	$(COMMON_LIBS)
+
+murrayc_median_of_medians_SOURCES = \
+	src/median_of_medians/main.cc
+murrayc_median_of_medians_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_median_of_medians_LDADD = \
 	$(COMMON_LIBS)

@@ -79,6 +79,7 @@ Makefile.in
 /murrayc_substring_search_kmp_with_dfa
 /murrayc_substring_search_kmp_with_prefix_array
 /murrayc_trees_segment_tree
+/murrayc_median_of_medians
 
 /example_graph_larger_with_negative_edges.dot
 /example_graph_small.dot
