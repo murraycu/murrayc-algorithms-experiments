@@ -4,83 +4,69 @@
 #include <queue>
 #include <unordered_set>
 
+using type_num = Edge::type_num;
+
 // A set of vertices and their edges.
 using type_vec_nodes = std::vector<Vertex>;
+using type_set_nodes = std::unordered_set<type_num>;
 
-using type_num = Edge::type_num;
 using type_length = Edge::type_length;
+
+const auto comparator = [](const auto& a, const auto& b) {
+  return a.length_ > b.length_;
+};
+using type_pq = std::priority_queue<Edge, std::vector<Edge>, decltype(comparator)>;
+
+static void
+add_edges_to_pq(type_pq& pq_edges, const type_vec_nodes& nodes, const type_set_nodes& mst_nodes, type_num node_num) {
+  const auto& node = nodes[node_num];
+
+  for (const auto& edge : node.edges_) {
+    // Ignore edges that don't lead out of the current tree:
+    if (mst_nodes.count(edge.destination_vertex_)) {
+      continue;
+    }
+
+    pq_edges.emplace(edge);
+  }
+}
 
 static type_length
 compute_mst_cost(const type_vec_nodes& nodes) {
-  typedef std::unordered_set<type_num> type_set_nodes;
-  type_set_nodes unexplored;
-  const auto nodes_size = nodes.size();
-  for (type_num i = 0; i < nodes_size; ++i) {
-    unexplored.emplace(i);
-  }
-
+  // We track the nodes in the MST just to know when an edge's destination is out of the tree.
   type_set_nodes mst_nodes;
+
+  // We track the edges in the MST so we can sum their lengths,
+  // though we could do this using a simple numeric sum along the way.
   std::vector<Edge> mst_edges;
 
-  // Move start_node from the unexplored set to the explored set:
-  // const auto start_node_iter = unexplored.begin();  //Arbitrary. It shouldn't
-  // matter.
-  const auto start_node_num = 0; //*start_node_iter;
+  // We use a priority queue to always find the lowest-cost edge out of the MST.
+  type_pq pq_edges(comparator);
+
+  const auto start_node_num = 0;
   // std::cout << "start_node: " << start_node_num << std::endl;
   mst_nodes.emplace(start_node_num);
-  unexplored.erase(start_node_num);
+  add_edges_to_pq(pq_edges, nodes, mst_nodes, start_node_num); 
 
-  constexpr auto MAX_COST = std::numeric_limits<type_length>::max();
-  constexpr auto MAX_NODE_NUM = std::numeric_limits<type_num>::max();
-
-  while (!unexplored.empty()) {
-    // std::cout << "loop: mst_nodes.size() = " << mst_nodes.size() << ",
-    // unexplored.size()=" << unexplored.size() << std::endl;
+  while (!pq_edges.empty()) {
     // Find the outgoing edge from the current tree's nodes with the smallest
     // cost:
-    type_length min_cost = MAX_COST;
-    type_num min_cost_node = MAX_NODE_NUM;
-    Edge min_cost_edge;
+    auto edge = pq_edges.top();
+    pq_edges.pop();
 
-    for (const auto& mst_node_num : mst_nodes) {
-      const auto& mst_node = nodes[mst_node_num];
-      // std::cout << "checking mst_nodes: mst_node_num=" << mst_node_num << ",
-      // mst_node.edges_.size()=" << mst_node.edges_.size() << std::endl;
+    const auto node_num = edge.destination_vertex_;
 
-      // Discard edges with no nodes,
-      // though that would be an error in the input file:
-      if (mst_node.edges_.empty()) {
-        std::cerr << "Ignoring node with no edge: node num=" << mst_node_num
-                  << std::endl;
-        continue;
-      }
-
-      for (const auto& edge : mst_node.edges_) {
-        // Ignore edges that don't lead out of the current tree:
-        // std::cout << "Checking if destination_node is in mst_nodes: " <<
-        // edge.destination_vertex_ << std::endl;
-        if (mst_nodes.count(edge.destination_vertex_)) {
-          continue;
-        }
-
-        if (edge.length_ < min_cost) {
-          min_cost = edge.length_;
-          min_cost_node = edge.destination_vertex_;
-          min_cost_edge =
-            edge; // TODO: Inefficient, because we discard most of these.
-        }
-      }
+    // Ignore edges that don't lead out.
+    // We need to do this because we add shorter edges without removing (or decreasing) old ones.
+    // A Fiboncci heap would let us decrease-key in amortized O(1) time instead.
+    if (mst_nodes.count(node_num)) {
+      continue;
     }
 
-    if (min_cost_node != MAX_NODE_NUM) {
-      // std::cout << "min cost node num: " << min_cost_node << ", edge cost: "
-      // << min_cost_edge.length_ <<  std::endl;
-      mst_nodes.emplace(min_cost_node);
-      mst_edges.emplace_back(min_cost_edge);
+    mst_nodes.emplace(node_num);
+    mst_edges.emplace_back(edge);
 
-      // Remove it from the unexplored set:
-      unexplored.erase(min_cost_node);
-    }
+    add_edges_to_pq(pq_edges, nodes, mst_nodes, node_num); 
   }
 
   // Calculate the complete cost of the edges:
