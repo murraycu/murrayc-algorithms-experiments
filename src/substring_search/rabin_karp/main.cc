@@ -60,7 +60,7 @@ find(const std::string& str, const std::string& pat) {
   }
 
   for (auto i = m; i < n; ++i) {
-    sHash = (sHash + Q - RM * str[i-m] % Q) % Q;
+    sHash = (sHash + Q - RM * str[i - m] % Q) % Q;
     sHash = (sHash * R + str[i]) % Q;
 
     if (pHash == sHash) {
@@ -86,7 +86,8 @@ main() {
   assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
   // Longer:
-  assert(find("findindahaystackneedleina", "needle") == std::vector<std::size_t>({16}));
+  assert(find("findindahaystackneedleina", "needle") ==
+         std::vector<std::size_t>({16}));
 
   return EXIT_SUCCESS;
 }

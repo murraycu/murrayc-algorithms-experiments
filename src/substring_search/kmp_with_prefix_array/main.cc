@@ -11,7 +11,7 @@ construct_prefix_array(const std::string& pat) {
 
   std::size_t i = 1;
   std::size_t x = 0;
-  while (i < m ) {
+  while (i < m) {
     const auto chi = pat[i];
     const auto chx = pat[x];
 
@@ -54,7 +54,8 @@ find(const std::string& str, const std::string& pat) {
   // Step over text one character at a time,
   // with no backup,
   // using the pattern array to jump around the pattern.
-  // We have found a full pattern whenever the pattern array takes us to position m.
+  // We have found a full pattern whenever the pattern array takes us to
+  // position m.
   std::size_t p = 0;
   for (auto i = 0u; i < n; ++i) {
     const auto ch = str[i];
@@ -80,7 +81,8 @@ int
 main() {
   // Test the prefix array construction:
   // See https://youtu.be/KG44VoDtsAA
-  const std::vector<std::size_t> expected = {0, 0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4};
+  const std::vector<std::size_t> expected = {
+    0, 0, 1, 2, 3, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 4};
   const auto pa = construct_prefix_array("acacabacacabacacac");
   /*
   for (auto i : pa) {
@@ -101,7 +103,8 @@ main() {
   assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
   // Longer:
-  assert(find("findindahaystackneedleina", "needle") == std::vector<std::size_t>({16}));
+  assert(find("findindahaystackneedleina", "needle") ==
+         std::vector<std::size_t>({16}));
 
   return EXIT_SUCCESS;
 }

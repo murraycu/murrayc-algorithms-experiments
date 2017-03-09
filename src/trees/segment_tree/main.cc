@@ -1,7 +1,7 @@
+#include <cassert>
+#include <cstdlib>
 #include <type_traits>
 #include <vector>
-#include <cstdlib>
-#include <cassert>
 
 // Note: This can be implemented more efficiently
 // with an array instead of tree nodes,
@@ -10,7 +10,7 @@
 
 template <typename T_Key, typename T_Value>
 class SegmentTree {
-private :
+private:
   class NodeSummary {
   public:
     bool contributes = false;
@@ -27,10 +27,8 @@ private :
 
   class Node {
   public:
-    Node(T_Key in_key, T_Value in_value)
-    : key(in_key),
-      value(in_value) {
-        summary.contributes = true;
+    Node(T_Key in_key, T_Value in_value) : key(in_key), value(in_value) {
+      summary.contributes = true;
     }
 
     T_Key key = T_Key();
@@ -47,12 +45,9 @@ private :
   };
 
 public:
-  SegmentTree() {
-  }
+  SegmentTree() {}
 
-  ~SegmentTree() {
-    delete_node(root);
-  }
+  ~SegmentTree() { delete_node(root); }
 
   /** Build a Segment Tree with array indices as keys,
    * with the specified associated values.
@@ -172,18 +167,23 @@ public:
 
     // Gradually move into the range where the missing value would have to be,
     // by examining the count and the expected count in the halves, until we
-    // are looking at a single-item range, and looking for just one missing item (k=0).
+    // are looking at a single-item range, and looking for just one missing item
+    // (k=0).
     //
-    // For instance (with indices as keys, and values conveniently equal to those keys):
+    // For instance (with indices as keys, and values conveniently equal to
+    // those keys):
     //
     // If k = 0th with (0, 1, 2, 3, 4, 5):
-    //   lo/mid/hi=0,2,5 then 3,4,5, then ends on 5,5, when k=0, but count(5) = 1.
+    //   lo/mid/hi=0,2,5 then 3,4,5, then ends on 5,5, when k=0, but count(5) =
+    //   1.
     //
     // If k = 0th with (0, _, 2, 3, 4):
-    //   lo/mid/hi=0,2,5 then 0,1,2, then 0,0,1, then ends on 1,1, when k=0 and count(1) = 0.
+    //   lo/mid/hi=0,2,5 then 0,1,2, then 0,0,1, then ends on 1,1, when k=0 and
+    //   count(1) = 0.
     //
     // If k = 1th with (0, _, 2, 3, _, 5):
-    //   lo/mid/hi=0,2,5 then 3,4,5, then 3,3,4, then ends on 4,4, when k=0 and count(4) = 0.
+    //   lo/mid/hi=0,2,5 then 3,4,5, then 3,3,4, then ends on 4,4, when k=0 and
+    //   count(4) = 0.
     while (lo < hi) {
       const auto mid = lo + ((hi - lo) / 2);
       const auto lc = count(lo, mid);
@@ -202,20 +202,21 @@ public:
     // Now lo == hi.
     // And either that key is missing or it is not.
     const auto c = count(lo, lo);
-    if (k == 0 &&
-        c == 0) {
+    if (k == 0 && c == 0) {
       return {true, lo};
     }
 
     return {false, T_Key()};
   }
 
-  void remove(T_Key key) {
+  void
+  remove(T_Key key) {
     if (!root) {
       return;
     }
 
-    const auto del = remove_and_update_summary_from_node(root, root_lo, root_hi, key);
+    const auto del =
+      remove_and_update_summary_from_node(root, root_lo, root_hi, key);
     if (del) {
       delete root;
       root = nullptr;
@@ -229,7 +230,8 @@ private:
    * Using the indices as the keys.
    */
   static Node*
-  add_node_from_vector(std::size_t lo, std::size_t hi, const std::vector<T_Value>& values, NodeSummary& summary) {
+  add_node_from_vector(std::size_t lo, std::size_t hi,
+    const std::vector<T_Value>& values, NodeSummary& summary) {
     const auto mid = lo + ((hi - lo) / 2);
     const auto& midval = values[mid];
     auto result = new Node(mid, midval);
@@ -246,7 +248,8 @@ private:
       // The right range, not including mid:
       if (mid < hi) {
         NodeSummary summary_right;
-        result->right = add_node_from_vector(mid + 1, hi, values, summary_right);
+        result->right =
+          add_node_from_vector(mid + 1, hi, values, summary_right);
         summary = summary_of_children(summary, summary_right);
       }
     }
@@ -275,10 +278,9 @@ private:
    * @param end inclusive.
    */
   static NodeSummary
-  summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key start, T_Key end) {
-    if (!node ||
-      node_lo > node_hi ||
-      node_hi < node_lo) {
+  summary_from_node(
+    Node* node, T_Key node_lo, T_Key node_hi, T_Key start, T_Key end) {
+    if (!node || node_lo > node_hi || node_hi < node_lo) {
       return {false};
     }
 
@@ -288,7 +290,7 @@ private:
     }
 
     // No overlap:
-    if (node_lo > end  || node_hi < start) {
+    if (node_lo > end || node_hi < start) {
       return {false};
     }
 
@@ -304,7 +306,8 @@ private:
    * @result True if the caller should delete and forget about this child node.
    */
   static bool
-  remove_and_update_summary_from_node(Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
+  remove_and_update_summary_from_node(
+    Node* node, T_Key node_lo, T_Key node_hi, T_Key key) {
     if (!node) {
       return false;
     }
@@ -316,18 +319,20 @@ private:
     }
 
     // No overlap:
-    if (node_lo > key  || node_hi < key) {
+    if (node_lo > key || node_hi < key) {
       return false;
     }
 
     const auto mid = node_lo + ((node_hi - node_lo) / 2);
-    const auto ldelete = remove_and_update_summary_from_node(node->left, node_lo, mid, key);
+    const auto ldelete =
+      remove_and_update_summary_from_node(node->left, node_lo, mid, key);
     if (ldelete) {
       delete node->left;
       node->left = nullptr;
     }
 
-    const auto rdelete = remove_and_update_summary_from_node(node->right, mid + 1, node_hi, key);
+    const auto rdelete =
+      remove_and_update_summary_from_node(node->right, mid + 1, node_hi, key);
     if (rdelete) {
       delete node->right;
       node->right = nullptr;
@@ -337,7 +342,7 @@ private:
 
     // Delete this node if its children are both empty:
     const auto count = (node->left ? node->left->summary.count : 0) +
-      (node->right ? node->right->summary.count : 0);
+                       (node->right ? node->right->summary.count : 0);
     if (count == 0) {
       return true;
     }
@@ -376,7 +381,6 @@ private:
       return {false};
     }
   }
-
 
   Node* root = nullptr;
   T_Key root_lo = T_Key();
@@ -537,7 +541,8 @@ test_kth_empty() {
   assert(st.get_kth_empty(1).second == 4);
 }
 
-int main() {
+int
+main() {
   test_min();
   test_remove_and_min();
 
@@ -549,4 +554,3 @@ int main() {
 
   return EXIT_SUCCESS;
 }
-

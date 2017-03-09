@@ -32,16 +32,16 @@ find(const std::string& str, const std::string& pat) {
     std::size_t j = 0u;
     bool found = true;
     for (j = 0u; j < m; ++j) {
-      const auto p = m-j-1;
+      const auto p = m - j - 1;
       const auto pch = pat[p];
-      const auto ch = str[i-j];
+      const auto ch = str[i - j];
       if (pch != ch) {
         found = false;
         const auto rightmost = r[ch];
         if (rightmost == -1 && p > 0) {
           // The character is nowhere in the pattern,
           // so skip completely past this character.
-          i += p - 1; //We always increment by 1 anyway.
+          i += p - 1; // We always increment by 1 anyway.
         } else if (rightmost > 0 && (uint32_t)(rightmost) < p) {
           const auto skip = p - rightmost;
           i += skip - 1; // We always increment by 1 anyway.
@@ -51,7 +51,7 @@ find(const std::string& str, const std::string& pat) {
     }
 
     if (found) {
-      result.emplace_back(i-m+1);
+      result.emplace_back(i - m + 1);
     }
   }
 
@@ -70,7 +70,8 @@ main() {
   assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
   // Longer:
-  assert(find("findindahaystackneedleina", "needle") == std::vector<std::size_t>({16}));
+  assert(find("findindahaystackneedleina", "needle") ==
+         std::vector<std::size_t>({16}));
 
   return EXIT_SUCCESS;
 }

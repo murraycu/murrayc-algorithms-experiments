@@ -34,7 +34,8 @@ find(const std::string& str, const std::string& pat) {
     }
 
     // Transitions for matches.
-    // Finding a matching character takes us to the next position in the pattern:
+    // Finding a matching character takes us to the next position in the
+    // pattern:
     const auto pch = pat[i];
     dfai[pch] = i + 1;
 
@@ -72,7 +73,8 @@ main() {
   assert(find("ababababa", "aba") == std::vector<std::size_t>({0, 2, 4, 6}));
 
   // Longer:
-  assert(find("findindahaystackneedleina", "needle") == std::vector<std::size_t>({16}));
+  assert(find("findindahaystackneedleina", "needle") ==
+         std::vector<std::size_t>({16}));
 
   return EXIT_SUCCESS;
 }
