@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cassert>
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -7,9 +8,7 @@
 using uint = unsigned int;
 using type_costs = std::vector<uint>;
 
-enum class operations { MATCH, INSERT, DELETE };
-
-uint
+static uint
 match(const char ch_str, const char ch_pattern) {
   if (ch_str == ch_pattern) {
     return 0;
@@ -18,12 +17,12 @@ match(const char ch_str, const char ch_pattern) {
   }
 }
 
-uint
+static uint
 indel(char /* ch */) {
   return 1;
 }
 
-uint
+static uint
 dp_calc_edit_distance(const std::string& str, const std::string& pattern) {
   const auto str_size = str.size();
   const auto pattern_size = pattern.size();
@@ -36,12 +35,12 @@ dp_calc_edit_distance(const std::string& str, const std::string& pattern) {
   type_costs b(pattern_size + 1, 0);
   bool a_is_first = false; // arbitrary.
 
-  for (uint i = 0; i <= str_size; ++i) {
+  for (auto i = 0ul; i <= str_size; ++i) {
     a_is_first = !a_is_first;
-    type_costs& costs_i = (a_is_first ? a : b);
-    const type_costs& costs_i_minus_1 = (a_is_first ? b : a);
+    auto& costs_i = (a_is_first ? a : b);
+    const auto& costs_i_minus_1 = (a_is_first ? b : a);
 
-    for (uint j = 0; j <= pattern_size; ++j) {
+    for (auto j = 0ul; j <= pattern_size; ++j) {
       // 0 means empty string, so converting an empty to non-empty, or vice-versa,
       // means adding or deleting all the characters
       if (i == 0) {
@@ -58,22 +57,20 @@ dp_calc_edit_distance(const std::string& str, const std::string& pattern) {
 
       // We subtract 1 when comparing characters, because i and j are 1-indexed,
       // with 0 meaning an empty string.
-      const uint cost_match =
+      const auto cost_match =
         costs_i_minus_1[j - 1] + match(str[i - 1], pattern[j - 1]);
 
-      const uint cost_insert = costs_i[j - 1] + indel(pattern[j]);
-      const uint cost_delete = costs_i_minus_1[j] + indel(str[j]);
+      const auto cost_insert = costs_i[j - 1] + indel(pattern[j]);
+      const auto cost_delete = costs_i_minus_1[j] + indel(str[j]);
 
-      auto min = std::min(cost_match, cost_insert);
-      min = std::min(min, cost_delete);
-      costs_i[j] = min;
+      costs_i[j] = std::min({cost_match, cost_insert, cost_delete});
     }
 
     // costs_i will then be read as costs_i_minus_1;
     // and costs_i_minus_1 will be filled as costs_i;
   }
 
-  const type_costs& costs_i = (a_is_first ? a : b);
+  const auto& costs_i = (a_is_first ? a : b);
   return costs_i[pattern_size];
 }
 
