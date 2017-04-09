@@ -4,25 +4,15 @@
 #include <string>
 #include <vector>
 
-static std::vector<std::size_t>
-find(const std::string& str, const std::string& pat) {
-  std::vector<std::size_t> result;
-  const auto m = pat.size();
-  const auto n = str.size();
-
-  if (m == 0) {
-    return {};
-  }
-
-  if (m > n) {
-    // The pattern is bigger than the string:
-    return {};
-  }
-
+static std::vector<std::vector<std::size_t>>
+construct_dfa(const std::string& pat) {
   constexpr uint32_t R = 256; // Alphabet size.
 
   // Construct the DFA:
-  std::vector<std::vector<std::size_t>> dfa(m + 1, std::vector<std::size_t>(R));
+  // We declare this first to get RVO:
+  std::vector<std::vector<std::size_t>> dfa(pat.size() + 1, std::vector<std::size_t>(R));
+
+  const auto m = pat.size();
 
   std::size_t x = 0;
   for (auto i = 0u; i < m; ++i) {
@@ -41,6 +31,26 @@ find(const std::string& str, const std::string& pat) {
 
     x = dfax[pch];
   }
+
+  return dfa;
+}
+
+static std::vector<std::size_t>
+find(const std::string& str, const std::string& pat) {
+  std::vector<std::size_t> result;
+  const auto m = pat.size();
+  const auto n = str.size();
+
+  if (m == 0) {
+    return {};
+  }
+
+  if (m > n) {
+    // The pattern is bigger than the string:
+    return {};
+  }
+
+  const auto dfa = construct_dfa(pat);
 
   // Step over text one character at a time,
   // with no backup,
