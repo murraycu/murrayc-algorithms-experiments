@@ -54,6 +54,7 @@ Makefile.in
 
 /murrayc_dp_make_change
 /murrayc_dp_string_edit_distance
+/murrayc_dp_optimal_bst
 /murrayc_find_objects_in_image_with_disjoint_set
 /murrayc_greedy_make_change
 /murrayc_bellman_ford

@@ -42,6 +42,7 @@ check_PROGRAMS = \
   murrayc_quickselect \
   murrayc_subset_iteration \
   murrayc_dp_string_edit_distance \
+  murrayc_dp_optimal_bst \
   murrayc_wang_tiles \
   murrayc_substring_search_z_algorithm \
   murrayc_substring_search_rabin_karp \
@@ -242,6 +243,13 @@ murrayc_dp_string_edit_distance_SOURCES = \
 murrayc_dp_string_edit_distance_CXXFLAGS = \
 	$(COMMON_CXXFLAGS)
 murrayc_dp_string_edit_distance_LDADD = \
+	$(COMMON_LIBS)
+
+murrayc_dp_optimal_bst_SOURCES = \
+	src/dynamic_programming/dp_optimal_bst/murrayc_optimal_bst.cc
+murrayc_dp_optimal_bst_CXXFLAGS = \
+	$(COMMON_CXXFLAGS)
+murrayc_dp_optimal_bst_LDADD = \
 	$(COMMON_LIBS)
 
 murrayc_wang_tiles_SOURCES = \
