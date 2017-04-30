@@ -30,7 +30,7 @@ using type_shortest_paths = std::vector<std::vector<type_length>>;
 static void
 calc_with_cache(const type_vec_nodes& vertices,
   type_shortest_paths& shortest_paths_k,
-  type_shortest_paths& shortest_paths_k_minus_1, type_num i, type_num j,
+  const type_shortest_paths& shortest_paths_k_minus_1, type_num i, type_num j,
   type_length k, type_length& shortest_path_so_far, bool& has_negative_cycles) {
   // std::cout << "calc_with_cache(): i=" << i << ", j=" << j << ", k=" << k <<
   // std::endl;
@@ -133,9 +133,9 @@ floyd_warshall_calc_all_pairs_shortest_path(
 
   bool k_is_a = true;
   for (type_num k = 0; k <= vertices_count; ++k) {
-    type_shortest_paths& shortest_paths_k =
+    auto& shortest_paths_k =
       k_is_a ? shortest_paths_a : shortest_paths_b;
-    type_shortest_paths& shortest_paths_k_minus_1 =
+    const auto& shortest_paths_k_minus_1 =
       k_is_a ? shortest_paths_b : shortest_paths_a;
 
     if (k > 1)
