@@ -52,7 +52,7 @@ calc_with_cache(const type_vec_nodes& vertices,
     return;
   }
 
-  const type_length case1 = shortest_paths_k_minus_1[i][j];
+  const auto case1 = shortest_paths_k_minus_1[i][j];
   if (has_negative_cycles)
     return;
 
