@@ -38,9 +38,9 @@ bellman_ford_update_adjacent_vertex(type_shortest_paths& shortest_paths,
   // std::cout << "bellman_ford_update_adjacent_vertex(): i=" << i << ", s=" <<
   // s << ", w=" << w << ", v=" << v << std::endl;
 
-  const auto case1 = shortest_paths[v];
+  const auto existing = shortest_paths[v];
   // std::cout << "  case1: existing: shortest_paths[i=" << i-1 << "][" << v <<
-  // "]:" << case1 << std::endl;
+  // "]:" << existing << std::endl;
 
   auto case2 = Edge::LENGTH_INFINITY; // min( w_to_v ) for all w.
   const auto direct_edge_length = edge.length_;
@@ -53,24 +53,17 @@ bellman_ford_update_adjacent_vertex(type_shortest_paths& shortest_paths,
     case2 = previous_s_w + direct_edge_length;
   }
 
-  const auto best = std::min(case1, case2);
-
-  // Make sure that it's less than any cost calculated for the same vertex
+  // Check if it's less than any cost calculated for the same vertex
   // during this same iteration (i), for another other edge that goes to this
   // same vertex.
   bool changed = false;
-  auto result = Edge::LENGTH_INFINITY;
-  const auto existing = shortest_paths[v];
-  if (existing < best) {
-    result = existing;
-  } else {
-    result = best;
+  auto result = existing;
+  if (case2 < result) {
+    result = case2;
 
-    // Also update the predecessor, if we've found a new best way to get to this
+    // Also update the predecessor, because we've found a new best way to get to this
     // vertex:
-    if (case2 < case1) {
-      predecessors[v] = w;
-    }
+    predecessors[v] = w;
 
     changed = true;
   }
