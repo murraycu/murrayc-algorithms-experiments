@@ -45,16 +45,12 @@ bellman_ford_update_adjacent_vertex(type_shortest_paths& shortest_paths,
   auto case2 = Edge::LENGTH_INFINITY; // min( w_to_v ) for all w.
   const auto direct_edge_length = edge.length_;
   const auto previous_s_w = shortest_paths[w];
-  auto s_to_w_to_v = Edge::LENGTH_INFINITY;
   if (direct_edge_length != Edge::LENGTH_INFINITY &&
       previous_s_w != Edge::LENGTH_INFINITY) { // Avoid overflow
     // std::cout << "direct_edge_length: " << direct_edge_length << std::endl;
     // std::cout << "shortest_paths[w]: " <<
     // shortest_paths[w] << std::endl;
-    s_to_w_to_v = previous_s_w + direct_edge_length;
-    if (s_to_w_to_v < case2) {
-      case2 = s_to_w_to_v;
-    }
+    case2 = previous_s_w + direct_edge_length;
   }
 
   const auto best = std::min(case1, case2);
